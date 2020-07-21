@@ -10,8 +10,8 @@ def loadConfig():
 
 
 cfg = loadConfig()
-Login(cfg[0]['lang']).login(cfg[0]['username'], cfg[0]['password'])
+cookie = Login(cfg[0]['lang']).login(cfg[0]['username'], cfg[0]['password'])
 
 
 # def foo():
-#     r = requests.get()
+#     r = requests.Session()
