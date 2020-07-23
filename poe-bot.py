@@ -1,6 +1,7 @@
 import requests
 import yaml
 from login import Login
+import time
 
 
 def loadConfig():
@@ -9,9 +10,14 @@ def loadConfig():
         return cfg
 
 
+def prepareRequest():
+    r = requests.Session()
+    for cookie in cookies:
+        r.cookies.set(cookie['name'], cookie['value'])
+
+
 cfg = loadConfig()
-cookie = Login(cfg[0]['lang']).login(cfg[0]['username'], cfg[0]['password'])
-
-
-# def foo():
-#     r = requests.Session()
+cookies = Login(cfg[0]['lang'], cfg[0]['world']).login(
+    cfg[0]['username'], cfg[0]['password'])
+time.sleep(30)
+prepareRequest()
