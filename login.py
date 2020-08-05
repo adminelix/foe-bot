@@ -3,6 +3,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+import json
+import time
 
 
 class Login:
@@ -11,7 +14,9 @@ class Login:
         self.WORLD = world
 
     def login(self, username, password):
-        driver = webdriver.Chrome()
+        caps = DesiredCapabilities.CHROME
+        caps['loggingPrefs'] = {'performance': 'ALL'}
+        driver = webdriver.Chrome(desired_capabilities=caps)
 
         try:
             driver.get(self.BASE_URL)
@@ -25,7 +30,8 @@ class Login:
 
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CLASS_NAME, 'world_select_button')))
-            elements = driver.find_elements_by_class_name('world_select_button')
+            elements = driver.find_elements_by_class_name(
+                'world_select_button')
 
             for element in elements:
                 print(element.get_attribute('value'))
@@ -35,6 +41,22 @@ class Login:
 
             result = driver.get_cookies()
             print('successfully logged in')
+
+            time.sleep(15)
+            driver.reload
+
+            def process_browser_log_entry(entry):
+                response = json.loads(entry['message'])['message']
+                return response
+
+            browser_log = driver.get_log('browser')
+            print(browser_log)
+            driver_log = driver.get_log('driver')
+            events = [process_browser_log_entry(
+                entry) for entry in browser_log]
+            events = [
+                event for event in events if 'Network.response' in event['method']]
+
         except TimeoutException:
             print('could not login')
             raise
