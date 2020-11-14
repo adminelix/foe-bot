@@ -1,3 +1,5 @@
 selenium
 pyyaml
 requests
+browsermob-proxy
+psutil

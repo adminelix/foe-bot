@@ -1,11 +1,12 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-import json
+from browsermobproxy import Server
+import psutil
 import time
+import re
 
 
 class Login:
@@ -14,9 +15,29 @@ class Login:
         self.WORLD = world
 
     def login(self, username, password):
-        caps = DesiredCapabilities.CHROME
-        caps['loggingPrefs'] = {'performance': 'ALL'}
-        driver = webdriver.Chrome(desired_capabilities=caps)
+
+        for proc in psutil.process_iter():
+            # check whether the process name matches
+            if proc.name() == "browsermob-prox":
+                proc.kill()
+
+        # https://stackoverflow.com/questions/48201944/how-to-use-browsermob-with-python-selenium
+
+        dict = {'port': 8090}
+        server = Server(path="./browsermob-proxy/bin/browsermob-proxy", options=dict)
+        server.start()
+        time.sleep(1)
+        proxy = server.create_proxy()
+        time.sleep(1)
+
+        chrome_options = Options()
+        # chrome_options.add_argument("--headless")
+        chrome_options.add_argument('--ignore-certificate-errors')
+        capabilities = chrome_options.to_capabilities()
+        proxy.add_to_webdriver_capabilities(capabilities)
+        driver = webdriver.Chrome(desired_capabilities=capabilities)
+
+        proxy.new_har("inno")
 
         try:
             driver.get(self.BASE_URL)
@@ -41,27 +62,29 @@ class Login:
 
             result = driver.get_cookies()
             print('successfully logged in')
+            client_id = self.__get_client_id(proxy)
+            result.append(client_id)
 
-            time.sleep(15)
-            driver.reload
-
-            def process_browser_log_entry(entry):
-                response = json.loads(entry['message'])['message']
-                return response
-
-            browser_log = driver.get_log('browser')
-            print(browser_log)
-            driver_log = driver.get_log('driver')
-            events = [process_browser_log_entry(
-                entry) for entry in browser_log]
-            events = [
-                event for event in events if 'Network.response' in event['method']]
-
-        except TimeoutException:
+        except Exception as ex:
             print('could not login')
-            raise
+            raise ex
         finally:
-            # driver.quit()
-            pass
+            server.stop()
+            driver.quit()
 
         return result
+
+    @classmethod
+    def __get_client_id(cls, proxy):
+        filtered_log_entries = []
+        while not filtered_log_entries:
+            log_entries = proxy.har['log']['entries']
+            filtered_log_entries = [foo for foo in log_entries
+                if re.match(".+/game/json\?h=.+", foo['request']['url'])]
+            time.sleep(1)
+
+        first = filtered_log_entries[0]
+        client_id = [query_param for query_param in first['request']['queryString']
+               if re.match("h", query_param['name'])]
+
+        return client_id
