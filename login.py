@@ -7,18 +7,20 @@ from browsermobproxy import Server
 import psutil
 import time
 import re
+from bmp_loader import BmpLoader
 
 
 class Login:
     def __init__(self, lang, world):
         self.BASE_URL = "https://" + lang + ".forgeofempires.com/glps/iframe-login"
         self.WORLD = world
+        BmpLoader().prepare()
 
     def login(self, username, password):
 
         for proc in psutil.process_iter():
             # check whether the process name matches
-            if proc.name() == "browsermob-prox":
+            if proc.name() == "browsermob-proxy":
                 proc.kill()
 
         # https://stackoverflow.com/questions/48201944/how-to-use-browsermob-with-python-selenium
@@ -31,7 +33,7 @@ class Login:
         time.sleep(1)
 
         chrome_options = Options()
-        # chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--headless")
         chrome_options.add_argument('--ignore-certificate-errors')
         capabilities = chrome_options.to_capabilities()
         proxy.add_to_webdriver_capabilities(capabilities)
@@ -55,15 +57,14 @@ class Login:
                 'world_select_button')
 
             for element in elements:
-                print(element.get_attribute('value'))
                 if self.WORLD == element.get_attribute('value'):
                     element.click()
                     break
 
             result = driver.get_cookies()
-            print('successfully logged in')
             client_id = self.__get_client_id(proxy)
-            result.append(client_id)
+            result.append({'domain': 'local', 'name': 'clientId', 'path': '/', 'secure': True, 'value': client_id})
+            print('successfully logged in to world ' + self.WORLD + ' with client id: ' + client_id)
 
         except Exception as ex:
             print('could not login')
@@ -80,11 +81,11 @@ class Login:
         while not filtered_log_entries:
             log_entries = proxy.har['log']['entries']
             filtered_log_entries = [foo for foo in log_entries
-                if re.match(".+/game/json\?h=.+", foo['request']['url'])]
+                                    if re.match(".+/game/json\?h=.+", foo['request']['url'])]
             time.sleep(1)
 
         first = filtered_log_entries[0]
         client_id = [query_param for query_param in first['request']['queryString']
-               if re.match("h", query_param['name'])]
+                     if re.match("h", query_param['name'])]
 
-        return client_id
+        return client_id[0]['value']
