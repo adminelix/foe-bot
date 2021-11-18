@@ -3,3 +3,4 @@ pyyaml
 requests
 browsermob-proxy
 psutil
+brotli

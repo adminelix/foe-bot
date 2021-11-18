@@ -61,9 +61,12 @@ class Login:
                     element.click()
                     break
 
-            result = driver.get_cookies()
             client_id = self.__get_client_id(proxy)
+            while not driver.get_cookie('instanceId'):
+                time.sleep(10)
+            result = driver.get_cookies()
             result.append({'domain': 'local', 'name': 'clientId', 'path': '/', 'secure': True, 'value': client_id})
+            result.append({'domain': 'local', 'name': 'startup_microtime', 'path': '/', 'secure': True, 'value': time.time_ns() // 1_000_000})
             print('successfully logged in to world ' + self.WORLD + ' with client id: ' + client_id)
 
         except Exception as ex:
