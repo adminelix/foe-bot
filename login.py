@@ -8,7 +8,7 @@ import psutil
 import requests
 from browsermobproxy import Server
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -23,6 +23,7 @@ class Login:
         BmpLoader().prepare()
 
     def login(self, username, password):
+        print('logging in')
 
         for proc in psutil.process_iter():
             # check whether the process name matches
@@ -37,12 +38,12 @@ class Login:
         proxy = server.create_proxy()
         time.sleep(1)
 
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument('--ignore-certificate-errors')
-        capabilities = chrome_options.to_capabilities()
+        options = Options()
+        options.add_argument("--headless")
+        options.add_argument('--ignore-certificate-errors')
+        capabilities = options.to_capabilities()
         proxy.add_to_webdriver_capabilities(capabilities)
-        driver = webdriver.Chrome(desired_capabilities=capabilities)
+        driver = webdriver.Firefox(desired_capabilities=capabilities)
 
         proxy.new_har("inno", options={'captureHeaders': True, 'captureContent': True, 'captureBinaryContent': True})
 
@@ -67,7 +68,8 @@ class Login:
                     break
 
             while not driver.get_cookie('instanceId'):
-                time.sleep(0.01)
+                print('waiting for instanceId')
+                time.sleep(1)
 
             cookies = driver.get_cookies()
             driver.quit()
