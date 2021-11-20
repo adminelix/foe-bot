@@ -1,12 +1,18 @@
+import base64
+import json
+import re
+import time
+
+import brotli
+import psutil
+import requests
+from browsermobproxy import Server
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from browsermobproxy import Server
-import psutil
-import time
-import re
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 from bmp_loader import BmpLoader
 
 
@@ -25,8 +31,7 @@ class Login:
 
         # https://stackoverflow.com/questions/48201944/how-to-use-browsermob-with-python-selenium
 
-        dict = {'port': 8090}
-        server = Server(path="./browsermob-proxy/bin/browsermob-proxy", options=dict)
+        server = Server(path="./browsermob-proxy/bin/browsermob-proxy", options={'port': 8090})
         server.start()
         time.sleep(1)
         proxy = server.create_proxy()
@@ -39,7 +44,7 @@ class Login:
         proxy.add_to_webdriver_capabilities(capabilities)
         driver = webdriver.Chrome(desired_capabilities=capabilities)
 
-        proxy.new_har("inno")
+        proxy.new_har("inno", options={'captureHeaders': True, 'captureContent': True, 'captureBinaryContent': True})
 
         try:
             driver.get(self.BASE_URL)
@@ -61,14 +66,11 @@ class Login:
                     element.click()
                     break
 
-            client_id = self.__get_client_id(proxy)
             while not driver.get_cookie('instanceId'):
-                time.sleep(10)
-            result = driver.get_cookies()
-            result.append({'domain': 'local', 'name': 'clientId', 'path': '/', 'secure': True, 'value': client_id})
-            result.append({'domain': 'local', 'name': 'startup_microtime', 'path': '/', 'secure': True, 'value': time.time_ns() // 1_000_000})
-            print('successfully logged in to world ' + self.WORLD + ' with client id: ' + client_id)
+                time.sleep(0.01)
 
+            cookies = driver.get_cookies()
+            driver.quit()
         except Exception as ex:
             print('could not login')
             raise ex
@@ -76,19 +78,65 @@ class Login:
             server.stop()
             driver.quit()
 
-        return result
+        return self.__create_session(cookies, proxy)
 
-    @classmethod
-    def __get_client_id(cls, proxy):
+    def __create_session(self, cookies, proxy):
+        filtered_log_entries = self.__filter_log_entries(proxy)
+        client_id = self.__get_client_id(filtered_log_entries[-1])
+        headers = self.__get_headers(filtered_log_entries)
+        contents = self.__get_contents(filtered_log_entries)
+        request_id = self.__get_current_request_id(contents)
+        cookies.append({'domain': 'local', 'name': 'clientId', 'path': '/', 'secure': True, 'value': client_id})
+        cookies.append({'domain': 'local', 'name': 'request_id', 'path': '/', 'secure': True, 'value': request_id})
+
+        r = requests.Session()
+        for cookie in cookies:
+            r.cookies.set(cookie['name'], cookie['value'], path=cookie['path'], domain=cookie['domain'])
+        for header in headers:
+            r.headers.setdefault(header['name'], header['value'])
+        r.headers.update({'User-Agent': i['value'] for i in headers if i['name'] == 'User-Agent'})
+        print('successfully logged in to world ' + self.WORLD + ' with client id: ' + client_id)
+        return r, contents
+
+    @staticmethod
+    def __get_headers(filtered_log_entries):
+        headers = filtered_log_entries[-1]['request']['headers']
+        res = [i for i in headers if not (i['name'] == 'Host')
+               and not (i['name'] == 'Content-Length')
+               and not (i['name'] == 'Origin')
+               and not (i['name'] == 'Referer')
+               and not (i['name'] == 'Cookie')
+               and not (i['name'] == 'Signature')]
+        return res
+
+    @staticmethod
+    def __get_client_id(log_entry):
+        client_id = [query_param for query_param in log_entry['request']['queryString']
+                     if re.match("h", query_param['name'])]
+
+        return client_id[0]['value']
+
+    @staticmethod
+    def __filter_log_entries(proxy):
         filtered_log_entries = []
         while not filtered_log_entries:
             log_entries = proxy.har['log']['entries']
             filtered_log_entries = [foo for foo in log_entries
                                     if re.match(".+/game/json\?h=.+", foo['request']['url'])]
             time.sleep(1)
+        return filtered_log_entries
 
-        first = filtered_log_entries[0]
-        client_id = [query_param for query_param in first['request']['queryString']
-                     if re.match("h", query_param['name'])]
+    @staticmethod
+    def __get_contents(log_entries):
+        contents = []
+        for log in log_entries:
+            content = json.loads(brotli.decompress(base64.b64decode(log['response']['content']['text'])))
+            [contents.append(item) for item in content]
+        return contents
 
-        return client_id[0]['value']
+    @staticmethod
+    def __get_current_request_id(contents):
+        request_id = 0
+        for content in contents:
+            request_id = content['requestId'] > request_id and content['requestId'] or request_id
+        return request_id
