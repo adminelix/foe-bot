@@ -1,6 +1,6 @@
 selenium
+selenium-requests
 pyyaml
 requests
-browsermob-proxy
 psutil
 brotli

@@ -1,51 +1,27 @@
-import base64
 import json
 import re
 import time
 
 import brotli
-import psutil
 import requests
-from browsermobproxy import Server
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
-from bmp_loader import BmpLoader
+from seleniumwire import webdriver
 
 
 class Login:
     def __init__(self, lang, world):
         self.BASE_URL = "https://" + lang + ".forgeofempires.com/glps/iframe-login"
         self.WORLD = world
-        BmpLoader().prepare()
 
     def login(self, username, password):
         print('logging in')
 
-        for proc in psutil.process_iter():
-            # check whether the process name matches
-            if proc.name() == "browsermob-proxy":
-                proc.kill()
-
-        # https://stackoverflow.com/questions/48201944/how-to-use-browsermob-with-python-selenium
-
-        server = Server(path="./browsermob-proxy/bin/browsermob-proxy", options={'port': 8090})
-        server.start()
-        time.sleep(1)
-        proxy = server.create_proxy()
-        time.sleep(1)
-
         options = Options()
         options.add_argument("--headless")
-        options.add_argument('--ignore-certificate-errors')
-        capabilities = options.to_capabilities()
-        proxy.add_to_webdriver_capabilities(capabilities)
-        driver = webdriver.Firefox(desired_capabilities=capabilities)
-
-        proxy.new_har("inno", options={'captureHeaders': True, 'captureContent': True, 'captureBinaryContent': True})
+        driver = webdriver.Firefox(options=options)
 
         try:
             driver.get(self.BASE_URL)
@@ -53,8 +29,10 @@ class Login:
             driver.find_element_by_id('login_password').send_keys(password)
             driver.find_element_by_id('login_Login').click()
 
+            driver.refresh()
+
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, 'play_now_button')))
+                EC.element_to_be_clickable((By.ID, 'play_now_button')))
             driver.find_element_by_id('play_now_button').click()
 
             WebDriverWait(driver, 10).until(
@@ -67,78 +45,70 @@ class Login:
                     element.click()
                     break
 
+            print('waiting for instanceId')
             while not driver.get_cookie('instanceId'):
-                print('waiting for instanceId')
-                time.sleep(1)
+                time.sleep(0.1)
 
             cookies = driver.get_cookies()
+            reqs = driver.requests
             driver.quit()
         except Exception as ex:
             print('could not login')
             raise ex
         finally:
-            server.stop()
             driver.quit()
 
-        return self.__create_session(cookies, proxy)
+        return self.__create_session(cookies, reqs)
 
-    def __create_session(self, cookies, proxy):
-        filtered_log_entries = self.__filter_log_entries(proxy)
-        client_id = self.__get_client_id(filtered_log_entries[-1])
-        headers = self.__get_headers(filtered_log_entries)
-        contents = self.__get_contents(filtered_log_entries)
+    def __create_session(self, cookies, reqs):
+        filtered_reqs = self.__filter_log_entries(reqs)
+        client_id = filtered_reqs[-1].params['h']
+        headers = self.__get_headers(filtered_reqs)
+        contents = self.__get_contents(filtered_reqs)
         request_id = self.__get_current_request_id(contents)
         cookies.append({'domain': 'local', 'name': 'clientId', 'path': '/', 'secure': True, 'value': client_id})
         cookies.append({'domain': 'local', 'name': 'request_id', 'path': '/', 'secure': True, 'value': request_id})
 
-        r = requests.Session()
+        session = requests.Session()
         for cookie in cookies:
-            r.cookies.set(cookie['name'], cookie['value'], path=cookie['path'], domain=cookie['domain'])
+            session.cookies.set(cookie['name'], cookie['value'], path=cookie['path'], domain=cookie['domain'])
         for header in headers:
-            r.headers.setdefault(header['name'], header['value'])
-        r.headers.update({'User-Agent': i['value'] for i in headers if i['name'] == 'User-Agent'})
+            session.headers.setdefault(header[0], header[1])
+        session.headers.update({'User-Agent': header[1] for header in headers if header[0] == 'user-agent'})
+
         print('successfully logged in to world ' + self.WORLD + ' with client id: ' + client_id)
-        return r, contents
+        return session, contents
 
     @staticmethod
-    def __get_headers(filtered_log_entries):
-        headers = filtered_log_entries[-1]['request']['headers']
-        res = [i for i in headers if not (i['name'] == 'Host')
-               and not (i['name'] == 'Content-Length')
-               and not (i['name'] == 'Origin')
-               and not (i['name'] == 'Referer')
-               and not (i['name'] == 'Cookie')
-               and not (i['name'] == 'Signature')]
+    def __get_headers(reqs):
+        headers = reqs[-1].headers._headers
+        res = [i for i in headers if not (i[0] == 'Host')
+               and not (i[0] == 'content-length')
+               and not (i[0] == 'origin')
+               and not (i[0] == 'referer')
+               and not (i[0] == 'cookie')
+               and not (i[0] == 'signature')]
         return res
 
     @staticmethod
-    def __get_client_id(log_entry):
-        client_id = [query_param for query_param in log_entry['request']['queryString']
-                     if re.match("h", query_param['name'])]
-
-        return client_id[0]['value']
-
-    @staticmethod
-    def __filter_log_entries(proxy):
-        filtered_log_entries = []
-        while not filtered_log_entries:
-            log_entries = proxy.har['log']['entries']
-            filtered_log_entries = [foo for foo in log_entries
-                                    if re.match(".+/game/json\?h=.+", foo['request']['url'])]
-            time.sleep(1)
-        return filtered_log_entries
+    def __filter_log_entries(reqs):
+        filtered_reqs = []
+        while not filtered_reqs:
+            filtered_reqs = [req for req in reqs if re.match(".+/game/json\?h=.+", req.url)]
+            time.sleep(0.1)
+        return filtered_reqs
 
     @staticmethod
-    def __get_contents(log_entries):
+    def __get_contents(reqs):
         contents = []
-        for log in log_entries:
-            content = json.loads(brotli.decompress(base64.b64decode(log['response']['content']['text'])))
+        for req in reqs:
+            content = json.loads(brotli.decompress(req.response.body))
             [contents.append(item) for item in content]
         return contents
 
     @staticmethod
     def __get_current_request_id(contents):
-        request_id = 0
+        req_id = 0
         for content in contents:
-            request_id = content['requestId'] > request_id and content['requestId'] or request_id
-        return request_id
+            req_id = content['requestId'] > req_id and content['requestId'] or req_id
+        return req_id
