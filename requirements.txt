@@ -1,6 +1,5 @@
-selenium
-selenium-requests
-pyyaml
-requests
-psutil
-brotli
+selenium~=3.141.0
+pyyaml~=5.4.1
+requests~=2.9.1
+brotli~=1.0.9
+SQLAlchemy~=1.4.27

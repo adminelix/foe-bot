@@ -49,8 +49,10 @@ class Login:
             while not driver.get_cookie('instanceId'):
                 time.sleep(0.1)
 
-            cookies = driver.get_cookies()
             reqs = driver.requests
+            filtered_reqs = self.__filter_requests(reqs)
+
+            cookies = driver.get_cookies()
             driver.quit()
         except Exception as ex:
             print('could not login')
@@ -58,13 +60,12 @@ class Login:
         finally:
             driver.quit()
 
-        return self.__create_session(cookies, reqs)
+        return self.__create_session(cookies, filtered_reqs)
 
     def __create_session(self, cookies, reqs):
-        filtered_reqs = self.__filter_log_entries(reqs)
-        client_id = filtered_reqs[-1].params['h']
-        headers = self.__get_headers(filtered_reqs)
-        contents = self.__get_contents(filtered_reqs)
+        client_id = reqs[-1].params['h']
+        headers = self.__get_headers(reqs)
+        contents = self.__get_contents(reqs)
         request_id = self.__get_current_request_id(contents)
         cookies.append({'domain': 'local', 'name': 'clientId', 'path': '/', 'secure': True, 'value': client_id})
         cookies.append({'domain': 'local', 'name': 'request_id', 'path': '/', 'secure': True, 'value': request_id})
@@ -91,7 +92,7 @@ class Login:
         return res
 
     @staticmethod
-    def __filter_log_entries(reqs):
+    def __filter_requests(reqs):
         filtered_reqs = []
         while not filtered_reqs:
             filtered_reqs = [req for req in reqs if re.match(".+/game/json\?h=.+", req.url)]
