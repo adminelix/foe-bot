@@ -1,5 +1,3 @@
-import string
-
 from pytest_assert_utils import util
 from foe_bot.request import Request
 
