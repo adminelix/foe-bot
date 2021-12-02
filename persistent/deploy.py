@@ -1,6 +1,6 @@
 import time
 
-from persistent import db
+from foe_bot.persistent import db
 
 session = db.Session()
 
