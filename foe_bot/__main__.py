@@ -1,7 +1,4 @@
-import sys
-
-from foe_bot.foe_bot import fib
+from foe_bot.foe_bot import main
 
 if __name__ == "__main__":
-    n = int(sys.argv[1])
-    print(fib(n))
+    main()

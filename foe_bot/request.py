@@ -3,7 +3,7 @@ import hashlib
 import brotli
 import yaml
 
-from login import Login
+from foe_bot.login import Login
 
 
 class Request(object):
@@ -35,7 +35,7 @@ class Request(object):
 
     @staticmethod
     def __load_config():
-        with open("config.yml", "r") as ymlfile:
+        with open("../config.yml", "r") as ymlfile:
             cfg = yaml.load(ymlfile, Loader=yaml.CLoader)
             return cfg
 
