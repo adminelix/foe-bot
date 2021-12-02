@@ -41,6 +41,6 @@ class Request(object):
 
     @staticmethod
     def __sign(body, client_id):
-        key = 'ecapLtRKTM1PwXQKiEzaDQDvqdU0y/W7PRZ6yVUX2lc0yEMmPSBOSWpsPRu82oHDQCGt6QWKkuA8jII3lp0A+Q=='
+        key = 'd3SyKkX7UZIjCms7LelK/UrOIrEZsLv+Z1DGNTAKbWqm3aTrAkyxMYR2P3IDmYchr3LRchFpsEF0T1kykaBCpg=='
         id_ = client_id + key + body
         return hashlib.md5(id_.encode()).hexdigest()[1:11]

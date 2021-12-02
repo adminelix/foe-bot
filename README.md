@@ -31,7 +31,7 @@ pipenv run pre-commit install -t pre-push
 
 - open the city with browser debugger
 - find the url of the java script source of the game, `https://foede.innogamescdn.com//cache/ForgeHX-5ac04db0.js` for instance and download that script
-- search for `Signature` in the file and you will find a method like 
+- search for `Signature` or better `encode(this._hash+` in the file and you will find a method like 
     ```
   return Ba.substr(SR.encode(this._hash + "ecapLtRKTM1PwXQKiEzaDQDvqdU0y/W7PRZ6yVUX2lc0yEMmPSBOSWpsPRu82oHDQCGt6QWKkuA8jII3lp0A+Q==" + a), 1, 10)
     ```
