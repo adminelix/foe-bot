@@ -50,6 +50,7 @@ class Login:
 
             reqs = driver.requests
             filtered_reqs = self.__filter_requests(reqs)
+            signature_key = self.__extract_signature_key(reqs)
 
             cookies = driver.get_cookies()
             driver.quit()
@@ -59,9 +60,9 @@ class Login:
         finally:
             driver.quit()
 
-        return self.__create_session(cookies, filtered_reqs)
+        return self.__create_session(cookies, filtered_reqs, signature_key)
 
-    def __create_session(self, cookies, reqs):
+    def __create_session(self, cookies, reqs, signature_key):
         client_id = reqs[-1].params['h']
         headers = self.__get_headers(reqs)
         contents = self.__get_contents(reqs)
@@ -70,6 +71,8 @@ class Login:
                         'path': '/', 'secure': True, 'value': client_id})
         cookies.append({'domain': 'local', 'name': 'request_id',
                         'path': '/', 'secure': True, 'value': request_id})
+        cookies.append({'domain': 'local', 'name': 'signature_key',
+                        'path': '/', 'secure': True, 'value': signature_key})
 
         session = requests.Session()
         for cookie in cookies:
@@ -118,3 +121,15 @@ class Login:
         for content in contents:
             req_id = content['requestId'] > req_id and content['requestId'] or req_id
         return req_id
+
+    @staticmethod
+    def __extract_signature_key(reqs):
+        re_filter = '.+foede\.innogamescdn\.com\/cache\/Forge.+\.js'
+        re_extract = '(?<=encode\(this\._hash\+")(.*)(?="\+a\),1,10\)},)'
+
+        filtered = [req for req in reqs if re.match(re_filter, req.url)]
+        url = filtered[0].url
+
+        response = requests.get(url)
+        body = response.content.decode('utf-8')
+        return re.findall(re_extract, body)[0]

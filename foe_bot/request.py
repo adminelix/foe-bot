@@ -17,7 +17,7 @@ class Request(object):
                                                                                    cfg[0]['password'])
 
     def send(self, body):
-        signature = self.__sign(body, self._session.cookies.get('clientId'))
+        signature = self.__sign(body, self._session.cookies.get('clientId'), self._session.cookies.get('signature_key'))
         query = {'h': self._session.cookies.get('clientId')}
         header = {'Signature': signature}
 
@@ -40,7 +40,6 @@ class Request(object):
             return cfg
 
     @staticmethod
-    def __sign(body, client_id):
-        key = 'd3SyKkX7UZIjCms7LelK/UrOIrEZsLv+Z1DGNTAKbWqm3aTrAkyxMYR2P3IDmYchr3LRchFpsEF0T1kykaBCpg=='
-        id_ = client_id + key + body
+    def __sign(body, client_id, signature_key):
+        id_ = client_id + signature_key + body
         return hashlib.md5(id_.encode()).hexdigest()[1:11]
