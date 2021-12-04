@@ -1,10 +1,10 @@
 from collections import OrderedDict
 
 from sqlalchemy import inspect
-from sqlalchemy.ext.declarative import declarative_base, has_inherited_table
+from sqlalchemy.ext.declarative import has_inherited_table, declarative_base
 from sqlalchemy.orm import declared_attr
 
-from request import Request
+from foe_bot.request import Request
 
 Base = declarative_base()
 
@@ -17,6 +17,8 @@ class Model(Base):
         return "%s %s" % (self.__class__.__name__.title(), self.id)
 
     def __init__(self, *args, **kwargs):
+        if '__class__' in kwargs:
+            kwargs.pop('__class__')
         super(Model, self).__init__(*args, **kwargs)
 
     @declared_attr
@@ -59,6 +61,6 @@ class Model(Base):
             ("voClassName", "ServerRequest")]
         )]
 
-        response = Request.request(payload)
+        response = Request.send(payload)
 
         return response

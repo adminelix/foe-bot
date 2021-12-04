@@ -1,31 +1,11 @@
-import json
-
-from sqlalchemy.orm import session
-
+from foe_bot.request import Request
 from persistent.account import Account
-from persistent.db import Session
-import persistent.deploy
 
 
 def main():
-
-    f = open('content.json')
-    data = json.load(f)
-
-    # req = Request()
-    # sample_request(req)
+    req, ctn = Request()
     account = Account()
-    for item in data:
+    for item in ctn:
         account.populate(**item)
-
-    account.id = 1235324
-    account.player_id = 23487
-    account.user_name = 'foo'
-
-    with Session() as session1:
-        session1.add(account)
-        session1.commit()
-
-    foo: session = Session()
 
     print('ok')

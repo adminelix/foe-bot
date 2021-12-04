@@ -1,18 +1,21 @@
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 
+from persistent.account import Account
 from persistent.model import Base
 
 engine = create_engine('sqlite:///:memory:')
 
 Session = sessionmaker(autocommit=False, bind=engine)
 
+
 def init():
     """
     Initalizes the database, creating all the required tables
     """
-
+    Account  # important to get metadata for init()
     Base.metadata.create_all(bind=engine)
+
 
 def exists():
     """
@@ -23,6 +26,7 @@ def exists():
     meta.reflect()
 
     return bool(meta.tables)
+
 
 def delete():
     """
@@ -35,6 +39,7 @@ def delete():
     for table in reversed(meta.sorted_tables):
         engine.execute(table.delete())
 
+
 def tables():
     """
     Returns a dict of all the tables in the database
@@ -44,6 +49,7 @@ def tables():
     meta.reflect()
 
     return meta.tables
+
 
 def drop():
     """
@@ -56,3 +62,8 @@ def drop():
     meta = MetaData(engine)
     meta.reflect()
     meta.drop_all()
+
+
+if not tables():
+    init()
+    print('database initialized, tables:' + repr(tables()))
