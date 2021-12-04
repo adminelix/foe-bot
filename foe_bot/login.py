@@ -44,9 +44,8 @@ class Login:
                     element.click()
                     break
 
-            print('waiting for instanceId')
-            while not driver.get_cookie('instanceId'):
-                time.sleep(0.1)
+            while not self.__is_loaded(driver.requests):
+                time.sleep(0.5)
 
             reqs = driver.requests
             filtered_reqs = self.__filter_requests(reqs)
@@ -88,6 +87,13 @@ class Login:
         return session, contents
 
     @staticmethod
+    def __is_loaded(reqs) -> bool:
+        return True if [req for req in reqs if
+                        re.match(".+/game/json\?h=.+", req.url) and
+                        re.match(".+LoadTimePerformance.+", req.body.decode())] \
+            else False
+
+    @staticmethod
     def __get_headers(reqs):
         headers = reqs[-1].headers._headers
         res = [i for i in headers if not (i[0] == 'Host') and
@@ -100,12 +106,7 @@ class Login:
 
     @staticmethod
     def __filter_requests(reqs):
-        filtered_reqs = []
-        while not filtered_reqs:
-            filtered_reqs = [req for req in reqs if re.match(
-                ".+/game/json\?h=.+", req.url)]
-            time.sleep(0.1)
-        return filtered_reqs
+        return [req for req in reqs if re.match(".+/game/json\?h=.+", req.url)]
 
     @staticmethod
     def __get_contents(reqs):

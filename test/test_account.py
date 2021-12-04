@@ -21,4 +21,4 @@ def test_process():
         stmt = select(Account)
         result = session.execute(stmt).fetchone()[0]
 
-        assert result.city_user_data.rank == '63439', 'database access failed'
+        assert result.city_user_data.rank == '63509', 'database access failed'
