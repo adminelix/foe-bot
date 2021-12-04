@@ -1,9 +1,13 @@
 import hashlib
+import json
 
 import brotli
 import yaml
+from sqlalchemy import select
 
 from foe_bot.login import Login
+from persistent.account import Account
+from persistent.db import Session
 
 
 class Request(object):
@@ -15,6 +19,14 @@ class Request(object):
             cfg = self.__load_config()
             self._session, contents = Login(cfg[0]['lang'], cfg[0]['world']).login(cfg[0]['username'],
                                                                                    cfg[0]['password'])
+
+            with Session() as session:
+                stmt = select(Account).where(Account.user_name == cfg[0]['username'])
+                result = session.execute(stmt).fetchone()
+                acc = Account(cfg[0]['username']) if result is None else result[0]
+                acc.update_from_response(*contents)
+                session.add(acc)
+                session.commit()
 
     def send(self, body):
         signature = self.__sign(body, self._session.cookies.get('clientId'), self._session.cookies.get('signature_key'))

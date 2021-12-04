@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import Column, Integer
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship, backref
 
 from persistent.city_user_data import CityUserData
@@ -11,15 +11,16 @@ class Account(Model):
     REQUEST_CLASS = "StartupService"
     __tablename__ = 'Account'
 
-    player_id: int = Column(Integer, primary_key=True, default=0)
+    user_name: str = Column(String, primary_key=True, default='')
     city_user_data = relationship(CityUserData, backref=backref('Account', uselist=False), uselist=False)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user_name, *args, **kwargs):
+        self.user_name = user_name
         self.city_user_data = CityUserData()
         super(Account, self).__init__(*args, **kwargs)
 
     def __repr__(self):
-        return "Account %s" % self.player_id
+        return "Account %s" % self.user_name
 
     def update_from_response(self, *args) -> Account:
         for arg in args:

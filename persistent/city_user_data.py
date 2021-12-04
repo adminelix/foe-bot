@@ -8,7 +8,7 @@ class CityUserData(Model):
     __tablename__ = 'CityUserData'
 
     id = Column(Integer, primary_key=True)
-    account_id = Column(Integer, ForeignKey('Account.player_id'))
+    user_id = Column(String, ForeignKey('Account.user_name'))
 
     player_id = Column(String)
     city_name = Column(String)
@@ -34,7 +34,7 @@ class CityUserData(Model):
         super(CityUserData, self).__init__(*args, **kwargs)
 
     def __repr__(self):
-        return "Account %s" % self.account_id
+        return "Account %s" % self.user_name
 
     def populate(self, *args, **kwargs):
         return super(CityUserData, self).populate(*args, **kwargs)

@@ -1,10 +1,9 @@
 from collections import OrderedDict
 
+import requests
 from sqlalchemy import inspect
 from sqlalchemy.ext.declarative import has_inherited_table, declarative_base
 from sqlalchemy.orm import declared_attr
-
-from foe_bot.request import Request
 
 Base = declarative_base()
 
@@ -48,6 +47,7 @@ class Model(Base):
     def update(self, *args, **kwargs):
         return self.populate(*args, **kwargs)
 
+    # TODO move that method to use cases
     @classmethod
     def request(cls, method, data, klass=None):
         klass = klass or cls.REQUEST_CLASS
@@ -61,6 +61,6 @@ class Model(Base):
             ("voClassName", "ServerRequest")]
         )]
 
-        response = Request.send(payload)
+        response = requests.get('', data=payload)
 
         return response

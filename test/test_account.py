@@ -10,7 +10,7 @@ def test_process():
     f = open('content.json')
     data = json.load(f)
 
-    acc = Account()
+    acc = Account('testibo2')
     acc.update_from_response(*data)
 
     with Session() as session:
@@ -18,7 +18,7 @@ def test_process():
         session.commit()
 
     with Session() as session:
-        stmt = select(Account)
+        stmt = select(Account).where(Account.user_name == "testibo21")
         result = session.execute(stmt).fetchone()[0]
 
         assert result.city_user_data.rank == '63509', 'database access failed'
