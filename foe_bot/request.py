@@ -6,8 +6,8 @@ import yaml
 from sqlalchemy import select
 
 from foe_bot.login import Login
-from persistent.account import Account
-from persistent.db import Session
+from domain.account import Account
+from domain.db import Session
 
 
 class Request(object):

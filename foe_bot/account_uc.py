@@ -3,25 +3,12 @@ from __future__ import annotations
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship, backref
 
-from persistent.city_user_data import CityUserData
-from persistent.model import Model
+from domain.city_map import CityMap
+from domain.city_user_data import CityUserData
+from domain.db import Base
 
 
-class Account(Model):
-    REQUEST_CLASS = "StartupService"
-    __tablename__ = 'Account'
-
-    user_name: str = Column(String, primary_key=True, default='')
-    city_user_data = relationship(CityUserData, backref=backref('Account', uselist=False), uselist=False)
-
-    def __init__(self, user_name, *args, **kwargs):
-        self.user_name = user_name
-        self.city_user_data = CityUserData()
-        super(Account, self).__init__(*args, **kwargs)
-
-    def __repr__(self):
-        return "Account %s" % self.user_name
-
+class Account(Base):
     def update_from_response(self, *args) -> Account:
         for arg in args:
             if type(arg['responseData']) == list:
@@ -39,12 +26,13 @@ class Account(Model):
         return self
 
     def __populate_item(self, **kwargs) -> None:
-        subclasses = Model.__subclasses__()
+        subclasses = Base.__subclasses__()
         gen = (subclass for subclass in subclasses if subclass.__tablename__ == kwargs['__class__'])
         subclass = next(gen, None)
 
         if 'Startup' == kwargs['__class__']:
             self.city_user_data.update(**kwargs['user_data'])
+            # self.city_map.update(**kwargs['city_map'])
 
         if subclass is None:
             print("no implementation for class: " + repr(kwargs))

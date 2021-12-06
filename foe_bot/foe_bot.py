@@ -1,5 +1,5 @@
 from foe_bot.request import Request
-from persistent.account import Account
+from domain.account import Account
 
 
 def main():
