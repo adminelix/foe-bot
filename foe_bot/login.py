@@ -22,6 +22,7 @@ class Login:
         options = Options()
         options.add_argument("--headless")
         driver = webdriver.Firefox(options=options)
+        driver.rewrite_rules = [(r'.*/socket/$', 'https://localhost:9876/')]
 
         try:
             driver.get(self.BASE_URL)
@@ -51,7 +52,13 @@ class Login:
             filtered_reqs = self.__filter_requests(reqs)
             signature_key = self.__extract_signature_key(reqs)
 
+            game_vars = driver.execute_script('return gameVars')
             cookies = driver.get_cookies()
+            cookies.append({'domain': 'local', 'name': 'socketGatewayUrl',
+                            'path': '/', 'secure': True, 'value': game_vars['socketGatewayUrl']})
+            cookies.append({'domain': 'local', 'name': 'socket_token',
+                            'path': '/', 'secure': True, 'value': game_vars['socket_token']})
+
             driver.quit()
         except Exception as ex:
             print('could not login')
