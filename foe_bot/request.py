@@ -3,11 +3,8 @@ import json
 
 import brotli
 import yaml
-from sqlalchemy import select
 
 from foe_bot.login import Login
-from domain.account import Account
-from domain.db import Session
 
 
 class Request(object):
@@ -17,18 +14,21 @@ class Request(object):
         if not Request.__shared_state:
             self.__dict__ = self.__shared_state
             cfg = self.__load_config()
-            self._session, contents = Login(cfg[0]['lang'], cfg[0]['world']).login(cfg[0]['username'],
-                                                                                   cfg[0]['password'])
+            self._session, self._initial_response = Login(cfg[0]['lang'], cfg[0]['world']).login(cfg[0]['username'],
+                                                                                                 cfg[0]['password'])
 
-            with Session() as session:
-                stmt = select(Account).where(Account.user_name == cfg[0]['username'])
-                result = session.execute(stmt).fetchone()
-                acc = Account(cfg[0]['username']) if result is None else result[0]
-                acc.update_from_response(*contents)
-                session.add(acc)
-                session.commit()
+    def send(self, klass: str, method: str, data):
+        request_id = self.get_and_increment_request_id()
+        raw_body = [{
+            'requestClass': klass,
+            'requestData': data,
+            'requestId': request_id,
+            'requestMethod': method,
+            '__class__': "ServerRequest"
+        }]
 
-    def send(self, body):
+        body = json.dumps(raw_body, separators=(',', ':'))
+
         signature = self.__sign(body, self._session.cookies.get('clientId'), self._session.cookies.get('signature_key'))
         query = {'h': self._session.cookies.get('clientId')}
         header = {'Signature': signature}
@@ -45,6 +45,11 @@ class Request(object):
 
         return content
 
+    def get_and_increment_request_id(self):
+        request_id = self._session.cookies['request_id'] + 1
+        self._session.cookies.set('request_id', request_id, path='/', domain='local')
+        return request_id
+
     @staticmethod
     def __load_config():
         with open("../config.yml", "r") as ymlfile:
@@ -55,3 +60,7 @@ class Request(object):
     def __sign(body, client_id, signature_key):
         id_ = client_id + signature_key + body
         return hashlib.md5(id_.encode()).hexdigest()[1:11]
+
+    @property
+    def initial_response(self):
+        return self._initial_response

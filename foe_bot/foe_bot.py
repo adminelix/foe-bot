@@ -1,9 +1,10 @@
-from foe_bot.request import Request
 from domain.account import Account
+from foe_bot.request import Request
+from foe_bot.response_mapper import map as map_
 
 
 def main():
     req = Request()
-    account = Account()
+    acc = map_(Account(), *req.initial_response)
 
     print('ok')
