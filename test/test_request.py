@@ -3,11 +3,6 @@ from pytest_assert_utils import util
 from domain.account import Account
 from foe_bot.request import Request
 from foe_bot.response_mapper import map as map_
-from pytest_assert_utils import util
-
-from domain.account import Account
-from foe_bot.request import Request
-from foe_bot.response_mapper import map as map_
 
 
 def test_sample_request():
@@ -26,7 +21,8 @@ def test_sample_request():
 
     acc = map_(Account(), *req.initial_response)
 
-    resp = req.send('InventoryService', 'getItems', [])
+    body = req.create_body('InventoryService', 'getItems', [])
+    resp = req.send(body)
     flat = [value for elem in resp
             for value in elem.values()]
 

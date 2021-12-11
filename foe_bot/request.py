@@ -11,24 +11,13 @@ class Request(object):
     __shared_state = {}
 
     def __init__(self):
+        self.__dict__ = self.__shared_state
         if not Request.__shared_state:
-            self.__dict__ = self.__shared_state
             cfg = self.__load_config()
             self._session, self._initial_response = Login(cfg[0]['lang'], cfg[0]['world']).login(cfg[0]['username'],
                                                                                                  cfg[0]['password'])
 
-    def send(self, klass: str, method: str, data):
-        request_id = self.get_and_increment_request_id()
-        raw_body = [{
-            'requestClass': klass,
-            'requestData': data,
-            'requestId': request_id,
-            'requestMethod': method,
-            '__class__': "ServerRequest"
-        }]
-
-        body = json.dumps(raw_body, separators=(',', ':'))
-
+    def send(self, body: str):
         signature = self.__sign(body, self._session.cookies.get('clientId'), self._session.cookies.get('signature_key'))
         query = {'h': self._session.cookies.get('clientId')}
         header = {'Signature': signature}
@@ -45,7 +34,18 @@ class Request(object):
 
         return content
 
-    def get_and_increment_request_id(self):
+    def create_body(self, klass, method, data) -> str:
+        request_id = self.__get_and_increment_request_id()
+        raw_body = [{
+            'requestClass': klass,
+            'requestData': data,
+            'requestId': request_id,
+            'requestMethod': method,
+            '__class__': "ServerRequest"
+        }]
+        return json.dumps(raw_body, separators=(',', ':'))
+
+    def __get_and_increment_request_id(self):
         request_id = self._session.cookies['request_id'] + 1
         self._session.cookies.set('request_id', request_id, path='/', domain='local')
         return request_id
