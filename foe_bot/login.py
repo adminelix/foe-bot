@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 import time
 
@@ -10,14 +11,19 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver
 
+logger = logging.getLogger("login")
+logging.getLogger("seleniumwire.handler").setLevel(logging.WARN)
+logging.getLogger("seleniumwire.server").setLevel(logging.WARN)
+
 
 class Login:
     def __init__(self, lang, world):
         self.BASE_URL = "https://" + lang + ".forgeofempires.com/glps/iframe-login"
         self.WORLD = world
+        self.retries = 0
 
     def login(self, username, password):
-        print('logging in')
+        logger.info("logging in")
 
         options = Options()
         options.add_argument("--headless")
@@ -30,7 +36,9 @@ class Login:
             driver.find_element(By.ID, 'login_password').send_keys(password)
             driver.find_element(By.ID, 'login_Login').click()
 
+            WebDriverWait(driver, 1)
             driver.refresh()
+            WebDriverWait(driver, 1)
 
             WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable((By.ID, 'play_now_button')))
@@ -60,8 +68,14 @@ class Login:
                             'path': '/', 'secure': True, 'value': game_vars['socket_token']})
 
             driver.quit()
+            self.retries = 0
+
         except Exception as ex:
-            print('could not login')
+            driver.quit()
+            print(f"could not login, retry {self.retries}")
+            self.retries += 1
+            if self.retries < 3:
+                return self.login(username, password)
             raise ex
         finally:
             driver.quit()
@@ -119,6 +133,7 @@ class Login:
     def __get_contents(reqs):
         contents = []
         for req in reqs:
+            # TODO sometimes it is already decompressed by request framework if it is gzip or deflate
             content = json.loads(brotli.decompress(req.response.body))
             [contents.append(item) for item in content]
         return contents
