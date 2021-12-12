@@ -1,4 +1,4 @@
-from foe_bot.foe_bot import main
+from foe_bot.app import main
 
 if __name__ == "__main__":
     main()
