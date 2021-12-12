@@ -21,7 +21,7 @@ def test_sample_request():
 
     acc = map_to_account(Account(), *req.initial_response)
 
-    body = req.create_body('InventoryService', 'getItems', [])
+    body = req.create_rest_body('InventoryService', 'getItems', [])
     resp = req.send(body)
     flat = [value for elem in resp
             for value in elem.values()]

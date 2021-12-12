@@ -34,7 +34,7 @@ class Request(object):
 
         return content
 
-    def create_body(self, klass, method, data) -> str:
+    def create_rest_body(self, klass, method, data) -> str:
         request_id = self.__get_and_increment_request_id()
         raw_body = [{
             'requestClass': klass,
@@ -43,6 +43,17 @@ class Request(object):
             'requestMethod': method,
             '__class__': "ServerRequest"
         }]
+        return json.dumps(raw_body, separators=(',', ':'))
+
+    def create_ws_body(self, klass, method, data) -> str:
+        request_id = self.__get_and_increment_request_id()
+        raw_body = {
+            'requestClass': klass,
+            'requestData': data,
+            'requestId': request_id,
+            'requestMethod': method,
+            '__class__': "ServerRequest"
+        }
         return json.dumps(raw_body, separators=(',', ':'))
 
     def __get_and_increment_request_id(self):
@@ -64,3 +75,7 @@ class Request(object):
     @property
     def initial_response(self):
         return self._initial_response
+
+    @property
+    def headers(self):
+        return self._session.headers
