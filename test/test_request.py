@@ -2,7 +2,7 @@ from pytest_assert_utils import util
 
 from domain.account import Account
 from foe_bot.request import Request
-from foe_bot.response_mapper import map as map_
+from foe_bot.response_mapper import map_to_account
 
 
 def test_sample_request():
@@ -19,7 +19,7 @@ def test_sample_request():
     """
     req = Request()
 
-    acc = map_(Account(), *req.initial_response)
+    acc = map_to_account(Account(), *req.initial_response)
 
     body = req.create_body('InventoryService', 'getItems', [])
     resp = req.send(body)

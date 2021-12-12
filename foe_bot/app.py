@@ -2,7 +2,7 @@ import logging
 
 from domain.account import Account
 from foe_bot.request import Request
-from foe_bot.response_mapper import map as map_
+from foe_bot.response_mapper import map_to_account as map_
 from foe_bot.ws_client import WsClient
 
 logger = logging.getLogger("as")

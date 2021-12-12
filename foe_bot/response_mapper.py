@@ -18,7 +18,7 @@ def __map(acc: Account, **kwargs) -> None:
             print(f"no mapping for {class_method}")
 
 
-def map(acc: Account, *args) -> Account:
+def map_to_account(acc: Account, *args) -> Account:
     for arg in args:
         __map(acc, **arg)
     return acc

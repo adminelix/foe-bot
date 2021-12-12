@@ -1,7 +1,7 @@
 import json
 
 from domain.account import Account
-from foe_bot.response_mapper import map as map_
+from foe_bot.response_mapper import map_to_account as map_
 
 
 def test_map():
