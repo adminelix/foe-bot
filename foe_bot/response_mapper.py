@@ -12,6 +12,9 @@ def __map(acc: Account, **kwargs) -> None:
         acc.time.__init__(**kwargs['responseData'])
     elif 'LogService' == kwargs['requestClass'] and 'setLogState' == kwargs['requestMethod']:
         acc.connection_state_logging.__init__(**kwargs['responseData'])
+    elif 'CityProductionService' == kwargs['requestClass'] and ('startProduction' == kwargs['requestMethod']
+                                                                or 'pickupProduction' == kwargs['requestMethod']):
+        acc.city_map.put_entities(*kwargs['responseData']['updatedEntities'])
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"
         if class_method not in __ignored:
