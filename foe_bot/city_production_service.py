@@ -36,11 +36,24 @@ class CityProductionService:
     # TODO parameterize production time
     # TODO produce if enough resources
     def produce(self):
+        # [
+        #     {
+        #         "__class__": "ServerRequest",
+        #         "requestData": [
+        #             36,
+        #             1
+        #         ],
+        #         "requestClass": "CityProductionService",
+        #         "requestMethod": "startProduction",
+        #         "requestId": 29
+        #     }
+        # ]
         types = ['production']  # anything else needs resources check - 'military' for instance
         entities = self.__acc.city_map.entities
 
         filtered_entities = {key: value for (key, value) in entities.items()
                              if value.type in types
+                             and value.connected > 0
                              and 'IdleState' == value.state['__class__']}
 
         for value in filtered_entities.values():
@@ -53,5 +66,20 @@ class CityProductionService:
             self.__logger.info(f"started production for {len(filtered_entities)} building(s)")
 
     def unlock_unit_slots(self):
-        # TODO implement; do only if enough resources
-        pass
+        budget_factor = 0.1
+        entities = self.__acc.city_map.entities
+
+        for value in entities.values():
+            if value.type == 'military' and value.connected > 0:
+                for slot in value.unitSlots:
+                    if (not slot['unlocked']
+                        and slot['is_unlockable']
+                        and slot['unlockCosts']['resources']['premium'] == 0
+                        and slot['unlockCosts']['resources']['money'] <= self.__acc.resources.money * budget_factor
+                        and slot['unlockCosts']['resources'][
+                            'supplies'] <= self.__acc.resources.supplies + budget_factor):
+                        # TODO what is the meaning of 0 in request body?
+                        request_body = self.__request_session.create_rest_body('CityProductionService', 'unlockSlot',
+                                                                               [slot['entity_id'], slot['nr'], 0])
+                        response = self.__request_session.send(request_body)
+                        slot['unlocked'] = response['responseData']
