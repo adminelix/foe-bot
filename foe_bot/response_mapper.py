@@ -15,6 +15,8 @@ def __map(acc: Account, **kwargs) -> None:
     elif 'CityProductionService' == kwargs['requestClass'] and ('startProduction' == kwargs['requestMethod']
                                                                 or 'pickupProduction' == kwargs['requestMethod']):
         acc.city_map.put_entities(*kwargs['responseData']['updatedEntities'])
+    elif 'ResourceService' == kwargs['requestClass'] and 'getPlayerResources' == kwargs['requestMethod']:
+        acc.resources.__init__(**kwargs['responseData']['resources'])
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"
         if class_method not in __ignored:

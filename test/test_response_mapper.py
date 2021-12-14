@@ -7,7 +7,7 @@ from foe_bot.response_mapper import map_to_account as map_
 def test_startup():
     acc = load_startup()
     assert len(acc.city_map.entities) == 41
-
+    assert acc.resources.supplies == 754
 
 def test_start_production():
     acc = load_startup()
