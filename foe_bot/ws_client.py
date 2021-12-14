@@ -72,7 +72,9 @@ class WsClient:
                         # await would block thread until something is received, therefore with timeout
                         msg = await asyncio.wait_for(websocket.recv(), 0.1)
                         self.__logger.debug(f"received message: {msg}")
-                        map_to_account(self.__acc, *json.loads(msg))
+                        json_ = json.loads(msg)
+                        json_ = json_ if type(json_) == list else [json_]
+                        map_to_account(self.__acc, *json_)
                     except exceptions.TimeoutError:
                         # catch timeout that the loop can jump to next iteration and jump out if thread should be closed
                         pass
