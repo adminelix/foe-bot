@@ -1,0 +1,125 @@
+[
+    {
+        "responseData": {
+            "time": 1639506790,
+            "__class__": "Time"
+        },
+        "requestClass": "TimeService",
+        "requestMethod": "updateTime",
+        "requestId": 12,
+        "__class__": "ServerResponse"
+    },
+    {
+        "responseData": {
+            "resources": {
+                "expansions": 1,
+                "premium": 250,
+                "guild_expedition_attempt": 8,
+                "tavern_silver": 175,
+                "stars": 20,
+                "carnival_roses": 11,
+                "carnival_hearts": 0,
+                "spring_lanterns": 200,
+                "forge_bowl_footballs": 200,
+                "carnival_coins": 200,
+                "carnival_tickets": 11,
+                "soccer_energy": 150,
+                "summer_doubloons": 3,
+                "summer_compass": 0,
+                "fall_ingredient_apples": 2,
+                "fall_ingredient_pumpkins": 2,
+                "fall_ingredient_chocolate": 2,
+                "fall_ingredient_cinnamon": 2,
+                "fall_ingredient_caramel": 2,
+                "winter_matches": 0,
+                "archeology_brush": 7,
+                "archeology_shovel": 3,
+                "archeology_dynamite": 1,
+                "archeology_scroll": 120,
+                "halloween_candle": 7,
+                "halloween_flashlight": 3,
+                "halloween_lantern": 1,
+                "halloween_ticket": 120,
+                "winter_reindeer": 0,
+                "st_patricks_pot_of_gold": 200,
+                "soccer_tournament_tickets": 3,
+                "pvp_arena_attempt": 5,
+                "archeology_gem_shard": 0,
+                "wildlife_pop_moves": 0,
+                "wildlife_tickets": 4,
+                "wildlife_coins": 200,
+                "wildlife_booster_hammer": 5,
+                "wildlife_booster_color_changer": 2,
+                "wildlife_booster_color_destroyer": 1,
+                "halloween_joker_sticker": 0,
+                "winter_master_key_parts": 0,
+                "guild_perks_daily_donations": 30,
+                "strategy_points": 10,
+                "money": 3058,
+                "medals": 5,
+                "population": 4,
+                "total_population": 148,
+                "castle_points": 40,
+                "supplies": 63
+            },
+            "__class__": "Resources"
+        },
+        "requestClass": "ResourceService",
+        "requestMethod": "getPlayerResources",
+        "requestId": 12,
+        "__class__": "ServerResponse"
+    },
+    {
+        "responseData": {
+            "resources": {
+                "strategy_points": 1639506790
+            },
+            "__class__": "ResourceAutoRefill"
+        },
+        "requestClass": "ResourceService",
+        "requestMethod": "getPlayerAutoRefills",
+        "requestId": 12,
+        "__class__": "ServerResponse"
+    },
+    {
+        "responseData": {
+            "updatedEntities": [
+                {
+                    "id": 33,
+                    "player_id": 8365227,
+                    "cityentity_id": "R_BronzeAge_Residential3",
+                    "type": "residential",
+                    "x": 20,
+                    "y": 13,
+                    "connected": 1,
+                    "state": {
+                        "current_product": {
+                            "product": {
+                                "resources": {
+                                    "money": 11
+                                },
+                                "__class__": "Resources"
+                            },
+                            "name": "money",
+                            "production_time": 900,
+                            "asset_name": "production_icon_money",
+                            "__class__": "CityEntityProductionProduct"
+                        },
+                        "boosted": false,
+                        "is_motivated": false,
+                        "next_state_transition_in": 900,
+                        "next_state_transition_at": 1639507690,
+                        "__class__": "ProducingState"
+                    },
+                    "__class__": "CityMapEntity"
+                }
+            ],
+            "militaryProducts": [],
+            "__class__": "CityProductionResult"
+        },
+        "requestClass": "CityProductionService",
+        "requestMethod": "pickupProduction",
+        "requestId": 12,
+        "__class__": "ServerResponse"
+    }
+]

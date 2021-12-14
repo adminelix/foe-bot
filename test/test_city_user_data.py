@@ -4,7 +4,7 @@ from domain.city_user_data import CityUserData
 
 
 def test_process():
-    f = open('content.json')
+    f = open('startup.json')
     data = json.load(f)
 
     startup_service_data = json.dumps(data[30]['responseData']['user_data'])

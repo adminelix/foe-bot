@@ -31,7 +31,7 @@ class Request(object):
             content = response.json()
         except Exception:
             content = brotli.decompress(response.content)
-
+        # TODO log error if content is not expected
         return content
 
     def create_rest_body(self, klass, method, data) -> str:

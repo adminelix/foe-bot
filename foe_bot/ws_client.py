@@ -48,7 +48,7 @@ class WsClient:
     async def socket(self):
         header = self.get_header()
         logger = logging.getLogger("websockets.client")
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.INFO)
         async for websocket in websockets.connect(self.__url, ping_interval=30, extra_headers=header,
                                                   logger=logger):
             try:
@@ -60,7 +60,7 @@ class WsClient:
 
                 if 'authWithToken' == response['requestMethod'] and response['responseData']:
                     self.__is_connected = True
-                    self.__logger.debug("logged into websocket")
+                    self.__logger.info("logged into websocket")
                     self.__register_chats()
 
                 while not self.__stop_thread:
@@ -69,12 +69,13 @@ class WsClient:
                         await websocket.send(body)
 
                     try:
+                        # await would block thread until something is received, therefore with timeout
                         msg = await asyncio.wait_for(websocket.recv(), 0.1)
                         self.__logger.debug(f"received message: {msg}")
                         map_to_account(self.__acc, *json.loads(msg))
                     except exceptions.TimeoutError:
+                        # catch timeout that the loop can jump to next iteration and jump out if thread should be closed
                         pass
-                    self.__logger.debug(f"iteration")
                 break
 
             except websockets.ConnectionClosed as ex:
