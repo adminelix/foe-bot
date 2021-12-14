@@ -4,6 +4,7 @@ import json
 import brotli
 import yaml
 
+from foe_bot.exceptions import RequestException
 from foe_bot.login import Login
 
 
@@ -25,7 +26,7 @@ class Request(object):
         response = self._session.post('https://de14.forgeofempires.com/game/json', data=body, params=query,
                                       headers=header)
         if not (response.status_code == 200):
-            raise Exception("Did not get a 200 response code: %s" % response.content)
+            raise RequestException("Did not get a 200 response code: %s" % response.content)
 
         try:
             content = response.json()
