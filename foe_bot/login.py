@@ -36,6 +36,7 @@ class Login:
             driver.find_element(By.ID, 'login_password').send_keys(password)
             driver.find_element(By.ID, 'login_Login').click()
 
+            # TODO stabilize routine here - sometimes it does not pass the login page
             WebDriverWait(driver, 1)
             driver.refresh()
             WebDriverWait(driver, 1)
@@ -133,9 +134,12 @@ class Login:
     def __get_contents(reqs):
         contents = []
         for req in reqs:
-            # TODO sometimes it is already decompressed by request framework if it is gzip or deflate
-            content = json.loads(brotli.decompress(req.response.body))
-            [contents.append(item) for item in content]
+            try:
+                content = json.loads(req.response.body)
+                [contents.append(item) for item in content]
+            except UnicodeDecodeError:
+                content = json.loads(brotli.decompress(req.response.body))
+                [contents.append(item) for item in content]
         return contents
 
     @staticmethod

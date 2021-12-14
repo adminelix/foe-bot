@@ -29,7 +29,7 @@ class Request(object):
 
         try:
             content = response.json()
-        except Exception:
+        except UnicodeDecodeError:
             content = brotli.decompress(response.content)
         # TODO log error if content is not expected
         return content
