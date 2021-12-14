@@ -4,6 +4,7 @@ import time
 from domain.account import Account
 from foe_bot.request import Request
 from foe_bot.response_mapper import map_to_account
+from foe_bot.util import random_chunk
 
 
 class CityProductionService:
@@ -24,11 +25,13 @@ class CityProductionService:
                               or value.state['next_state_transition_at'] <= now)]
 
         if len(filtered_keys) > 0:
-            request_body = self.__request_session.create_rest_body('CityProductionService', 'pickupProduction',
-                                                                   [filtered_keys])
-            response = self.__request_session.send(request_body)
+            chunks = list(random_chunk(filtered_keys, min_chunk=1, max_chunk=10))
+            for chunk in chunks:
+                request_body = self.__request_session.create_rest_body('CityProductionService', 'pickupProduction',
+                                                                       [chunk])
+                response = self.__request_session.send(request_body)
+                map_to_account(self.__acc, *response)
             self.__logger.info(f"picked up {len(filtered_keys)} building(s)")
-            map_to_account(self.__acc, *response)
 
     # TODO parameterize production time
     # TODO produce if enough resources
