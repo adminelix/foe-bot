@@ -1,5 +1,6 @@
 import hashlib
 import json
+import time
 
 import brotli
 import yaml
@@ -15,6 +16,7 @@ class Request(object):
         self.__dict__ = self.__shared_state
         if not Request.__shared_state:
             # self.__logger = logging.getLogger("Request")
+            self.__wait_between_req = 0.5
             cfg = self.__load_config()
             self._session, self._initial_response = Login(cfg[0]['lang'], cfg[0]['world']).login(cfg[0]['username'],
                                                                                                  cfg[0]['password'])
@@ -33,6 +35,8 @@ class Request(object):
             content = response.json()
         except UnicodeDecodeError:
             content = brotli.decompress(response.content)
+
+        time.sleep(self.__wait_between_req)
         return content
 
     def create_rest_body(self, klass, method, data) -> str:
