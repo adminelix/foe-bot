@@ -14,6 +14,7 @@ class CityProductionService:
         self.__request_session = Request()
         self.__logger = logging.getLogger("CityProductionService")
 
+    # TODO take care about if strategy points >= 100 ?
     def pickup(self):
         entities = self.__acc.city_map.entities
 
