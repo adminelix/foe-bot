@@ -24,6 +24,9 @@ class WsClient:
         self.__req_queue: list[str] = []
         self.__token: str = token
         self.__req_session: Request = Request()
+        self.__connected_since: int = 0
+        self.__connection_time: int = 0
+        self.__reconnects: int = -1
         self.__task = None
         self.__loop = None
         self.__thread = None
@@ -61,9 +64,13 @@ class WsClient:
                 if 'authWithToken' == response['requestMethod'] and response['responseData']:
                     self.__is_connected = True
                     self.__logger.info("logged into websocket")
+                    self.__reconnects += 1
+                    self.__connected_since = int(time.time())
                     self.__register_chats()
 
                 while not self.__stop_thread:
+                    self.__connection_time = int(time.time()) - self.__connected_since
+
                     if len(self.__req_queue) != 0:
                         body = self.__req_queue.pop(0)
                         await websocket.send(body)
@@ -78,6 +85,7 @@ class WsClient:
                     except exceptions.TimeoutError:
                         # catch timeout that the loop can jump to next iteration and jump out if thread should be closed
                         pass
+
                 break
 
             except websockets.ConnectionClosed as ex:
@@ -118,3 +126,11 @@ class WsClient:
     @property
     def is_connected(self) -> bool:
         return self.__is_connected
+
+    @property
+    def reconnects(self) -> int:
+        return self.__reconnects
+
+    @property
+    def connection_time(self) -> int:
+        return self.__connection_time

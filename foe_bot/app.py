@@ -2,6 +2,7 @@ import logging
 import time
 
 from domain.account import Account
+from foe_bot.LogService import LogService
 from foe_bot.city_production_service import CityProductionService
 from foe_bot.hidden_reward_service import HiddenRewardService
 from foe_bot.request import Request
@@ -24,8 +25,11 @@ def main():
 
     cps = CityProductionService(acc)
     hrs = HiddenRewardService(acc)
+    ls = LogService(acc, ws_client)
 
     while True:
+        ls.log_state()
+        ls.log_performance_metrics()
         cps.pickup()
         cps.produce()
         hrs.collect()
