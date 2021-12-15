@@ -8,6 +8,7 @@ from domain.connection_state_logging import ConnectionStateLogging
 from domain.hidden_reward import HiddenReward
 from domain.resources import Resources
 from domain.socket_connection_parameter import SocketConnectionParameter
+from domain.static_data import StaticData
 from domain.time import Time
 
 
@@ -21,6 +22,7 @@ class Account:
     connection_state_logging: ConnectionStateLogging = ConnectionStateLogging()
     resources = Resources()
     hidden_rewards: dict[int, HiddenReward] = {}
+    static_data: dict[str, StaticData] = {}
 
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
@@ -29,3 +31,8 @@ class Account:
         for arg in args:
             hidden_reward = HiddenReward(**arg)
             self.hidden_rewards[hidden_reward.hiddenRewardId] = hidden_reward
+
+    def put_static_data(self, *args) -> None:
+        for arg in args:
+            static_data = StaticData(**arg)
+            self.static_data[static_data.identifier] = static_data

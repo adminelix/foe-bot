@@ -33,6 +33,9 @@ def __map(acc: Account, **kwargs) -> None:
     elif 'HiddenRewardService' == kwargs['requestClass'] and 'getOverview' == kwargs['requestMethod']:
         acc.put_hidden_rewards(*kwargs['responseData']['hiddenRewards'])
 
+    elif 'StaticDataService' == kwargs['requestClass'] and 'getMetadata' == kwargs['requestMethod']:
+        acc.put_static_data(*kwargs['responseData'])
+
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"
         if class_method not in __ignored:

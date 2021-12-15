@@ -7,6 +7,7 @@ from foe_bot.city_production_service import CityProductionService
 from foe_bot.hidden_reward_service import HiddenRewardService
 from foe_bot.request import Request
 from foe_bot.response_mapper import map_to_account as map_
+from foe_bot.static_data_service import StaticDataService
 from foe_bot.ws_client import WsClient
 
 logger = logging.getLogger("as")
@@ -26,6 +27,7 @@ def main():
     cps = CityProductionService(acc)
     hrs = HiddenRewardService(acc)
     ls = LogService(acc, ws_client)
+    StaticDataService(acc)
 
     while True:
         ls.log_state()
