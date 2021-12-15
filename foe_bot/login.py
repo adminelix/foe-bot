@@ -141,6 +141,9 @@ class Login:
             except UnicodeDecodeError:
                 content = json.loads(brotli.decompress(req.response.body))
                 [contents.append(item) for item in content]
+            except AttributeError:
+                # no response body
+                pass
         return contents
 
     @staticmethod
