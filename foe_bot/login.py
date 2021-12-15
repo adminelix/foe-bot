@@ -18,6 +18,7 @@ logging.getLogger("seleniumwire.server").setLevel(logging.WARN)
 
 class Login:
     def __init__(self, lang, world):
+        self.__logger = logging.getLogger(self.__class__.__name__)
         self.BASE_URL = "https://" + lang + ".forgeofempires.com/glps/iframe-login"
         self.WORLD = world
         self.retries = 0
@@ -74,7 +75,7 @@ class Login:
 
         except Exception as ex:
             driver.quit()
-            print(f"could not login, retry {self.retries}")
+            self.__logger.error(f"could not login, retry {self.retries}")
             self.retries += 1
             if self.retries < 3:
                 return self.login(username, password)
@@ -105,8 +106,7 @@ class Login:
         session.headers.update(
             {'User-Agent': header[1] for header in headers if header[0] == 'user-agent'})
 
-        print('successfully logged in to world ' +
-              self.WORLD + ' with client id: ' + client_id)
+        self.__logger.info(f"successfully logged in to world {self.WORLD} with client id {client_id}")
         return session, contents
 
     @staticmethod

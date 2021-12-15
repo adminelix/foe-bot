@@ -1,6 +1,10 @@
+import logging
+
 from domain.account import Account
 
 __ignored = ['TrackingService.trackLoginDone']
+
+logger = logging.getLogger("ResponseMapper")
 
 
 def __map(acc: Account, **kwargs) -> None:
@@ -29,7 +33,7 @@ def __map(acc: Account, **kwargs) -> None:
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"
         if class_method not in __ignored:
-            print(f"no mapping for {class_method}")
+            logger.info(f"no mapping for {class_method}")
 
 
 def map_to_account(acc: Account, *args) -> Account:
