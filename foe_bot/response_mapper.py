@@ -3,7 +3,7 @@ import logging
 from domain.account import Account
 
 __ignored = [
-    'TrackingService.trackLoginDone',  # TODO describe what it is
+    'TrackingService.trackLoginDone',  # is done by login sequence via selenium webdriver
     'ResourceService.getPlayerAutoRefills'  # timestamps about last auto refilled resource, forge points for instance
 ]
 
