@@ -2,7 +2,10 @@ import logging
 
 from domain.account import Account
 
-__ignored = ['TrackingService.trackLoginDone']
+__ignored = [
+    'TrackingService.trackLoginDone',  # TODO describe what it is
+    'ResourceService.getPlayerAutoRefills'  # timestamps about last auto refilled resource, forge points for instance
+]
 
 logger = logging.getLogger("ResponseMapper")
 
