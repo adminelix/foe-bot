@@ -12,6 +12,7 @@ logger = logging.getLogger("as")
 
 
 # TODO simulate human play times
+# TODO react on SIGINT and shutdown ws_client
 def main():
     req = Request()
     acc = map_(Account(), *req.initial_response)
