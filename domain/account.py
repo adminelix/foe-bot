@@ -6,6 +6,7 @@ from domain.city_map import CityMap
 from domain.city_user_data import CityUserData
 from domain.connection_state_logging import ConnectionStateLogging
 from domain.hidden_reward import HiddenReward
+from domain.player import Player
 from domain.resources import Resources
 from domain.socket_connection_parameter import SocketConnectionParameter
 from domain.static_data import StaticData
@@ -23,6 +24,7 @@ class Account:
     resources = Resources()
     hidden_rewards: dict[int, HiddenReward] = {}
     static_data: dict[str, StaticData] = {}
+    player: dict[int, Player] = {}
 
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
@@ -36,3 +38,8 @@ class Account:
         for arg in args:
             static_data = StaticData(**arg)
             self.static_data[static_data.identifier] = static_data
+
+    def put_player(self, *args) -> None:
+        for arg in args:
+            player = Player(**arg)
+            self.player[player.player_id] = player

@@ -9,6 +9,7 @@ def test_startup():
     assert len(acc.city_map.entities) == 72
     assert acc.resources.supplies == 426
     assert len(acc.hidden_rewards) == 8
+    assert len(acc.player) == 5
 
 
 def test_start_production():

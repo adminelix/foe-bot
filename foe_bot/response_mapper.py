@@ -15,6 +15,7 @@ def __map(acc: Account, **kwargs) -> None:
         acc.city_user_data.__init__(**kwargs['responseData']['user_data'])
         acc.city_map.__init__(**kwargs['responseData']['city_map'])
         acc.socket_connection_parameter.__init__(**kwargs['responseData']['socket_connection_parameter'])
+        acc.put_player(*kwargs['responseData']['socialbar_list'])
 
     elif 'TimeService' == kwargs['requestClass'] and 'updateTime' == kwargs['requestMethod']:
         acc.time.__init__(**kwargs['responseData'])
