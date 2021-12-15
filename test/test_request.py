@@ -6,17 +6,6 @@ from foe_bot.request import Request
 
 
 def test_sample_request():
-    """
-    [
-      {
-        "__class__": "ServerRequest",
-        "requestData": [],
-        "requestClass": "InventoryService",
-        "requestMethod": "getItems",
-        "requestId": 7
-      }
-    ]
-    """
     req = Request()
 
     json.dumps(req.initial_response)

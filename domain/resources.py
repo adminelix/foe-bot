@@ -45,7 +45,7 @@ class Resources:
     halloween_joker_sticker: int
     winter_master_key_parts: int
     guild_perks_daily_donations: int
-    strategy_points: int
+    strategy_points: int  # forge points
     money: int
     medals: int
     population: int

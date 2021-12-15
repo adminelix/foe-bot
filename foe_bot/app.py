@@ -3,6 +3,7 @@ import time
 
 from domain.account import Account
 from foe_bot.city_production_service import CityProductionService
+from foe_bot.hidden_reward_service import HiddenRewardService
 from foe_bot.request import Request
 from foe_bot.response_mapper import map_to_account as map_
 from foe_bot.ws_client import WsClient
@@ -10,6 +11,7 @@ from foe_bot.ws_client import WsClient
 logger = logging.getLogger("as")
 
 
+# TODO simulate human play times
 def main():
     req = Request()
     acc = map_(Account(), *req.initial_response)
@@ -19,10 +21,13 @@ def main():
     ws_client = WsClient(acc, url, token)
     ws_client.run()
 
+    cps = CityProductionService(acc)
+    hrs = HiddenRewardService(acc)
+
     while True:
-        cps = CityProductionService(acc)
         cps.pickup()
         cps.produce()
+        hrs.collect()
 
         time.sleep(10)
 

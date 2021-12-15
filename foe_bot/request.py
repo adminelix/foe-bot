@@ -14,6 +14,7 @@ class Request(object):
     def __init__(self):
         self.__dict__ = self.__shared_state
         if not Request.__shared_state:
+            # self.__logger = logging.getLogger("Request")
             cfg = self.__load_config()
             self._session, self._initial_response = Login(cfg[0]['lang'], cfg[0]['world']).login(cfg[0]['username'],
                                                                                                  cfg[0]['password'])
@@ -32,7 +33,6 @@ class Request(object):
             content = response.json()
         except UnicodeDecodeError:
             content = brotli.decompress(response.content)
-        # TODO log error if content is not expected
         return content
 
     def create_rest_body(self, klass, method, data) -> str:

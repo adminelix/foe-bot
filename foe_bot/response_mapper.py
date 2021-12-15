@@ -23,6 +23,9 @@ def __map(acc: Account, **kwargs) -> None:
     elif 'ResourceService' == kwargs['requestClass'] and 'getPlayerResources' == kwargs['requestMethod']:
         acc.resources.__init__(**kwargs['responseData']['resources'])
 
+    elif 'HiddenRewardService' == kwargs['requestClass'] and 'getOverview' == kwargs['requestMethod']:
+        acc.put_hidden_rewards(*kwargs['responseData']['hiddenRewards'])
+
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"
         if class_method not in __ignored:
