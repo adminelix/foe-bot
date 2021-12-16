@@ -48,7 +48,7 @@ class LogService:
             response = self.__request_session.send(body)
             map_to_account(self.__acc, *response)
 
-            self.__last_log_state = int(time.time())
+            self.__last_log_performance_metrics = now
             self.__logger.info(f'sent logPerformanceMetrics')
 
     @staticmethod
