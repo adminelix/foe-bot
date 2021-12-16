@@ -35,7 +35,7 @@ class Login:
             driver.get(self.BASE_URL)
             driver.find_element(By.ID, 'login_userid').send_keys(username)
             driver.find_element(By.ID, 'login_password').send_keys(password)
-            # TODO look if that stabilized routine here - sometimes it does not pass the login page
+            # TODO look if that stabilized routine here - often it does not pass the login page
             WebDriverWait(driver, 1)
             driver.find_element(By.ID, 'login_Login').click()
 
