@@ -42,4 +42,6 @@ class Account:
     def put_player(self, *args) -> None:
         for arg in args:
             player = Player(**arg)
+            if player.player_id == self.city_user_data.player_id:
+                continue
             self.player[player.player_id] = player

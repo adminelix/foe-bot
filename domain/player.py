@@ -31,8 +31,8 @@ class Player:
     name: str
     avatar: str
     is_online: bool
-    next_interaction_in: int
     topAchievements: list
+    next_interaction_in: int = 0
 
     def __init__(self, **kwargs):
         clan = kwargs.pop('clan', {})
