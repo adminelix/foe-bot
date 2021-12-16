@@ -1,16 +1,19 @@
 import json
 
+from cattr import structure
+
 from domain.city_map import CityMap
+from foe_bot.util import foe_json_loads
 
 
 def test_process():
     f = open('startup.json')
-    data = json.load(f)
+    data = foe_json_loads(f.read())
 
     startup_service_data = json.dumps(data[30]['responseData']['city_map'])
-    loads = json.loads(startup_service_data)
+    loads = foe_json_loads(startup_service_data)
 
-    city = CityMap(**loads)
+    city = structure(loads, CityMap)
 
     assert city.gridId == 'main'
-    assert city.entities[1].type == 'main_building'
+    assert len(city.entities) == 72

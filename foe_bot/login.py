@@ -136,10 +136,10 @@ class Login:
         contents = []
         for req in reqs:
             try:
-                content = json.loads(req.response.body)
+                content = foe_json_loads(req.response.body)
                 [contents.append(item) for item in content]
             except UnicodeDecodeError:
-                content = json.loads(brotli.decompress(req.response.body))
+                content = foe_json_loads(brotli.decompress(req.response.body))
                 [contents.append(item) for item in content]
             except AttributeError:
                 # no response body

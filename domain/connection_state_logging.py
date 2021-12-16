@@ -1,9 +1,8 @@
 import attr
 
 
-@attr.s(init=False)
+@attr.define
 class ConnectionStateLogging:
-    intervalPools: dict[str, int] = {}
+    intervalPools: dict[str, int]
+    klass: str = attr.ib(default=None)
 
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)

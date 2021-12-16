@@ -1,7 +1,29 @@
 import attr
 
+from domain.resources import ResourcesWrapper
 
-@attr.s(init=False)
+
+@attr.define
+class CurrentProduct:
+    name: str = attr.attrib(default=None)
+    production_time: int = attr.attrib(default=None)
+    asset_name: str = attr.attrib(default=None)
+    production_option: int = attr.attrib(default=None)
+    product: ResourcesWrapper = attr.attrib(default=None)
+    klass: str = attr.ib(default=None)
+
+
+@attr.define
+class State:
+    current_product: CurrentProduct = attr.attrib(default=None)
+    boosted: bool = attr.attrib(default=None)
+    is_motivated: bool = attr.attrib(default=None)
+    next_state_transition_in: int = attr.attrib(default=None)
+    next_state_transition_at: int = attr.attrib(default=None)
+    klass: str = attr.ib(default=None)
+
+
+@attr.define
 class CityMapEntity:
     id: int
     player_id: int
@@ -9,9 +31,7 @@ class CityMapEntity:
     type: str
     x: int
     y: int
-    connected: int
-    state: dict
-    unitSlots: list[dict]
-
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
+    state: State
+    connected: int = attr.ib(default=-1)
+    unitSlots: list[dict] = attr.ib(default=[])
+    klass: str = attr.ib(default=None)

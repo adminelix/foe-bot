@@ -1,23 +1,32 @@
 import attr
+from cattr import structure
 
 from domain.city_map_entity import CityMapEntity
 
 
-@attr.s(init=False)
+def map_of_city_entities(list_: list[CityMapEntity]) -> dict[int, CityMapEntity]:
+    if type(list_) == list:
+        return {v.id: v for v in list_}
+
+
+@attr.define
 class CityMap:
     gridId: str
-    entities: dict[int, CityMapEntity] = {}
+    unlocked_areas: list
+    tilesets: list
+    blocked_areas: list
+    klass: str = attr.attrib(default=None)
+    entities: dict[int, CityMapEntity] = attr.attrib(default=dict[int, CityMapEntity])
+    klass: str = attr.ib(default=None)
 
-    unlocked_areas: list = []
-    tilesets: list = []
-    blocked_areas: list = []
+    @staticmethod
+    def serialize(**kwargs):
+        return CityMap(entities=structure({v['id']: v for v in kwargs.pop('entities')}, dict[int, CityMapEntity]),
+                       **kwargs)
 
-    def __init__(self, **kwargs):
-        entities = kwargs.pop('entities', {})
-        self.put_entities(*entities)
-        self.__dict__.update(kwargs)
-
-    def put_entities(self, *args) -> None:
-        for arg in args:
-            entity = CityMapEntity(**arg)
-            self.entities[entity.id] = entity
+    def put_entities(self, entities: [CityMapEntity]) -> None:
+        dict_ = map_of_city_entities(entities)
+        if not self.entities:
+            self.entities = dict_
+        else:
+            self.entities.update(dict_)

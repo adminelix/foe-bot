@@ -1,7 +1,9 @@
+from typing import Optional
+
 import attr
 
 
-@attr.s(init=False)
+@attr.define
 class CityUserData:
     player_id: int
     city_name: str
@@ -21,10 +23,5 @@ class CityUserData:
     canSetEmail: bool
     isRealEmail: bool
     createdAt: int
-    rank: int
-
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-    def bla(self):
-        return self.user_name + self.city_name
+    rank: int = attr.attrib(default=None)
+    klass: str = attr.ib(default=None)

@@ -59,7 +59,7 @@ class WsClient:
                 await websocket.send(body)
 
                 raw = await websocket.recv()
-                response = json.loads(raw)[0]
+                response = foe_json_loads(raw)[0]
 
                 if 'authWithToken' == response['requestMethod'] and response['responseData']:
                     self.__is_connected = True
@@ -79,7 +79,7 @@ class WsClient:
                         # await would block thread until something is received, therefore with timeout
                         msg = await asyncio.wait_for(websocket.recv(), 0.1)
                         self.__logger.debug(f"received message: {msg}")
-                        json_ = json.loads(msg)
+                        json_ = foe_json_loads(msg)
                         json_ = json_ if type(json_) == list else [json_]
                         map_to_account(self.__acc, *json_)
                     except exceptions.TimeoutError:

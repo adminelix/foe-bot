@@ -1,7 +1,7 @@
 import attr
 
 
-@attr.s(init=False)
+@attr.define
 class HiddenReward:
     hiddenRewardId: int
     type: str
@@ -10,6 +10,12 @@ class HiddenReward:
     position: dict
     animated: bool
     rarity: str
+    klass: str = attr.ib(default=None)
 
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
+    def __hash__(self):
+        return hash(self.hiddenRewardId)
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return NotImplemented
+        return self.hiddenRewardId == other.hiddenRewardId
