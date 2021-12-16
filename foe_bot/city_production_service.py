@@ -93,10 +93,10 @@ class CityProductionService:
                         and slot['unlockCosts']['resources']['money'] <= self.__acc.resources.money * budget_factor
                         and slot['unlockCosts']['resources'][
                             'supplies'] <= self.__acc.resources.supplies + budget_factor):
-                        # TODO what is the meaning of 0 in request body?
+                        # TODO what is the meaning of 0 in request body - it was 0 at everytime?
                         request_body = self.__request_session.create_rest_body('CityProductionService', 'unlockSlot',
                                                                                [slot['entity_id'], slot['nr'], 0])
                         response = self.__request_session.send(request_body)
-                        slot['unlocked'] = response['responseData']
+                        map_to_account(self.__acc, *response)
 
-                        self.__logger.info(f"unlocked slot {slot['nr']} for {value.cityentity_id}")
+                        self.__logger.info(f"unlocked slot {slot['nr']} for buidling {value.cityentity_id}")
