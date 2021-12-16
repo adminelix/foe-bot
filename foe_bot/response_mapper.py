@@ -8,7 +8,8 @@ __ignored = [
     'ChatService.messages',  # chat messages that come mostly from websocket
     'CityMapService.reset',  # information about moppeled building when it can moppeled again
     'OtherPlayerService.rewardResources',  # resource reward of moppeled building
-    'OtherPlayerService.polivateRandomBuilding'  # city_data_entity of moppeled building
+    'OtherPlayerService.polivateRandomBuilding',  # city_data_entity of moppeled building
+    'OtherPlayerService.getAwaitingFriendRequestCount'  # amount of outstanding friend requests
 ]
 
 logger = logging.getLogger("ResponseMapper")

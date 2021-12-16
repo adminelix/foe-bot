@@ -87,3 +87,35 @@ class OtherPlayerService:
 #     "requestMethod": "getClanMemberList",
 #     "requestId": 17
 # }
+
+# {
+#     "__class__": "ServerRequest",
+#     "requestData": [
+#         9965783
+#     ],
+#     "requestClass": "FriendService",
+#     "requestMethod": "acceptInvitation",
+#     "requestId": 16
+# }
+
+# [
+#     {
+#         "__class__": "ServerRequest",
+#         "requestData": [
+#             850894960
+#         ],
+#         "requestClass": "FriendService",
+#         "requestMethod": "invitePlayerById",
+#         "requestId": 25
+#     }
+# ]
+
+# [
+#     {
+#         "__class__": "ServerRequest",
+#         "requestData": [],
+#         "requestClass": "FriendService",
+#         "requestMethod": "getFriendSuggestions",
+#         "requestId": 27
+#     }
+# ]

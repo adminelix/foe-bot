@@ -12,7 +12,7 @@ from domain.socket_connection_parameter import SocketConnectionParameter
 from domain.static_data import StaticData
 from domain.time import Time
 
-
+# TODO improve domain model (de)-serialization with cattr https://cattrs.readthedocs.io/en/latest/readme.html
 @attr.s(init=False)
 class Account:
     user_name: str
