@@ -32,6 +32,8 @@ class Player:
     avatar: str
     is_online: bool
     topAchievements: list
+    title: str
+    won_battles: int
     next_interaction_in: int = 0
 
     def __init__(self, **kwargs):

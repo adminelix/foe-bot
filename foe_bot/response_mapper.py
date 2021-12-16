@@ -41,7 +41,8 @@ def __map(acc: Account, **kwargs) -> None:
     elif 'StaticDataService' == kwargs['requestClass'] and 'getMetadata' == kwargs['requestMethod']:
         acc.put_static_data(*kwargs['responseData'])
 
-    elif 'OtherPlayerService' == kwargs['requestClass'] and 'updatePlayer' == kwargs['requestMethod']:
+    elif ('OtherPlayerService' == kwargs['requestClass']
+          and kwargs['requestMethod'] in ['updatePlayer', 'getFriendsList', 'getNeighborList', 'getClanMemberList']):
         acc.put_player(*kwargs['responseData'])
 
     else:

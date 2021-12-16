@@ -5,6 +5,7 @@ from domain.account import Account
 from foe_bot.LogService import LogService
 from foe_bot.city_production_service import CityProductionService
 from foe_bot.hidden_reward_service import HiddenRewardService
+from foe_bot.other_player_service import OtherPlayerService
 from foe_bot.request import Request
 from foe_bot.response_mapper import map_to_account as map_
 from foe_bot.static_data_service import StaticDataService
@@ -27,6 +28,7 @@ def main():
     cps = CityProductionService(acc)
     hrs = HiddenRewardService(acc)
     ls = LogService(acc, ws_client)
+    ops = OtherPlayerService(acc)
     StaticDataService(acc)
 
     while True:
@@ -36,6 +38,7 @@ def main():
         cps.unlock_unit_slots()
         cps.produce()
         hrs.collect()
+        ops.moppel()  # TODO disabled until friend- guild- and neighbour list was loaded at startup
 
         time.sleep(10)
 
