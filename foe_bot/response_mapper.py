@@ -4,7 +4,11 @@ from domain.account import Account
 
 __ignored = [
     'TrackingService.trackLoginDone',  # is done by login sequence via selenium webdriver
-    'ResourceService.getPlayerAutoRefills'  # timestamps about last auto refilled resource, forge points for instance
+    'ResourceService.getPlayerAutoRefills',  # timestamps about last auto refilled resource, forge points for instance
+    'ChatService.messages',  # chat messages that come mostly from websocket
+    'CityMapService.reset',  # information about moppeled building when it can moppeled again
+    'OtherPlayerService.rewardResources',  # resource reward of moppeled building
+    'OtherPlayerService.polivateRandomBuilding'  # city_data_entity of moppeled building
 ]
 
 logger = logging.getLogger("ResponseMapper")
@@ -36,6 +40,9 @@ def __map(acc: Account, **kwargs) -> None:
 
     elif 'StaticDataService' == kwargs['requestClass'] and 'getMetadata' == kwargs['requestMethod']:
         acc.put_static_data(*kwargs['responseData'])
+
+    elif 'OtherPlayerService' == kwargs['requestClass'] and 'updatePlayer' == kwargs['requestMethod']:
+        acc.put_player(*kwargs['responseData'])
 
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"
