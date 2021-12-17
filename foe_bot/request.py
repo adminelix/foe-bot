@@ -35,7 +35,8 @@ class Request(object):
 
         content = response.content.decode()
 
-        if 'error' in content:
+        lower = content.lower()
+        if 'error' in lower or 'exception' in lower:
             self.__logger.error(f"request failed > request:'{body}', response:'{content}'")
 
         time.sleep(self.__wait_between_req)
