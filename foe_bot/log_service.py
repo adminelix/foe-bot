@@ -32,7 +32,7 @@ class LogService:
             raw_body['reconnects'] = reconnects
 
             body = self.__request_session.create_rest_body('LogService', 'logState', [raw_body])
-            response = self.__request_session.send(body)
+            response, _ = self.__request_session.send(body)
             map_to_account(self.__acc, *response)
 
             self.__last_log_state = int(time.time())
@@ -45,7 +45,7 @@ class LogService:
             raw_body = self.__get_logPerformanceMetrics_body()
 
             body = self.__request_session.create_rest_body('LogService', 'logPerformanceMetrics', [raw_body])
-            response = self.__request_session.send(body)
+            response, _ = self.__request_session.send(body)
             map_to_account(self.__acc, *response)
 
             self.__last_log_performance_metrics = now

@@ -16,3 +16,7 @@ def test_product_in_city_entities():
     sds = StaticDataService(acc)
     product = sds.find_available_products_in_city_entities('G_BronzeAge_IndigoPlantation')[0]
     assert product['deposit_id'] == 'raw_dye'
+
+def test_foo():
+    goods 4h 8h 1d 2d
+    production 5m 15m 1h 4h 8h 1d

@@ -24,17 +24,15 @@ class OtherPlayerService:
         for player in player_to_moppel:
             body = self.__request_session.create_rest_body('OtherPlayerService', 'polivateRandomBuilding',
                                                            [player.player_id])
-            response = self.__request_session.send(body)
+            response, _ = self.__request_session.send(body)
             map_to_account(self.__acc, *response)
 
         if len(player_to_moppel) > 0:
             self.__logger.info(f"moppeled {len(player_to_moppel)} player")
 
     def accept_friend_invites(self):
-        max_friends = 140
         player_map = self.__acc.players
-        # TODO if amount of friends < 80
-
+        max_friends = 140
         friends_amount = len([player for (key, player) in player_map.items() if player.is_friend])
 
         if friends_amount < max_friends:
@@ -43,9 +41,29 @@ class OtherPlayerService:
 
             for player in player_to_accept:
                 body = self.__request_session.create_rest_body('FriendService', 'acceptInvitation', [player.player_id])
-                response = self.__request_session.send(body)
+                response, _ = self.__request_session.send(body)
                 map_to_account(self.__acc, *response)
                 self.__logger.info(f"accept friend invite from {player.name}")
+
+    def send_friend_invites(self):
+        player_map = self.__acc.players
+        max_friends = 79
+        friends_amount = len([player for (key, player) in player_map.items() if player.is_friend])
+        free_slots = max_friends - friends_amount
+
+        if friends_amount < max_friends:
+            player_to_invite = [player for (key, player) in player_map.items()
+                                if not player.isInvitedFriend and not player.is_friend and player.is_active]
+
+            for player in player_to_invite:
+                body = self.__request_session.create_rest_body('FriendService', 'invitePlayerById', [player.player_id])
+                response, successful = self.__request_session.send(body)
+                map_to_account(self.__acc, *response)
+                if successful:
+                    self.__logger.info(f"send friend invite to '{player.name}'")
+                    free_slots -= 1
+                if free_slots < 1:
+                    break
 
     def __refresh_player(self):
         now = int(time.time())
@@ -59,18 +77,18 @@ class OtherPlayerService:
 
     def __refresh_neighbor_list(self):
         body = self.__request_session.create_rest_body('OtherPlayerService', 'getNeighborList', [])
-        response = self.__request_session.send(body)
+        response, _ = self.__request_session.send(body)
         map_to_account(self.__acc, *response)
 
     def __refresh_friend_list(self):
         body = self.__request_session.create_rest_body('OtherPlayerService', 'getFriendsList', [])
-        response = self.__request_session.send(body)
+        response, _ = self.__request_session.send(body)
         map_to_account(self.__acc, *response)
 
     def __refresh_clan_member_list(self):
         if len(self.__acc.city_user_data.clan_name) > 0:
             body = self.__request_session.create_rest_body('OtherPlayerService', 'getClanMemberList', [])
-            response = self.__request_session.send(body)
+            response, _ = self.__request_session.send(body)
             map_to_account(self.__acc, *response)
 
 # {

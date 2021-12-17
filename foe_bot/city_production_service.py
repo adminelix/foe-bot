@@ -33,7 +33,7 @@ class CityProductionService:
             for chunk in chunks:
                 request_body = self.__request_session.create_rest_body('CityProductionService', 'pickupProduction',
                                                                        [chunk])
-                response = self.__request_session.send(request_body)
+                response, _ = self.__request_session.send(request_body)
                 map_to_account(self.__acc, *response)
             self.__logger.info(f"picked up {len(filtered_keys)} building(s)")
 
@@ -53,7 +53,7 @@ class CityProductionService:
             if value.type == 'production':
                 request_body = self.__request_session.create_rest_body('CityProductionService', 'startProduction',
                                                                        [value.id, 1])
-                response = self.__request_session.send(request_body)
+                response, _ = self.__request_session.send(request_body)
                 map_to_account(self.__acc, *response)
                 counter += 1
 
@@ -66,7 +66,7 @@ class CityProductionService:
                     and costs['supplies'] < self.__acc.resources.supplies * budget_factor):
                     request_body = self.__request_session.create_rest_body('CityProductionService', 'startProduction',
                                                                            [value.id, slot + 1])
-                    response = self.__request_session.send(request_body)
+                    response, _ = self.__request_session.send(request_body)
                     map_to_account(self.__acc, *response)
                     counter += 1
 
@@ -85,7 +85,7 @@ class CityProductionService:
                             request_body = self.__request_session.create_rest_body('CityProductionService',
                                                                                    'startProduction',
                                                                                    [value.id, nr_])
-                            response = self.__request_session.send(request_body)
+                            response, _ = self.__request_session.send(request_body)
                             map_to_account(self.__acc, *response)
                             counter += 1
                             break
@@ -109,7 +109,7 @@ class CityProductionService:
                         # TODO what is the meaning of 0 in request body? - it was 0 at everytime
                         request_body = self.__request_session.create_rest_body('CityProductionService', 'unlockSlot',
                                                                                [slot['entity_id'], slot['nr'], 0])
-                        response = self.__request_session.send(request_body)
+                        response, _ = self.__request_session.send(request_body)
 
                         for data in response:
                             if 'unlockSlot' in data.values() and data['responseData']:

@@ -40,6 +40,7 @@ def main():
         hrs.collect()
         ops.moppel()
         ops.accept_friend_invites()
+        # ops.send_friend_invites() # TODO store invitation time to revert if not accepting after amount of time
 
         time.sleep(10)
 

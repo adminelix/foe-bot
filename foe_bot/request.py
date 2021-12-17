@@ -24,6 +24,7 @@ class Request(object):
                                                                                                  cfg[0]['password'])
 
     def send(self, body: str):
+        successful: bool = True
         signature = self.__sign(body, self._session.cookies.get('clientId'), self._session.cookies.get('signature_key'))
         query = {'h': self._session.cookies.get('clientId')}
         header = {'Signature': signature}
@@ -37,10 +38,11 @@ class Request(object):
 
         lower = content.lower()
         if 'error' in lower or 'exception' in lower:
+            successful = False
             self.__logger.error(f"request failed > request:'{body}', response:'{content}'")
 
         time.sleep(self.__wait_between_req)
-        return foe_json_loads(content)
+        return foe_json_loads(content), successful
 
     def create_rest_body(self, klass, method, data) -> str:
         request_id = self.__get_and_increment_request_id()

@@ -24,7 +24,7 @@ class HiddenRewardService:
             for reward in filtered_rewards:
                 request_body = self.__request_session.create_rest_body('HiddenRewardService', 'collectReward',
                                                                        [reward.hiddenRewardId])
-                response = self.__request_session.send(request_body)
+                response, _ = self.__request_session.send(request_body)
                 map_to_account(self.__acc, *response)
 
                 self.__acc.hidden_rewards.pop(reward.hiddenRewardId)
