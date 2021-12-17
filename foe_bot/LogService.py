@@ -61,7 +61,7 @@ class LogService:
             "connectedTime": 906,
             "reconnects": 0
         }"""
-        return foe_json_loads(string)
+        return json.loads(string)
 
     @staticmethod
     def __get_logPerformanceMetrics_body():
@@ -72,4 +72,4 @@ class LogService:
             "fps": 25,
             "vram": 0
         }"""
-        return foe_json_loads(string)
+        return json.loads(string)

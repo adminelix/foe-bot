@@ -8,6 +8,7 @@ import yaml
 
 from foe_bot.exceptions import RequestException
 from foe_bot.login import Login
+from foe_bot.util import foe_json_loads
 
 
 class Request(object):
@@ -32,16 +33,13 @@ class Request(object):
         if not (response.status_code == 200):
             raise RequestException("Did not get a 200 response code: %s" % response.content)
 
-        try:
-            content = response.json()
-        except UnicodeDecodeError:
-            content = brotli.decompress(response.content)
+        content = response.content.decode()
 
-        if 'error_code' in json.dumps(content):
+        if 'error' in content:
             self.__logger.error(f"request failed > request:'{body}', response:'{content}'")
 
         time.sleep(self.__wait_between_req)
-        return content
+        return foe_json_loads(content)
 
     def create_rest_body(self, klass, method, data) -> str:
         request_id = self.__get_and_increment_request_id()

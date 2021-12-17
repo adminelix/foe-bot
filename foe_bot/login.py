@@ -11,6 +11,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver
 
+from foe_bot.util import foe_json_loads
+
 logger = logging.getLogger("login")
 logging.getLogger("seleniumwire.handler").setLevel(logging.WARN)
 logging.getLogger("seleniumwire.server").setLevel(logging.WARN)
@@ -36,7 +38,7 @@ class Login:
             driver.find_element(By.ID, 'login_userid').send_keys(username)
             driver.find_element(By.ID, 'login_password').send_keys(password)
             # TODO look if that stabilized routine here - often it does not pass the login page
-            WebDriverWait(driver, 1)
+            WebDriverWait(driver, 5)
             driver.find_element(By.ID, 'login_Login').click()
 
             WebDriverWait(driver, 1)
@@ -136,10 +138,10 @@ class Login:
         contents = []
         for req in reqs:
             try:
-                content = foe_json_loads(req.response.body)
+                content = foe_json_loads(req.response.body.decode())
                 [contents.append(item) for item in content]
             except UnicodeDecodeError:
-                content = foe_json_loads(brotli.decompress(req.response.body))
+                content = foe_json_loads(brotli.decompress(req.response.body).decode())
                 [contents.append(item) for item in content]
             except AttributeError:
                 # no response body

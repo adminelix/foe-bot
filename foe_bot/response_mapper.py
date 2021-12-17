@@ -59,7 +59,7 @@ def __map(acc: Account, **kwargs) -> None:
 
     elif ('OtherPlayerService' == kwargs['requestClass']
           and kwargs['requestMethod'] in ['updatePlayer', 'getFriendsList', 'getNeighborList', 'getClanMemberList']):
-        acc.put_player(structure(kwargs['responseData'], list[Player]))
+        acc.put_players(structure(kwargs['responseData'], list[Player]))
 
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"

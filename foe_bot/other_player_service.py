@@ -17,7 +17,7 @@ class OtherPlayerService:
 
     def moppel(self):
         self.__refresh_player()
-        player_map = self.__acc.player
+        player_map = self.__acc.players
         player_to_moppel = [player for (key, player) in player_map.items()
                             if player.next_interaction_in == 0 and not player.isInvitedFriend]
 

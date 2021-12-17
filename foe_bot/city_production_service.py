@@ -24,9 +24,9 @@ class CityProductionService:
         now = int(time.time())
 
         filtered_keys = [key for (key, value) in entities.items()
-                         if 'current_product' in value.state.keys()
-                         and ('ProductionFinishedState' == value.state['__class__']
-                              or value.state['next_state_transition_at'] <= now)]
+                         if value.state.current_product
+                         and (value.state.klass == 'ProductionFinishedState'
+                              or value.state.next_state_transition_at <= now)]
 
         if len(filtered_keys) > 0:
             chunks = list(random_chunk(filtered_keys, min_chunk=1, max_chunk=10))
@@ -47,7 +47,7 @@ class CityProductionService:
         filtered_entities = {key: value for (key, value) in entities.items()
                              if value.type in types
                              and value.connected > 0
-                             and 'IdleState' == value.state['__class__']}
+                             and value.state.klass == 'IdleState'}
 
         for value in filtered_entities.values():
             if value.type == 'production':
