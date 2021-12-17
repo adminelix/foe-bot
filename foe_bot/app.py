@@ -2,7 +2,7 @@ import logging
 import time
 
 from domain.account import Account
-from foe_bot.LogService import LogService
+from foe_bot.log_service import LogService
 from foe_bot.city_production_service import CityProductionService
 from foe_bot.hidden_reward_service import HiddenRewardService
 from foe_bot.other_player_service import OtherPlayerService
