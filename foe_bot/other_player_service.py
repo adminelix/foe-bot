@@ -30,6 +30,23 @@ class OtherPlayerService:
         if len(player_to_moppel) > 0:
             self.__logger.info(f"moppeled {len(player_to_moppel)} player")
 
+    def accept_friend_invites(self):
+        max_friends = 140
+        player_map = self.__acc.players
+        # TODO if amount of friends < 80
+
+        friends_amount = len([player for (key, player) in player_map.items() if player.is_friend])
+
+        if friends_amount < max_friends:
+            player_to_accept = [player for (key, player) in player_map.items()
+                                if player.isInvitedFriend and player.incoming and not player.accepted]
+
+            for player in player_to_accept:
+                body = self.__request_session.create_rest_body('FriendService', 'acceptInvitation', [player.player_id])
+                response = self.__request_session.send(body)
+                map_to_account(self.__acc, *response)
+                self.__logger.info(f"accept friend invite from {player.name}")
+
     def __refresh_player(self):
         now = int(time.time())
         if self.__last_refresh + self.__refresh_interval < now:

@@ -38,7 +38,8 @@ def main():
         cps.unlock_unit_slots()
         cps.produce()
         hrs.collect()
-        ops.moppel()  # TODO disabled until friend- guild- and neighbour list was loaded at startup
+        ops.moppel()
+        ops.accept_friend_invites()
 
         time.sleep(10)
 
