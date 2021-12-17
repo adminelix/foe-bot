@@ -26,8 +26,8 @@ class StaticDataService:
             self.__logger.info(f"cached {identifier}")
         return self.__data[identifier]
 
-    def find_unit_in_city_entities(self, asset_id: str):
+    def find_available_products_in_city_entities(self, asset_id: str):
         data = self.__get_data('city_entities')
         for entity in data:
             if asset_id in entity['asset_id']:
-                return entity['available_products'][0]
+                return entity['available_products']

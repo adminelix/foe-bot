@@ -39,7 +39,7 @@ class CityProductionService:
 
     # TODO parameterize production time
     def produce(self):
-        types: list[str] = ['production', 'military']  # anything else needs resources check - 'military' for instance
+        types: list[str] = ['production', 'military', 'goods']
         budget_factor: float = 0.1
         counter: int = 0
         entities: dict[int, CityMapEntity] = self.__acc.city_map.entities
@@ -57,10 +57,23 @@ class CityProductionService:
                 map_to_account(self.__acc, *response)
                 counter += 1
 
+            elif value.type == 'goods':
+                slot = 0
+                product = self.__static_data_service.find_available_products_in_city_entities(value.cityentity_id)[slot]
+                costs = product['requirements']['cost']['resources']
+
+                if (costs['money'] < self.__acc.resources.money * budget_factor
+                    and costs['supplies'] < self.__acc.resources.supplies * budget_factor):
+                    request_body = self.__request_session.create_rest_body('CityProductionService', 'startProduction',
+                                                                           [value.id, slot + 1])
+                    response = self.__request_session.send(request_body)
+                    map_to_account(self.__acc, *response)
+                    counter += 1
+
             elif value.type == 'military':  # if military building
                 for slot in value.unitSlots:
                     if slot['unit_id'] < 0 and slot['unlocked']:  # has empty slot
-                        unit = self.__static_data_service.find_unit_in_city_entities(value.cityentity_id)
+                        unit = self.__static_data_service.find_available_products_in_city_entities(value.cityentity_id)[0]
                         costs = unit['requirements']['cost']['resources']
 
                         #  can you afford
