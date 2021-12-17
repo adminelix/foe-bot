@@ -1,3 +1,4 @@
+import json
 import logging
 
 from cattr import structure
@@ -61,10 +62,14 @@ def __map(acc: Account, **kwargs) -> None:
           and kwargs['requestMethod'] in ['updatePlayer', 'getFriendsList', 'getNeighborList', 'getClanMemberList']):
         acc.put_players(structure(kwargs['responseData'], list[Player]))
 
+    elif ('FriendService' == kwargs['requestClass']
+          and kwargs['requestMethod'] == 'acceptInvitation'):
+        acc.put_players(structure(kwargs['responseData'], list[Player]))
+
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"
         if class_method not in __ignored:
-            logger.info(f"no mapping for {class_method}")
+            logger.info(f"no mapping for {class_method}: '{json.dumps(kwargs)}'")
 
 
 def map_to_account(acc: Account, *args) -> Account:
