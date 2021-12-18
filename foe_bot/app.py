@@ -15,21 +15,22 @@ from foe_bot.static_data_service import StaticDataService
 from foe_bot.ws_client import WsClient
 
 logger = logging.getLogger("app")
-filename = f"../data/{cfg[0]['username']}_data"
+data_file = f"../data/{cfg['username']}_data"
 
 
 def load_account() -> Account:
-    if os.path.isfile(filename):
-        with open(filename, 'rb') as acc_file:
+    if os.path.isfile(data_file):
+        with open(data_file, 'rb') as acc_file:
             return pickle.load(acc_file)
     else:
         return Account()
 
 
 def save_account(acc: Account) -> None:
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    with open(filename, 'wb') as acc_file:
+    os.makedirs(os.path.dirname(data_file), exist_ok=True)
+    with open(data_file, 'wb') as acc_file:
         pickle.dump(acc, acc_file)
+
 
 # TODO put ws_client into request and pickle request also and try to reuse session
 # TODO simulate human play times

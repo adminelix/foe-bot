@@ -17,8 +17,8 @@ class Request(object):
         if not Request.__shared_state:
             self.__logger = logging.getLogger("Request")
             self.__wait_between_req = 0.5
-            self._session, self._initial_response = Login(cfg[0]['lang'], cfg[0]['world']).login(cfg[0]['username'],
-                                                                                                 cfg[0]['password'])
+            self._session, self._initial_response = Login(cfg['lang'], cfg['world']).login(cfg['username'],
+                                                                                                 cfg['password'])
 
     def send(self, body: str):
         successful: bool = True
