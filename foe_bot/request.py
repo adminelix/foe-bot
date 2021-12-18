@@ -3,9 +3,7 @@ import json
 import logging
 import time
 
-import brotli
-import yaml
-
+from foe_bot import load_config, cfg
 from foe_bot.exceptions import RequestException
 from foe_bot.login import Login
 from foe_bot.util import foe_json_loads
@@ -19,7 +17,6 @@ class Request(object):
         if not Request.__shared_state:
             self.__logger = logging.getLogger("Request")
             self.__wait_between_req = 0.5
-            cfg = self.__load_config()
             self._session, self._initial_response = Login(cfg[0]['lang'], cfg[0]['world']).login(cfg[0]['username'],
                                                                                                  cfg[0]['password'])
 
@@ -70,12 +67,6 @@ class Request(object):
         request_id = self._session.cookies['request_id'] + 1
         self._session.cookies.set('request_id', request_id, path='/', domain='local')
         return request_id
-
-    @staticmethod
-    def __load_config():
-        with open("../config.yml", "r") as ymlfile:
-            cfg = yaml.load(ymlfile, Loader=yaml.CLoader)
-            return cfg
 
     @staticmethod
     def __sign(body, client_id, signature_key):

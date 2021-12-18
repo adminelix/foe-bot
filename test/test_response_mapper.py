@@ -1,4 +1,4 @@
-import json
+import pickle
 
 from domain.account import Account
 from domain.city_map_entity import CityMapEntity
