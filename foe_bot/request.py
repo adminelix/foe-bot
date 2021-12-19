@@ -2,8 +2,9 @@ import hashlib
 import json
 import logging
 import time
+from collections import OrderedDict
 
-from foe_bot import load_config, cfg
+from foe_bot import cfg
 from foe_bot.exceptions import RequestException
 from foe_bot.login import Login
 from foe_bot.util import foe_json_loads
@@ -18,7 +19,7 @@ class Request(object):
             self.__logger = logging.getLogger("Request")
             self.__wait_between_req = 0.5
             self._session, self._initial_response = Login(cfg['lang'], cfg['world']).login(cfg['username'],
-                                                                                                 cfg['password'])
+                                                                                           cfg['password'])
 
     def send(self, body: str):
         successful: bool = True
@@ -43,24 +44,24 @@ class Request(object):
 
     def create_rest_body(self, klass, method, data) -> str:
         request_id = self.__get_and_increment_request_id()
-        raw_body = [{
-            'requestClass': klass,
-            'requestData': data,
-            'requestId': request_id,
-            'requestMethod': method,
-            '__class__': "ServerRequest"
-        }]
+        raw_body = [OrderedDict([
+            ('__class__', "ServerRequest"),
+            ('requestData', data),
+            ('requestClass', klass),
+            ('requestMethod', method),
+            ('requestId', request_id)
+        ])]
         return json.dumps(raw_body, separators=(',', ':'))
 
     def create_ws_body(self, klass, method, data) -> str:
         request_id = self.__get_and_increment_request_id()
-        raw_body = {
-            'requestClass': klass,
-            'requestData': data,
-            'requestId': request_id,
-            'requestMethod': method,
-            '__class__': "ServerRequest"
-        }
+        raw_body = OrderedDict([
+            ('__class__', "ServerRequest"),
+            ('requestData', data),
+            ('requestClass', klass),
+            ('requestMethod', method),
+            ('requestId', request_id)
+        ])
         return json.dumps(raw_body, separators=(',', ':'))
 
     def __get_and_increment_request_id(self):
