@@ -16,7 +16,7 @@ class StaticDataService:
             self.__acc = acc
             self.__data = {}
 
-    def __get_data(self, identifier: str):
+    def get_data(self, identifier: str):
         if identifier not in self.__data.keys():
             url_ = self.__acc.static_data[identifier].url
             response = requests.get(url_)
@@ -27,7 +27,7 @@ class StaticDataService:
         return self.__data[identifier]
 
     def find_available_products_in_city_entities(self, asset_id: str):
-        data = self.__get_data('city_entities')
+        data = self.get_data('city_entities')
         for entity in data:
             if asset_id in entity['asset_id']:
                 return entity['available_products']

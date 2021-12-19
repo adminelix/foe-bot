@@ -22,6 +22,18 @@ def test_product_in_city_entities():
     assert product['deposit_id'] == 'raw_dye'
 
 
+def test_bla():
+    acc = load_startup()
+
+    sds = StaticDataService(acc)
+    data = sds.get_data('city_entities')
+
+    filt = set([a['available_products'][0]['deposit_id'] for a in data if 'type' in a.keys()
+                and a['type'] == 'goods'
+                and 'deposit_id' in a['available_products'][0].keys()])
+    pass
+
+
 def test_foo():
     cal = parsedatetime.Calendar()
 
