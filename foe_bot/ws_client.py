@@ -14,34 +14,34 @@ from foe_bot.util import foe_json_loads
 
 class WsClient(threading.Thread):
 
-    def __init__(self, acc: Account, url: str, token: str, cookies, headers):
+    def __init__(self, acc: Account):
         self.shutdown_flag = threading.Event()
         self.__logger = logging.getLogger("ws_client")
         self.__logger.setLevel(logging.DEBUG)
         self.__acc: Account = acc
-        self.__url: str = url
         self.__is_connected: bool = False
         self.__req_queue: list[str] = []
-        self.__token: str = token
         self.__req_session: Request = Request()
         self.__connected_since: int = 0
         self.__reconnects: int = -1
         self.__loop = asyncio.new_event_loop()
         self.__task = asyncio.run_coroutine_threadsafe(self.socket(), self.__loop)
         threading.Thread.__init__(self, args=(self.__loop,), daemon=True)
-0
+
     def run(self):
         asyncio.set_event_loop(self.__loop)
         self.__loop.run_forever()
 
     async def socket(self):
-        header = self.get_header()
+        header = self.__get_header()
+        token = self.__req_session.cookies['socket_token']
+        url = self.__req_session.cookies['socketGatewayUrl']
         logger = logging.getLogger("websockets.client")
         logger.setLevel(logging.INFO)
-        async for websocket in websockets.connect(self.__url, ping_interval=30, extra_headers=header,
+        async for websocket in websockets.connect(url, ping_interval=30, extra_headers=header,
                                                   logger=logger):
             try:
-                body = self.__req_session.create_ws_body('SocketAuthenticationService', 'authWithToken', [self.__token])
+                body = self.__req_session.create_ws_body('SocketAuthenticationService', 'authWithToken', [token])
                 await websocket.send(body)
 
                 raw = await websocket.recv()
@@ -82,21 +82,21 @@ class WsClient(threading.Thread):
                 self.__task.cancel()
                 self.__loop.stop()
 
-    def get_cookies(self):
-        cookies = self.__req_session.__session.cookies.get_dict(
-            domain='de14.forgeofempires.com') | self.__req_session.__session.cookies.get_dict(
+    def __get_cookies(self):
+        cookies = self.__req_session.cookies.get_dict(
+            domain='de14.forgeofempires.com') | self.__req_session.cookies.get_dict(
             domain='.forgeofempires.com')
         cookies_str = ', '.join(key + '=' + value for key, value in cookies.items())
         return cookies_str
 
-    def get_header(self):
+    def __get_header(self):
         headers = dict(
             filter(lambda val: val[0] == 'User-Agent' or val[0] == 'Accept-Encoding',
                    self.__req_session.headers.items()))
         headers['Accept-Language'] = 'de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7'
         headers['Pragma'] = 'no-cache'
         headers['Cache-Control'] = 'no-cache'
-        headers['Cookie'] = self.get_cookies()
+        headers['Cookie'] = self.__get_cookies()
         return headers
 
     def __register_chats(self):
