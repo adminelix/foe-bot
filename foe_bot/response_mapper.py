@@ -22,7 +22,8 @@ __ignored = [
     'CityMapService.relist',  # information about moppeled building when it can moppeled again
     'OtherPlayerService.rewardResources',  # resource reward of moppeled building
     'OtherPlayerService.polivateRandomBuilding',  # city_data_entity of moppeled building
-    'OtherPlayerService.getAwaitingFriendRequestCount'  # amount of outstanding friend requests
+    'OtherPlayerService.getAwaitingFriendRequestCount',  # amount of outstanding friend requests
+    'HiddenRewardService.collectReward'  # reward collecting confirmation
 ]
 
 logger = logging.getLogger("ResponseMapper")
