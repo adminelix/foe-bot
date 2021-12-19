@@ -1,6 +1,7 @@
 import logging
 import os
 import pickle
+import signal
 import time
 
 from domain.account import Account
@@ -16,6 +17,18 @@ from foe_bot.ws_client import WsClient
 
 logger = logging.getLogger("app")
 data_file = f"../data/{cfg['username']}_data"
+
+
+class GracefulKiller:
+    kill_now = False
+
+    def __init__(self):
+        signal.signal(signal.SIGINT, self.exit_gracefully)
+        signal.signal(signal.SIGTERM, self.exit_gracefully)
+
+    def exit_gracefully(self, *args):
+        logger.info("shutting down")
+        self.kill_now = True
 
 
 def load_account() -> Account:
@@ -36,6 +49,7 @@ def save_account(acc: Account) -> None:
 # TODO simulate human play times
 # TODO react on SIGINT and shutdown ws_client
 def main():
+    killer = GracefulKiller()
     acc = load_account()
 
     req = Request()
@@ -44,7 +58,7 @@ def main():
     token = req._session.cookies['socket_token']
     url = req._session.cookies['socketGatewayUrl']
     ws_client = WsClient(acc, url, token)
-    ws_client.run()
+    ws_client.start()
 
     cps = CityProductionService(acc)
     hrs = HiddenRewardService(acc)
@@ -52,7 +66,7 @@ def main():
     ops = OtherPlayerService(acc)
     StaticDataService(acc)
 
-    while True:
+    while not killer.kill_now:
         ls.log_state()
         ls.log_performance_metrics()
         cps.pickup()
@@ -64,6 +78,8 @@ def main():
         # ops.send_friend_invites() # TODO store invitation time to revert if not accepting after amount of time
 
         save_account(acc)
-        time.sleep(10)
+        if not killer.kill_now:
+            time.sleep(10)
 
-    ws_client.stop()
+    ws_client.shutdown_flag.set()
+    ws_client.join()

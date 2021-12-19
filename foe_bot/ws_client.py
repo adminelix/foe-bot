@@ -1,5 +1,4 @@
 import asyncio
-import json
 import logging
 import threading
 import time
@@ -13,41 +12,27 @@ from foe_bot.response_mapper import map_to_account
 from foe_bot.util import foe_json_loads
 
 
-class WsClient:
+class WsClient(threading.Thread):
 
     def __init__(self, acc: Account, url: str, token: str):
+        self.shutdown_flag = threading.Event()
         self.__logger = logging.getLogger("ws_client")
         self.__logger.setLevel(logging.DEBUG)
         self.__acc: Account = acc
         self.__url: str = url
         self.__is_connected: bool = False
-        self.__stop_thread: bool = False
         self.__req_queue: list[str] = []
         self.__token: str = token
         self.__req_session: Request = Request()
         self.__connected_since: int = 0
-        self.__connection_time: int = 0
         self.__reconnects: int = -1
-        self.__task = None
-        self.__loop = None
-        self.__thread = None
-
-    def stop(self):
-        self.__stop_thread = True
-        time.sleep(0.2)
-        self.__task.cancel()
-        self.__loop.stop()
-
-    @staticmethod
-    def start_background_loop(loop: asyncio.AbstractEventLoop) -> None:
-        asyncio.set_event_loop(loop)
-        loop.run_forever()
+        self.__loop = asyncio.new_event_loop()
+        self.__task = asyncio.run_coroutine_threadsafe(self.socket(), self.__loop)
+        threading.Thread.__init__(self, args=(self.__loop,), daemon=True)
 
     def run(self):
-        self.__loop = asyncio.new_event_loop()
-        self.__thread = threading.Thread(target=self.start_background_loop, args=(self.__loop,), daemon=True)
-        self.__thread.start()
-        self.__task = asyncio.run_coroutine_threadsafe(self.socket(), self.__loop)
+        asyncio.set_event_loop(self.__loop)
+        self.__loop.run_forever()
 
     async def socket(self):
         header = self.get_header()
@@ -69,9 +54,7 @@ class WsClient:
                     self.__connected_since = int(time.time())
                     self.__register_chats()
 
-                while not self.__stop_thread:
-                    self.__connection_time = int(time.time()) - self.__connected_since
-
+                while not self.shutdown_flag.is_set():
                     if len(self.__req_queue) != 0:
                         body = self.__req_queue.pop(0)
                         await websocket.send(body)
@@ -96,6 +79,8 @@ class WsClient:
                 self.__logger.error(f"websocket error: {ex}")
             finally:
                 self.__is_connected = False
+                self.__task.cancel()
+                self.__loop.stop()
 
     def get_cookies(self):
         cookies = self.__req_session._session.cookies.get_dict(
@@ -134,4 +119,4 @@ class WsClient:
 
     @property
     def connection_time(self) -> int:
-        return self.__connection_time
+        return int(time.time()) - self.__connected_since
