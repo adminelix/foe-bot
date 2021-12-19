@@ -14,7 +14,7 @@ from foe_bot.util import foe_json_loads
 
 class WsClient(threading.Thread):
 
-    def __init__(self, acc: Account, url: str, token: str):
+    def __init__(self, acc: Account, url: str, token: str, cookies, headers):
         self.shutdown_flag = threading.Event()
         self.__logger = logging.getLogger("ws_client")
         self.__logger.setLevel(logging.DEBUG)
@@ -29,7 +29,7 @@ class WsClient(threading.Thread):
         self.__loop = asyncio.new_event_loop()
         self.__task = asyncio.run_coroutine_threadsafe(self.socket(), self.__loop)
         threading.Thread.__init__(self, args=(self.__loop,), daemon=True)
-
+0
     def run(self):
         asyncio.set_event_loop(self.__loop)
         self.__loop.run_forever()
@@ -83,8 +83,8 @@ class WsClient(threading.Thread):
                 self.__loop.stop()
 
     def get_cookies(self):
-        cookies = self.__req_session._session.cookies.get_dict(
-            domain='de14.forgeofempires.com') | self.__req_session._session.cookies.get_dict(
+        cookies = self.__req_session.__session.cookies.get_dict(
+            domain='de14.forgeofempires.com') | self.__req_session.__session.cookies.get_dict(
             domain='.forgeofempires.com')
         cookies_str = ', '.join(key + '=' + value for key, value in cookies.items())
         return cookies_str

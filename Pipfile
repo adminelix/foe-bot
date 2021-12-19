@@ -15,6 +15,7 @@ selenium-wire = "4.5.6"
 pyyaml = "5.4.1"
 requests = "2.9.1"
 brotli = "1.0.9"
+parsedatetime = "2.6"
 
 [dev-packages]
 black = "==20.8b1"

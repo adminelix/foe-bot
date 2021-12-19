@@ -13,7 +13,6 @@ from foe_bot.other_player_service import OtherPlayerService
 from foe_bot.request import Request
 from foe_bot.response_mapper import map_to_account as map_
 from foe_bot.static_data_service import StaticDataService
-from foe_bot.ws_client import WsClient
 
 logger = logging.getLogger("app")
 data_file = f"../data/{cfg['username']}_data"
@@ -52,17 +51,12 @@ def main():
     killer = GracefulKiller()
     acc = load_account()
 
-    req = Request()
+    req = Request(acc)
     map_(acc, *req.initial_response)
-
-    token = req._session.cookies['socket_token']
-    url = req._session.cookies['socketGatewayUrl']
-    ws_client = WsClient(acc, url, token)
-    ws_client.start()
 
     cps = CityProductionService(acc)
     hrs = HiddenRewardService(acc)
-    ls = LogService(acc, ws_client)
+    ls = LogService(acc, req.ws_client)
     ops = OtherPlayerService(acc)
     StaticDataService(acc)
 
@@ -81,5 +75,5 @@ def main():
         if not killer.kill_now:
             time.sleep(10)
 
-    ws_client.shutdown_flag.set()
-    ws_client.join()
+    req.ws_client.shutdown_flag.set()
+    req.ws_client.join()

@@ -1,3 +1,7 @@
+from datetime import datetime
+
+import parsedatetime
+
 from foe_bot.static_data_service import StaticDataService
 from test.test_response_mapper import load_startup
 
@@ -17,6 +21,15 @@ def test_product_in_city_entities():
     product = sds.find_available_products_in_city_entities('G_BronzeAge_IndigoPlantation')[0]
     assert product['deposit_id'] == 'raw_dye'
 
+
 def test_foo():
-    goods 4h 8h 1d 2d
-    production 5m 15m 1h 4h 8h 1d
+    cal = parsedatetime.Calendar()
+
+    time_struct, parse_status = cal.parse("last yesterday at 8:00")
+
+    foo = datetime(*time_struct[:6])
+    time = int(foo.timestamp())
+    pass
+
+#    goods 4h 8h 1d 2d
+#    production 5m 15m 1h 4h 8h 1d
