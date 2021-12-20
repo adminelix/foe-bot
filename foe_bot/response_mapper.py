@@ -24,7 +24,9 @@ __ignored = [
     'OtherPlayerService.rewardResources',  # resource reward of moppeled building
     'OtherPlayerService.polivateRandomBuilding',  # city_data_entity of moppeled building
     'OtherPlayerService.getAwaitingFriendRequestCount',  # amount of outstanding friend requests
-    'HiddenRewardService.collectReward'  # reward collecting confirmation
+    'HiddenRewardService.collectReward',  # reward collecting confirmation
+    'ChatService.joinChat',  # successful join chat
+    'ChatService.message'  # temporary to avoid log spamming
 ]
 
 logger = logging.getLogger("ResponseMapper")
