@@ -10,8 +10,8 @@ def test_run():
     req = Request()
 
     acc = map_(Account(), *req.initial_response)
-    token = req._session.cookies['socket_token']
-    url = req._session.cookies['socketGatewayUrl']
+    token = req.__session.cookies['socket_token']
+    url = req.__session.cookies['socketGatewayUrl']
 
     with WsClient(acc, url, token) as ws_client:
         start = time.time()

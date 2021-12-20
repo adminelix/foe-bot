@@ -17,6 +17,7 @@ from foe_bot.ws_client import WsClient
 
 logger = logging.getLogger("app")
 data_file = f"../data/{cfg['username']}_data"
+session_file = f"../data/{cfg['username']}_session"
 
 
 class GracefulKiller:
@@ -45,6 +46,22 @@ def save_account(acc: Account) -> None:
         pickle.dump(acc, acc_file)
 
 
+def load_session() -> Request:
+    if os.path.isfile(session_file):
+        with open(session_file, 'rb') as req_file:
+            req = pickle.load(req_file)
+            foo = Request(**req.__dict__)
+            return foo
+    else:
+        return Request()
+
+
+def save_session(req: Request) -> None:
+    os.makedirs(os.path.dirname(session_file), exist_ok=True)
+    with open(session_file, 'wb') as req_file:
+        pickle.dump(req, req_file)
+
+
 # TODO put ws_client into request and pickle request also and try to reuse session
 # TODO simulate human play times
 # TODO react on SIGINT and shutdown ws_client
@@ -52,13 +69,14 @@ def main():
     killer = GracefulKiller()
     acc = load_account()
 
-    req = Request()
+    req = load_session()
     map_(acc, *req.initial_response)
-
-    token = req._session.cookies['socket_token']
-    url = req._session.cookies['socketGatewayUrl']
-    ws_client = WsClient(acc, url, token)
+    req.initial_response = []
+    ws_client = WsClient(acc)
     ws_client.start()
+
+    time.sleep(1)
+    ws_client = relog_if_needed(acc, req, ws_client, 0)
 
     cps = CityProductionService(acc)
     hrs = HiddenRewardService(acc)
@@ -67,6 +85,9 @@ def main():
     StaticDataService(acc)
 
     while not killer.kill_now:
+        ws_client = relog_if_needed(acc, req, ws_client, cfg['relog_leeway'])
+        if not ws_client.is_alive() or not ws_client.is_connected:
+            continue
         ls.log_state()
         ls.log_performance_metrics()
         cps.pickup()
@@ -78,8 +99,20 @@ def main():
         # ops.send_friend_invites() # TODO store invitation time to revert if not accepting after amount of time
 
         save_account(acc)
+        save_session(req)
         if not killer.kill_now:
             time.sleep(10)
 
     ws_client.shutdown_flag.set()
     ws_client.join()
+
+
+def relog_if_needed(acc, req, ws_client, wait):
+    if not ws_client.is_alive():
+        if wait > 0:
+            logger.info(f"session expired, relog in {wait}s")
+            time.sleep(wait)
+        req.login()
+        ws_client = WsClient(acc)
+        ws_client.start()
+    return ws_client

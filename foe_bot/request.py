@@ -4,6 +4,9 @@ import logging
 import time
 from collections import OrderedDict
 
+import requests
+from requests import Session
+
 from foe_bot import cfg
 from foe_bot.exceptions import RequestException
 from foe_bot.login import Login
@@ -13,22 +16,29 @@ from foe_bot.util import foe_json_loads
 class Request(object):
     __shared_state = {}
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.__dict__ = self.__shared_state
+        self.__dict__.update(**kwargs)
         if not Request.__shared_state:
-            self.__logger = logging.getLogger("Request")
-            self.__wait_between_req = 0.5
-            self._session, self._initial_response = Login(cfg['lang'], cfg['world']).login(cfg['username'],
-                                                                                           cfg['password'])
+            self.__logger: logging.Logger = logging.getLogger("Request")
+            self.__wait_between_req: float = 0.5
+            self.initial_response: list[dict]
+            self.__session: Session
+            self.login()
 
     def send(self, body: str):
         successful: bool = True
-        signature = self.__sign(body, self._session.cookies.get('clientId'), self._session.cookies.get('signature_key'))
-        query = {'h': self._session.cookies.get('clientId')}
+        signature = self.__sign(body, self.__session.cookies.get('clientId'),
+                                self.__session.cookies.get('signature_key'))
+        query = {'h': self.__session.cookies.get('clientId')}
         header = {'Signature': signature}
 
-        response = self._session.post('https://de14.forgeofempires.com/game/json', data=body, params=query,
-                                      headers=header)
+        try:
+            response = self.__session.post('https://de14.forgeofempires.com/game/json', data=body, params=query,
+                                           headers=header)
+        except requests.exceptions.ConnectionError:
+            return [], False
+
         if not (response.status_code == 200):
             raise RequestException("Did not get a 200 response code: %s" % response.content)
 
@@ -38,6 +48,10 @@ class Request(object):
         if 'error' in lower or 'exception' in lower:
             successful = False
             self.__logger.error(f"request failed > request:'{body}', response:'{content}'")
+        if 'redirect' in lower:
+            self.__logger.error(f"session expired: '{content}'")
+            content = '[]'
+            successful = False
 
         time.sleep(self.__wait_between_req)
         return foe_json_loads(content), successful
@@ -64,9 +78,12 @@ class Request(object):
         ])
         return json.dumps(raw_body, separators=(',', ':'))
 
+    def login(self):
+        self.__session, self.initial_response = Login(cfg['lang'], cfg['world']).login(cfg['username'], cfg['password'])
+
     def __get_and_increment_request_id(self):
-        request_id = self._session.cookies['request_id'] + 1
-        self._session.cookies.set('request_id', request_id, path='/', domain='local')
+        request_id = self.__session.cookies['request_id'] + 1
+        self.__session.cookies.set('request_id', request_id, path='/', domain='local')
         return request_id
 
     @staticmethod
@@ -75,9 +92,9 @@ class Request(object):
         return hashlib.md5(id_.encode()).hexdigest()[1:11]
 
     @property
-    def initial_response(self):
-        return self._initial_response
+    def cookies(self):
+        return self.__session.cookies
 
     @property
     def headers(self):
-        return self._session.headers
+        return self.__session.headers
