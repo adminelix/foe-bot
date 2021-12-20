@@ -17,7 +17,6 @@ class WsClient(threading.Thread):
     def __init__(self, acc: Account):
         self.shutdown_flag = threading.Event()
         self.__logger = logging.getLogger("ws_client")
-        self.__logger.setLevel(logging.DEBUG)
         self.__acc: Account = acc
         self.__is_connected: bool = False
         self.__req_queue: list[str] = []
@@ -36,10 +35,7 @@ class WsClient(threading.Thread):
         header = self.__get_header()
         token = self.__req_session.cookies['socket_token']
         url = self.__req_session.cookies['socketGatewayUrl']
-        logger = logging.getLogger("websockets.client")
-        logger.setLevel(logging.INFO)
-        async for websocket in websockets.connect(url, ping_interval=30, extra_headers=header, ping_timeout=5,
-                                                  logger=logger):
+        async for websocket in websockets.connect(url, ping_interval=30, extra_headers=header, ping_timeout=5):
             try:
                 body = self.__req_session.create_ws_body('SocketAuthenticationService', 'authWithToken', [token])
                 await websocket.send(body)
