@@ -43,5 +43,9 @@ def test_foo():
     time = int(foo.timestamp())
     pass
 
-#    goods 4h 8h 1d 2d
-#    production 5m 15m 1h 4h 8h 1d
+
+def test_foobar():
+    from translate import Translator
+    translator = Translator(to_lang="en", provider='mymemory', from_lang='autodetect')
+    translation = translator.translate("gestern um 8:00")
+    pass
