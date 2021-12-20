@@ -86,6 +86,8 @@ def main():
 
     while not killer.kill_now:
         ws_client = relog_if_needed(acc, req, ws_client, cfg['relog_leeway'])
+        if not ws_client.is_alive() or not ws_client.is_connected:
+            continue
         ls.log_state()
         ls.log_performance_metrics()
         cps.pickup()

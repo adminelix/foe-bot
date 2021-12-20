@@ -3,6 +3,7 @@ import json
 import logging
 import time
 
+import requests
 from requests import Session
 
 from foe_bot import cfg
@@ -31,8 +32,12 @@ class Request(object):
         query = {'h': self.__session.cookies.get('clientId')}
         header = {'Signature': signature}
 
-        response = self.__session.post('https://de14.forgeofempires.com/game/json', data=body, params=query,
-                                       headers=header)
+        try:
+            response = self.__session.post('https://de14.forgeofempires.com/game/json', data=body, params=query,
+                                           headers=header)
+        except requests.exceptions.ConnectionError:
+            return [], False
+
         if not (response.status_code == 200):
             raise RequestException("Did not get a 200 response code: %s" % response.content)
 

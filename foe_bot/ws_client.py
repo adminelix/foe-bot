@@ -38,7 +38,7 @@ class WsClient(threading.Thread):
         url = self.__req_session.cookies['socketGatewayUrl']
         logger = logging.getLogger("websockets.client")
         logger.setLevel(logging.INFO)
-        async for websocket in websockets.connect(url, ping_interval=30, extra_headers=header,
+        async for websocket in websockets.connect(url, ping_interval=30, extra_headers=header, ping_timeout=5,
                                                   logger=logger):
             try:
                 body = self.__req_session.create_ws_body('SocketAuthenticationService', 'authWithToken', [token])
@@ -72,7 +72,7 @@ class WsClient(threading.Thread):
 
                 break
 
-            except websockets.ConnectionClosed as ex:
+            except (websockets.ConnectionClosed, ConnectionError) as ex:
                 self.__logger.warning(f"websocket closed unexpectedly: {ex}")
                 continue
             except Exception as ex:
