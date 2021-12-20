@@ -100,9 +100,9 @@ class OtherPlayerService:
     def __refresh_player(self):
         now = int(time.time())
         if self.__last_refresh + self.__refresh_interval < now:
+            self.__refresh_neighbor_list()  # must be refreshed at first because does not include all data about player
             self.__refresh_friend_list()
             self.__refresh_clan_member_list()
-            self.__refresh_neighbor_list()
             self.__last_refresh = now
 
             self.__logger.info(f"players refreshed")

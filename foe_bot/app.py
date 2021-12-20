@@ -76,7 +76,7 @@ def main():
     ws_client.start()
 
     time.sleep(1)
-    ws_client = relog_if_needed(acc, req, ws_client, 0)
+    ws_client, _ = relog_if_needed(acc, req, ws_client, 0)
 
     cps = CityProductionService(acc)
     hrs = HiddenRewardService(acc)
@@ -85,7 +85,9 @@ def main():
     StaticDataService(acc)
 
     while not killer.kill_now:
-        ws_client = relog_if_needed(acc, req, ws_client, cfg['relog_leeway'])
+        ws_client, new = relog_if_needed(acc, req, ws_client, cfg['relog_leeway'])
+        if new:
+            ls = LogService(acc, ws_client)
         if not ws_client.is_alive() or not ws_client.is_connected:
             continue
         ls.log_state()
@@ -94,9 +96,9 @@ def main():
         cps.unlock_unit_slots()
         cps.produce()
         hrs.collect()
-        ops.get_events()
         ops.moppel()
         ops.accept_friend_invites()
+        ops.get_events()
         # ops.send_friend_invites() # TODO store invitation time to revert if not accepting after amount of time
 
         save_account(acc)
@@ -109,6 +111,7 @@ def main():
 
 
 def relog_if_needed(acc, req, ws_client, wait):
+    new = False
     if not ws_client.is_alive():
         if wait > 0:
             logger.info(f"session expired, relog in {wait}s")
@@ -116,4 +119,5 @@ def relog_if_needed(acc, req, ws_client, wait):
         req.login()
         ws_client = WsClient(acc)
         ws_client.start()
-    return ws_client
+        new = True
+    return ws_client, new
