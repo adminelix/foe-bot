@@ -1,4 +1,5 @@
 import attr
+from cattr import structure
 
 from domain.player import Player
 from foe_bot.util import parse_date
@@ -30,4 +31,5 @@ class SocialInteractionEvent:
     @staticmethod
     def serialize(**kwargs):
         return SocialInteractionEvent(date=parse_date(kwargs.pop('date')) if 'date' in kwargs.keys() else None,
+                                      other_player=structure(kwargs.pop('other_player')),
                                       **kwargs)
