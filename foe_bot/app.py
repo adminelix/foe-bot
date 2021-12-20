@@ -96,10 +96,12 @@ def main():
         cps.unlock_unit_slots()
         cps.produce()
         hrs.collect()
+        ops.get_events()
         ops.moppel()
         ops.accept_friend_invites()
-        ops.get_events()
-        # ops.send_friend_invites() # TODO store invitation time to revert if not accepting after amount of time
+        ops.revoke_friend_invites()
+        ops.remove_useless_friends()
+        ops.send_friend_invites()
 
         save_account(acc)
         save_session(req)

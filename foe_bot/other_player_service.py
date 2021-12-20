@@ -3,6 +3,8 @@ import logging
 import time
 
 from domain.account import Account
+from domain.player import Player
+from domain.player_log import PlayerLog
 from foe_bot.request import Request
 from foe_bot.response_mapper import map_to_account
 
@@ -47,24 +49,65 @@ class OtherPlayerService:
                 self.__logger.info(f"accept friend invite from {player.name}")
 
     def send_friend_invites(self):
+        now = int(time.time())
         player_map = self.__acc.players
+        player_logs = self.__acc.player_logs
         max_friends = 79
         friends_amount = len([player for (key, player) in player_map.items() if player.is_friend])
         free_slots = max_friends - friends_amount
 
         if friends_amount < max_friends:
-            player_to_invite = [player for (key, player) in player_map.items()
-                                if not player.isInvitedFriend and not player.is_friend and player.is_active]
+            player_to_invite = self._filter_players_to_invite(now, player_logs, player_map)
 
             for player in player_to_invite:
                 body = self.__request_session.create_rest_body('FriendService', 'invitePlayerById', [player.player_id])
                 response, successful = self.__request_session.send(body)
-                map_to_account(self.__acc, *response)
                 if successful:
+                    map_to_account(self.__acc, *response)
+                    log = player_logs.get(player.player_id, PlayerLog(player.player_id))
+                    log.invited_at = int(time.time())
+                    self.__acc.put_player_log([log])
                     self.__logger.info(f"send friend invite to '{player.name}'")
                     free_slots -= 1
+                if not successful:
+                    log = player_logs.get(player.player_id, PlayerLog(player.player_id))
+                    log.invite_blocked_until = int(time.time()) * (60 * 60 * 24 * 30)
+                    self.__acc.put_player_log([log])
                 if free_slots < 1:
                     break
+
+    def revoke_friend_invites(self):
+        now = int(time.time())
+        player_to_revoke = self._filter_player_with_expired_friends_invite(now)
+
+        for player in player_to_revoke:
+            body = self.__request_session.create_rest_body('FriendService', 'deleteFriend', [player.player_id])
+            response, successful = self.__request_session.send(body)
+            if successful:
+                map_to_account(self.__acc, *response)
+                self.__acc.players.get(player.player_id).isInvitedFriend = False
+                player_log = self.__acc.player_logs.get(player.player_id, PlayerLog(player.player_id))
+                player_log.invited_at = -1
+                player_log.invite_blocked_until = now + (60 * 60 * 24 * 30)
+                self.__acc.put_player_log([player_log])
+                self.__logger.info(f"revoke friends invite to '{player.name}'")
+
+    def remove_useless_friends(self):
+        now = int(time.time())
+
+        useless_friends = self._filter_useless_friends(now)
+
+        for player in useless_friends:
+            body = self.__request_session.create_rest_body('FriendService', 'deleteFriend', [player.player_id])
+            response, successful = self.__request_session.send(body)
+            if successful:
+                map_to_account(self.__acc, *response)
+                self.__acc.players.get(player.player_id).is_friend = False
+                player_log = self.__acc.player_logs.get(player.player_id, PlayerLog(player.player_id))
+                player_log.invited_at = -1
+                player_log.invite_blocked_until = now + (60 * 60 * 24 * 30)
+                self.__acc.put_player_log([player_log])
+                self.__logger.info(f"removed friend '{player.name}'")
 
     def get_events(self):
         last_event_time: int = 0
@@ -72,7 +115,7 @@ class OtherPlayerService:
         for event in events.values():
             last_event_time = event.date if event.date > last_event_time else last_event_time
 
-        one_day_ago = int(time.time()) - (60 * 60 * 3)
+        one_day_ago = int(time.time()) - (60 * 60 * 24 * 3)
         if last_event_time < one_day_ago:
             raw_body = json.loads("""
             {
@@ -97,11 +140,46 @@ class OtherPlayerService:
             map_to_account(self.__acc, *response)
             self.__logger.info(f"got {len(filtered_events)} new events")
 
+    def _filter_players_to_invite(self, now, player_logs, player_map):
+        player_to_invite = [player for (key, player) in player_map.items()
+                            if not player.isInvitedFriend
+                            and not player.is_friend
+                            and player.is_active
+                            and player_logs.get(player.player_id,
+                                                PlayerLog(player.player_id)).invite_blocked_until < now]
+        return player_to_invite
+
+    def _filter_player_with_expired_friends_invite(self, now: int) -> list[Player]:
+        before_7_days = now - (60 * 60 * 24 * 7)
+        player_map = self.__acc.players
+        player_logs = self.__acc.player_logs
+        player_to_revoke = [player for player in player_map.values()
+                            if player.isInvitedFriend
+                            and not player.is_friend
+                            and player_logs.get(player.player_id,
+                                                PlayerLog(player.player_id)).invited_at < before_7_days]
+        return player_to_revoke
+
+    def _filter_useless_friends(self, now: int) -> list[Player]:
+        before_7_days = now - (60 * 60 * 24 * 7)
+        player_map = self.__acc.players
+        events = self.__acc.events
+        friends = {key: player for (key, player) in player_map.items() if player.is_friend}
+        moppeling_player_ids = set([event.other_player.player_id for event in events.values()
+                                    if event.date > before_7_days
+                                    and (event.interaction_type in ['motivate', 'polish']
+                                         or 'friend_tavern_sat_down' in event.type)])
+        fresh_friendships = set([event.other_player.name for event in events.values() if
+                                 event.type == 'friend_accepted' and event.date > before_7_days])
+        useless_friends = [player for player in friends.values() if
+                           player.player_id not in moppeling_player_ids and player.player_id not in fresh_friendships]
+        return useless_friends
+
     def __refresh_player(self):
         now = int(time.time())
         if self.__last_refresh + self.__refresh_interval < now:
             self.__refresh_neighbor_list()  # must be refreshed at first because does not include all data about player
-            self.__refresh_friend_list()
+            self.__refresh_friend_list()  # overwrites object if friend is neighbor with more attributes
             self.__refresh_clan_member_list()
             self.__last_refresh = now
 
@@ -122,6 +200,7 @@ class OtherPlayerService:
             body = self.__request_session.create_rest_body('OtherPlayerService', 'getClanMemberList', [])
             response, _ = self.__request_session.send(body)
             map_to_account(self.__acc, *response)
+
 
 # {
 #     "__class__": "ServerRequest",
@@ -817,3 +896,23 @@ class OtherPlayerService:
 #         "__class__": "ServerResponse"
 #     }
 # ]
+
+[
+    {
+        "__class__": "ServerRequest",
+        "requestData": [
+            9656396
+        ],
+        "requestClass": "FriendService",
+        "requestMethod": "deleteFriend",
+        "requestId": 27
+    }
+]
+
+{
+    "responseData": 9656396,
+    "requestClass": "FriendService",
+    "requestMethod": "deleteFriend",
+    "requestId": 27,
+    "__class__": "ServerResponse"
+}

@@ -70,6 +70,10 @@ def __map(acc: Account, **kwargs) -> None:
           and kwargs['requestMethod'] == 'acceptInvitation'):
         acc.put_players(structure(kwargs['responseData'], list[Player]))
 
+    elif ('FriendService' == kwargs['requestClass']
+          and kwargs['requestMethod'] == 'invitePlayerById'):
+        acc.put_players([structure(kwargs['responseData'], Player)])
+
     elif ('OtherPlayerService' == kwargs['requestClass']
           and kwargs['requestMethod'] == 'getEventsPaginated'):
         acc.put_social_interaction_events(structure(kwargs['responseData']['events'], list[SocialInteractionEvent]))
