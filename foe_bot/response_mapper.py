@@ -3,6 +3,7 @@ import logging
 
 from cattr import structure
 
+from domain import SocialInteractionEvent
 from domain.account import Account
 from domain.city_map import CityMap
 from domain.city_map_entity import CityMapEntity
@@ -10,7 +11,7 @@ from domain.city_user_data import CityUserData
 from domain.connection_state_logging import ConnectionStateLogging
 from domain.hidden_reward import HiddenReward
 from domain.player import Player
-from domain.resources import Resources, ResourcesWrapper
+from domain.resources import ResourcesWrapper
 from domain.socket_connection_parameter import SocketConnectionParameter
 from domain.static_data import StaticData
 from domain.time import Time
@@ -66,6 +67,11 @@ def __map(acc: Account, **kwargs) -> None:
     elif ('FriendService' == kwargs['requestClass']
           and kwargs['requestMethod'] == 'acceptInvitation'):
         acc.put_players(structure(kwargs['responseData'], list[Player]))
+
+    elif ('OtherPlayerService' == kwargs['requestClass']
+          and kwargs['requestMethod'] == 'getEventsPaginated'):
+        acc.put_social_interaction_events(structure(kwargs['responseData']['events'], list[SocialInteractionEvent]))
+        # TODO consider towerRankings ?
 
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"

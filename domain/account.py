@@ -7,7 +7,8 @@ from domain.city_user_data import CityUserData
 from domain.connection_state_logging import ConnectionStateLogging
 from domain.hidden_reward import HiddenReward
 from domain.player import Player
-from domain.resources import ResourcesWrapper, Resources
+from domain.resources import Resources
+from domain.social_interaction_event import SocialInteractionEvent
 from domain.socket_connection_parameter import SocketConnectionParameter
 from domain.static_data import StaticData
 from domain.time import Time
@@ -28,6 +29,11 @@ def map_of_players(list_: list[Player]) -> dict[int, Player]:
         return {v.player_id: v for v in list_}
 
 
+def map_of_social_interaction_events(list_: list[SocialInteractionEvent]) -> dict[int, SocialInteractionEvent]:
+    if type(list_) == list:
+        return {v.id: v for v in list_}
+
+
 @attr.define
 class Account:
     user_name: str = attr.ib(default=None)
@@ -40,6 +46,7 @@ class Account:
     hidden_rewards: dict[int, HiddenReward] = attr.attrib(default=dict[int, HiddenReward]())
     static_data: dict[str, StaticData] = attr.attrib(default=dict[str, StaticData]())
     players: dict[int, Player] = attr.attrib(default=dict[int, Player]())
+    events: dict[int, SocialInteractionEvent] = attr.attrib(default=dict[int, SocialInteractionEvent]())
 
     def put_hidden_rewards(self, hidden_rewards: list[HiddenReward]) -> None:
         dict_ = map_of_hidden_rewards(hidden_rewards)
@@ -54,3 +61,7 @@ class Account:
         if dict_:
             dict_.pop(self.city_user_data.player_id, None)
         self.players.update(dict_)
+
+    def put_social_interaction_events(self, events: list[SocialInteractionEvent]) -> None:
+        dict_ = map_of_social_interaction_events(events)
+        self.events.update(dict_)

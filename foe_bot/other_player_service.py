@@ -1,3 +1,4 @@
+import json
 import logging
 import time
 
@@ -64,6 +65,37 @@ class OtherPlayerService:
                     free_slots -= 1
                 if free_slots < 1:
                     break
+
+    def get_events(self):
+        last_event_time: int = 0
+        events = self.__acc.events
+        for event in events.values():
+            last_event_time = event.date if event.date > last_event_time else last_event_time
+
+        one_day_ago = int(time.time()) - (60 * 60 * 3)
+        if last_event_time < one_day_ago:
+            raw_body = json.loads("""
+            {
+                 "__class__": "EventHistoryRequest",
+                 "getAll": true,
+                 "countTotalEvents": true,
+                 "page": 1,
+                 "amountPerPage": 10,
+                 "getTowerRanking": true
+             }
+            """)
+
+            body = self.__request_session.create_rest_body('OtherPlayerService', 'getEventsPaginated', [raw_body])
+            response, _ = self.__request_session.send(body)
+
+            event_ids = self.__acc.events.keys()
+            response_data_index = [x for x in range(len(response)) if 'getEventsPaginated' in response[x].values()][0]
+            filtered_events = [event for event in response[response_data_index]['responseData']['events'] if
+                               event['id'] not in event_ids]
+            response[response_data_index]['responseData']['events'] = filtered_events
+
+            map_to_account(self.__acc, *response)
+            self.__logger.info(f"got {len(filtered_events)} new events")
 
     def __refresh_player(self):
         now = int(time.time())
