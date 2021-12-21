@@ -83,6 +83,10 @@ def __map(acc: Account, **kwargs) -> None:
         acc.put_social_interaction_events(structure(kwargs['responseData']['events'], list[SocialInteractionEvent]))
         # TODO consider towerRankings ?
 
+    elif ('OtherPlayerService' == kwargs['requestClass']
+          and kwargs['requestMethod'] == 'newEvent'):
+        acc.put_social_interaction_events([structure(kwargs['responseData']['events'], SocialInteractionEvent)])
+
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"
         if class_method not in __ignored:
