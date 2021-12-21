@@ -85,7 +85,7 @@ def __map(acc: Account, **kwargs) -> None:
 
     elif ('OtherPlayerService' == kwargs['requestClass']
           and kwargs['requestMethod'] == 'newEvent'):
-        acc.put_social_interaction_events([structure(kwargs['responseData']['events'], SocialInteractionEvent)])
+        acc.put_social_interaction_events([structure(kwargs['responseData'], SocialInteractionEvent)])
 
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"
