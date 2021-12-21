@@ -87,5 +87,8 @@ def __map(acc: Account, **kwargs) -> None:
 
 def map_to_account(acc: Account, *args) -> Account:
     for arg in args:
-        __map(acc, **arg)
+        try:
+            __map(acc, **arg)
+        except Exception as e:
+            logger.exception(f"cannot map '{arg}'", e)
     return acc
