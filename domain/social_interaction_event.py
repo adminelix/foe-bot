@@ -26,6 +26,8 @@ class SocialInteractionEvent:
     achievementName: str = attr.ib(default=None)
     offer: CityGood = attr.ib(default=None)
     need: CityGood = attr.ib(default=None)
+    city_map_entity_id: str = attr.ib(default=None)
+    cityentity_id: int = attr.ib(default=None)
     klass: str = attr.ib(default=None)
 
     @staticmethod
