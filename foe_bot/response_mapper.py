@@ -69,7 +69,10 @@ def __map(acc: Account, **kwargs) -> None:
 
     elif ('FriendService' == kwargs['requestClass']
           and kwargs['requestMethod'] == 'acceptInvitation'):
-        acc.put_players(structure(kwargs['responseData'], list[Player]))
+        if type(kwargs['responseData']) == list:
+            acc.put_players(structure(kwargs['responseData'], list[Player]))
+        else:
+            acc.put_players([structure(kwargs['responseData'], Player)])
 
     elif ('FriendService' == kwargs['requestClass']
           and kwargs['requestMethod'] == 'invitePlayerById'):
