@@ -62,17 +62,15 @@ class OtherPlayerService:
             for player in player_to_invite:
                 body = self.__request_session.create_rest_body('FriendService', 'invitePlayerById', [player.player_id])
                 response, successful = self.__request_session.send(body)
+                log = player_logs.get(player.player_id, PlayerLog(player.player_id))
                 if successful:
                     map_to_account(self.__acc, *response)
-                    log = player_logs.get(player.player_id, PlayerLog(player.player_id))
                     log.invited_at = int(time.time())
-                    self.__acc.put_player_log([log])
                     self.__logger.info(f"send friend invite to '{player.name}'")
                     free_slots -= 1
-                if not successful:
-                    log = player_logs.get(player.player_id, PlayerLog(player.player_id))
-                    log.invite_blocked_until = int(time.time()) * (60 * 60 * 24 * 30)
-                    self.__acc.put_player_log([log])
+
+                log.invite_blocked_until = int(time.time()) * (60 * 60 * 24 * 30)
+                self.__acc.put_player_log([log])
                 if free_slots < 1:
                     break
 
