@@ -26,6 +26,8 @@ __ignored = [
     'OtherPlayerService.getAwaitingFriendRequestCount',  # amount of outstanding friend requests
     'HiddenRewardService.collectReward',  # reward collecting confirmation
     'ChatService.joinChat',  # successful join chat
+    'CityMapService.reset',  # information about other player moppeled building
+    'FriendService.deleteFriend',  # just player_id of deleted friend
     'ChatService.message'  # temporary to avoid log spamming
 ]
 
@@ -50,8 +52,7 @@ def __map(acc: Account, **kwargs) -> None:
     elif ('CityProductionService' == kwargs['requestClass']
           and ('startProduction' == kwargs['requestMethod']
                or 'pickupProduction' == kwargs['requestMethod'])):
-        l = structure(kwargs['responseData']['updatedEntities'], list[CityMapEntity])
-        acc.city_map.put_entities(l)
+        acc.city_map.put_entities(structure(kwargs['responseData']['updatedEntities'], list[CityMapEntity]))
 
     elif 'ResourceService' == kwargs['requestClass'] and 'getPlayerResources' == kwargs['requestMethod']:
         acc.resources = structure(kwargs['responseData'], ResourcesWrapper).resources
