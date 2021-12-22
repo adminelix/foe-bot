@@ -5,6 +5,7 @@ import time
 from domain.account import Account
 from domain.player import Player
 from domain.player_log import PlayerLog
+from foe_bot import cfg
 from foe_bot.request import Request
 from foe_bot.response_mapper import map_to_account
 
@@ -17,8 +18,11 @@ class OtherPlayerService:
         self.__logger = logging.getLogger(self.__class__.__name__)
         self.__last_refresh = 0
         self.__refresh_interval = 15 * 60  # in seconds
+        self.__config = cfg.get('other_player_service')
 
     def moppel(self):
+        if not self.__config.get('moppel', None):
+            return
         self.__refresh_player()
         player_map = self.__acc.players
         player_to_moppel = [player for (key, player) in player_map.items()
@@ -34,6 +38,8 @@ class OtherPlayerService:
             self.__logger.info(f"moppeled {len(player_to_moppel)} player")
 
     def accept_friend_invites(self):
+        if not self.__config.get('manage_friends', None):
+            return
         player_map = self.__acc.players
         max_friends = 140
         friends_amount = len([player for (key, player) in player_map.items() if player.is_friend])
@@ -49,6 +55,8 @@ class OtherPlayerService:
                 self.__logger.info(f"accept friend invite from {player.name}")
 
     def send_friend_invites(self):
+        if not self.__config.get('manage_friends', None):
+            return
         now = int(time.time())
         player_map = self.__acc.players
         player_logs = self.__acc.player_logs
@@ -75,6 +83,8 @@ class OtherPlayerService:
                     break
 
     def revoke_friend_invites(self):
+        if not self.__config.get('manage_friends', None):
+            return
         now = int(time.time())
         player_to_revoke = self._filter_player_with_expired_friends_invite(now)
 
@@ -91,6 +101,8 @@ class OtherPlayerService:
                 self.__logger.info(f"revoke friends invite to '{player.name}'")
 
     def remove_useless_friends(self):
+        if not self.__config.get('manage_friends', None):
+            return
         now = int(time.time())
 
         useless_friends = self._filter_useless_friends(now)

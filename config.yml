@@ -3,3 +3,8 @@ password: bar
 lang: de
 world: de14
 relog_leeway: 120
+deepl_api_key: xxx
+relog_leeway: 120
+other_player_service:
+    moppel: true
+    manage_friends: true
