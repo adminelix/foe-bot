@@ -1,4 +1,3 @@
-import json
 import logging
 import re
 import time
@@ -152,7 +151,7 @@ class Login:
     def __get_current_request_id(contents):
         req_id = 0
         for content in contents:
-            req_id = content['requestId'] > req_id and content['requestId'] or req_id
+            req_id = content.get('requestId', -1) > req_id and content['requestId'] or req_id
         return req_id
 
     @staticmethod
