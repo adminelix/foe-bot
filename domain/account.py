@@ -6,6 +6,8 @@ from domain.city_map import CityMap
 from domain.city_user_data import CityUserData
 from domain.connection_state_logging import ConnectionStateLogging
 from domain.hidden_reward import HiddenReward
+from domain.other_tavern_state import OtherTavernState
+from domain.own_tavern import OwnTavern
 from domain.player import Player
 from domain.player_log import PlayerLog
 from domain.resources import Resources
@@ -40,6 +42,11 @@ def map_of_social_interaction_events(list_: list[SocialInteractionEvent]) -> dic
         return {v.id: v for v in list_}
 
 
+def map_of_other_tavern_states(list_: list[OtherTavernState]) -> dict[int, OtherTavernState]:
+    if type(list_) == list:
+        return {v.ownerId: v for v in list_}
+
+
 @attr.define
 class Account:
     user_name: str = attr.ib(default=None)
@@ -54,6 +61,8 @@ class Account:
     players: dict[int, Player] = attr.attrib(default=dict[int, Player]())
     events: dict[int, SocialInteractionEvent] = attr.attrib(default=dict[int, SocialInteractionEvent]())
     player_logs: dict[int, PlayerLog] = attr.attrib(default=dict[int, PlayerLog]())
+    own_tavern: OwnTavern = attr.attrib(default=None)
+    other_tavern_states: dict[int, OtherTavernState] = attr.attrib(default={})
 
     def put_hidden_rewards(self, hidden_rewards: list[HiddenReward]) -> None:
         dict_ = map_of_hidden_rewards(hidden_rewards)
@@ -76,3 +85,7 @@ class Account:
     def put_social_interaction_events(self, events: list[SocialInteractionEvent]) -> None:
         dict_ = map_of_social_interaction_events(events)
         self.events.update(dict_)
+
+    def put_other_tavern_states(self, states: list[OtherTavernState]) -> None:
+        dict_ = map_of_other_tavern_states(states)
+        self.other_tavern_states.update(dict_)

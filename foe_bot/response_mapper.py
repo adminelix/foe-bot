@@ -10,6 +10,8 @@ from domain.city_map_entity import CityMapEntity
 from domain.city_user_data import CityUserData
 from domain.connection_state_logging import ConnectionStateLogging
 from domain.hidden_reward import HiddenReward
+from domain.other_tavern_state import OtherTavernState
+from domain.own_tavern import OwnTavern
 from domain.player import Player
 from domain.resources import ResourcesWrapper
 from domain.socket_connection_parameter import SocketConnectionParameter
@@ -28,6 +30,8 @@ __ignored = [
     'ChatService.joinChat',  # successful join chat
     'CityMapService.reset',  # information about other player moppeled building
     'FriendService.deleteFriend',  # just player_id of deleted friend
+    'RewardService.collectReward',  # reward type and amount
+    'FriendsTavernService.getOtherTavern',  # details about friends tavern
     'ChatService.message'  # temporary to avoid log spamming
 ]
 
@@ -86,6 +90,24 @@ def __map(acc: Account, **kwargs) -> None:
     elif ('OtherPlayerService' == kwargs['requestClass']
           and kwargs['requestMethod'] == 'newEvent'):
         acc.put_social_interaction_events([structure(kwargs['responseData'], SocialInteractionEvent)])
+
+    elif ('FriendsTavernService' == kwargs['requestClass']
+          and kwargs['requestMethod'] in ['getOtherTavernStates', 'getOtherTavernState']):
+        if type(kwargs['responseData']) == list:
+            acc.put_other_tavern_states(structure(kwargs['responseData'], list[OtherTavernState]))
+        else:
+            acc.put_other_tavern_states([structure(kwargs['responseData'], OtherTavernState)])
+
+    elif ('FriendsTavernService' == kwargs['requestClass']
+          and kwargs['requestMethod'] == 'getOwnTavern'):
+        acc.own_tavern = structure(kwargs['responseData'], OwnTavern)
+
+    elif ('FriendsTavernService' == kwargs['requestClass']
+          and kwargs['requestMethod'] == 'getSittingPlayersCount'):
+        state = acc.other_tavern_states.get(kwargs['responseData'][0], OtherTavernState(kwargs['responseData'][0]))
+        state.unlockedChairCount = kwargs['responseData'][1]
+        state.sittingPlayerCount = kwargs['responseData'][2]
+        acc.put_other_tavern_states([state])
 
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"

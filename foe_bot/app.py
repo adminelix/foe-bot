@@ -7,6 +7,7 @@ import time
 from domain.account import Account
 from foe_bot import cfg
 from foe_bot.city_production_service import CityProductionService
+from foe_bot.friends_tavern_service import FriendsTavernService
 from foe_bot.hidden_reward_service import HiddenRewardService
 from foe_bot.log_service import LogService
 from foe_bot.other_player_service import OtherPlayerService
@@ -82,6 +83,7 @@ def main():
     hrs = HiddenRewardService(acc)
     ls = LogService(acc, ws_client)
     ops = OtherPlayerService(acc)
+    fts = FriendsTavernService(acc)
     StaticDataService(acc)
 
     while not killer.kill_now:
@@ -102,6 +104,8 @@ def main():
         ops.revoke_friend_invites()
         ops.remove_useless_friends()
         ops.send_friend_invites()
+        fts.collect()
+        fts.visit()
 
         save_account(acc)
         save_session(req)
