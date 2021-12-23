@@ -125,5 +125,7 @@ def relog_if_needed(acc, req, ws_client, wait):
         req.login()
         ws_client = WsClient(acc)
         ws_client.start()
+        map_(acc, *req.initial_response)
+        req.initial_response = []
         new = True
     return ws_client, new
