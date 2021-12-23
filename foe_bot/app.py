@@ -5,15 +5,15 @@ import signal
 import time
 
 from foe_bot import cfg
-from foe_bot.city_production_service import CityProductionService
 from foe_bot.domain.account import Account
-from foe_bot.friends_tavern_service import FriendsTavernService
-from foe_bot.hidden_reward_service import HiddenRewardService
-from foe_bot.log_service import LogService
-from foe_bot.other_player_service import OtherPlayerService
 from foe_bot.request import Request
 from foe_bot.response_mapper import map_to_account as map_
-from foe_bot.static_data_service import StaticDataService
+from foe_bot.service.city_production_service import CityProductionService
+from foe_bot.service.friends_tavern_service import FriendsTavernService
+from foe_bot.service.hidden_reward_service import HiddenRewardService
+from foe_bot.service.log_service import LogService
+from foe_bot.service.other_player_service import OtherPlayerService
+from foe_bot.service.static_data_service import StaticDataService
 from foe_bot.ws_client import WsClient
 
 logger = logging.getLogger("app")

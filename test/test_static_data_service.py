@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from foe_bot.static_data_service import StaticDataService
+from foe_bot.service.static_data_service import StaticDataService
 from foe_bot.util import parse_date, cal
 from test.test_response_mapper import load_startup
 
