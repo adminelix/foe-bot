@@ -17,8 +17,8 @@ from foe_bot.static_data_service import StaticDataService
 from foe_bot.ws_client import WsClient
 
 logger = logging.getLogger("app")
-data_file = f"../data/{cfg['username']}_data"
-session_file = f"../data/{cfg['username']}_session"
+data_file = f"data/{cfg['username']}_data"
+session_file = f"data/{cfg['username']}_session"
 
 
 class GracefulKiller:
