@@ -109,6 +109,13 @@ def __map(acc: Account, **kwargs) -> None:
         state.sittingPlayerCount = kwargs['responseData'][2]
         acc.put_other_tavern_states([state])
 
+    elif ('CityMapService' == kwargs['requestClass']
+          and kwargs['requestMethod'] == 'updateEntity'):
+        if type(kwargs['responseData']) == list:
+            acc.city_map.put_entities(structure(kwargs['responseData'], list[CityMapEntity]))
+        else:
+            acc.city_map.put_entities([structure(kwargs['responseData'], CityMapEntity)])
+
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"
         if class_method not in __ignored:
