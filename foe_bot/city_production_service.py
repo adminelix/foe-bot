@@ -39,6 +39,7 @@ class CityProductionService:
 
     # TODO parameterize production time
     def produce(self):
+        now = int(time.time())
         types: list[str] = ['production', 'military', 'goods']
         budget_factor: float = 0.1
         counter: int = 0
@@ -47,7 +48,9 @@ class CityProductionService:
         filtered_entities = {key: value for (key, value) in entities.items()
                              if value.type in types
                              and value.connected > 0
-                             and value.state.klass == 'IdleState'}
+                             and (value.state.klass == 'IdleState'
+                                  or value.state.next_state_transition_at
+                                  and value.state.next_state_transition_at < now)}
 
         for value in filtered_entities.values():
             if value.type == 'production':
