@@ -3,20 +3,20 @@ import logging
 
 from cattr import structure
 
-from domain import SocialInteractionEvent
-from domain.account import Account
-from domain.city_map import CityMap
-from domain.city_map_entity import CityMapEntity
-from domain.city_user_data import CityUserData
-from domain.connection_state_logging import ConnectionStateLogging
-from domain.hidden_reward import HiddenReward
-from domain.other_tavern_state import OtherTavernState
-from domain.own_tavern import OwnTavern
-from domain.player import Player
-from domain.resources import ResourcesWrapper
-from domain.socket_connection_parameter import SocketConnectionParameter
-from domain.static_data import StaticData
-from domain.time import Time
+from foe_bot.domain import SocialInteractionEvent
+from foe_bot.domain.account import Account
+from foe_bot.domain.city_map import CityMap
+from foe_bot.domain.city_map_entity import CityMapEntity
+from foe_bot.domain.city_user_data import CityUserData
+from foe_bot.domain.connection_state_logging import ConnectionStateLogging
+from foe_bot.domain.hidden_reward import HiddenReward
+from foe_bot.domain.other_tavern_state import OtherTavernState
+from foe_bot.domain.own_tavern import OwnTavern
+from foe_bot.domain.player import Player
+from foe_bot.domain.resources import ResourcesWrapper
+from foe_bot.domain.socket_connection_parameter import SocketConnectionParameter
+from foe_bot.domain.static_data import StaticData
+from foe_bot.domain.time import Time
 
 __ignored = [
     'TrackingService.trackLoginDone',  # is done by login sequence via selenium webdriver

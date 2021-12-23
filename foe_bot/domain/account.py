@@ -2,19 +2,19 @@ from __future__ import annotations
 
 import attr
 
-from domain.city_map import CityMap
-from domain.city_user_data import CityUserData
-from domain.connection_state_logging import ConnectionStateLogging
-from domain.hidden_reward import HiddenReward
-from domain.other_tavern_state import OtherTavernState
-from domain.own_tavern import OwnTavern
-from domain.player import Player
-from domain.player_log import PlayerLog
-from domain.resources import Resources
-from domain.social_interaction_event import SocialInteractionEvent
-from domain.socket_connection_parameter import SocketConnectionParameter
-from domain.static_data import StaticData
-from domain.time import Time
+from foe_bot.domain.city_map import CityMap
+from foe_bot.domain.city_user_data import CityUserData
+from foe_bot.domain.connection_state_logging import ConnectionStateLogging
+from foe_bot.domain.hidden_reward import HiddenReward
+from foe_bot.domain.other_tavern_state import OtherTavernState
+from foe_bot.domain.own_tavern import OwnTavern
+from foe_bot.domain.player import Player
+from foe_bot.domain.player_log import PlayerLog
+from foe_bot.domain.resources import Resources
+from foe_bot.domain.social_interaction_event import SocialInteractionEvent
+from foe_bot.domain.socket_connection_parameter import SocketConnectionParameter
+from foe_bot.domain.static_data import StaticData
+from foe_bot.domain.time import Time
 
 
 def map_of_hidden_rewards(list_: list[HiddenReward]) -> dict[int, HiddenReward]:

@@ -1,7 +1,7 @@
 import logging
 import time
 
-from domain.account import Account
+from foe_bot.domain.account import Account
 from foe_bot.request import Request
 from foe_bot.response_mapper import map_to_account
 

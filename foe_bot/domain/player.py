@@ -1,6 +1,6 @@
 import attr
 
-from domain.clan import Clan
+from foe_bot.domain.clan import Clan
 
 
 @attr.define

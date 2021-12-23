@@ -2,7 +2,7 @@ import json
 
 from pytest_assert_utils import util
 
-from domain.account import Account
+from foe_bot.domain.account import Account
 from foe_bot.request import Request
 from foe_bot.response_mapper import map_to_account
 

@@ -1,9 +1,8 @@
-import json
 import logging
 
 import requests
 
-from domain.account import Account
+from foe_bot.domain.account import Account
 
 
 class StaticDataService:

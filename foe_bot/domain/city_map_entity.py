@@ -1,6 +1,6 @@
 import attr
 
-from domain.resources import ResourcesWrapper
+from foe_bot.domain.resources import ResourcesWrapper
 
 
 @attr.define

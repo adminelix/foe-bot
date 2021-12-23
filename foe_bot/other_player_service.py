@@ -2,10 +2,10 @@ import json
 import logging
 import time
 
-from domain.account import Account
-from domain.player import Player
-from domain.player_log import PlayerLog
 from foe_bot import cfg
+from foe_bot.domain.account import Account
+from foe_bot.domain.player import Player
+from foe_bot.domain.player_log import PlayerLog
 from foe_bot.request import Request
 from foe_bot.response_mapper import map_to_account
 

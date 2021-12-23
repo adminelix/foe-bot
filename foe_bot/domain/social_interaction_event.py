@@ -1,7 +1,7 @@
 import attr
 from cattr import structure
 
-from domain.player import Player
+from foe_bot.domain.player import Player
 from foe_bot.util import parse_date
 
 

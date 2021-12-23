@@ -1,7 +1,7 @@
 import attr
 from cattr import structure
 
-from domain.city_map_entity import CityMapEntity
+from foe_bot.domain.city_map_entity import CityMapEntity
 
 
 def map_of_city_entities(list_: list[CityMapEntity]) -> dict[int, CityMapEntity]:
