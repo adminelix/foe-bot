@@ -13,8 +13,6 @@ from seleniumwire import webdriver
 from foe_bot.util import foe_json_loads
 
 logger = logging.getLogger("login")
-logging.getLogger("seleniumwire.handler").setLevel(logging.WARN)
-logging.getLogger("seleniumwire.server").setLevel(logging.WARN)
 
 
 class Login:

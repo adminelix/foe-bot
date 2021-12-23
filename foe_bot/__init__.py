@@ -1,5 +1,4 @@
-import logging
-import sys
+import logging.config
 
 import yaml
 
@@ -12,10 +11,7 @@ def load_config():
 
 cfg = load_config()
 
-Log_Format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-
-logging.basicConfig(
-    stream=sys.stdout,
-    filemode="w",
-    format=Log_Format,
-    level=logging.INFO)
+logging.config.fileConfig('logging.conf')
+logging.getLogger("seleniumwire.handler").setLevel(logging.WARN)
+logging.getLogger("seleniumwire.server").setLevel(logging.WARN)
+logging.getLogger("urllib3.connectionpool").setLevel(logging.WARN)
