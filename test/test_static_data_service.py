@@ -41,9 +41,3 @@ def test_time_parsing():
     current = parse_date("gestern um 8:00")
 
     assert expected == current
-
-
-def test_doo():
-    x = 1
-    if x > None:
-        pass
