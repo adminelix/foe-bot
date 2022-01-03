@@ -60,11 +60,13 @@ class OtherPlayerService:
         now = int(time.time())
         player_map = self.__acc.players
         player_logs = self.__acc.player_logs
-        max_friends = 79
+        max_friends = 80
+        max_invitations = 130
         friends_amount = len([player for (key, player) in player_map.items() if player.is_friend])
+        invitations_amount = len([player for (key, player) in player_map.items() if player.isInvitedFriend])
         free_slots = max_friends - friends_amount
 
-        if friends_amount < max_friends:
+        if friends_amount + invitations_amount < max_invitations:
             player_to_invite = self._filter_players_to_invite(now, player_logs, player_map)
 
             for player in player_to_invite:
