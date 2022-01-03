@@ -32,6 +32,7 @@ __ignored = [
     'RewardService.collectReward',  # reward type and amount
     'FriendsTavernService.getOtherTavern',  # details about friends tavern
     'MessageService.newMessage',  # hint that new message is available
+    'ChatService.messages',  # temporary to avoid log spamming
     'ChatService.message'  # temporary to avoid log spamming
 ]
 
