@@ -21,7 +21,7 @@ class Request(object):
         self.__dict__.update(**kwargs)
         if not Request.__shared_state:
             self.__logger: logging.Logger = logging.getLogger("Request")
-            self.__wait_between_req: float = 0.5
+            self.__wait_between_req: float = 0
             self.initial_response: list[dict]
             self.__session: Session
             self.login()
