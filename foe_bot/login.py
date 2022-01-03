@@ -32,15 +32,12 @@ class Login:
 
         try:
             driver.get(self.BASE_URL)
+            driver.refresh()  # login frame is sometimes bugged and results in connection error
             driver.find_element(By.ID, 'login_userid').send_keys(username)
             driver.find_element(By.ID, 'login_password').send_keys(password)
-            # TODO look if that stabilized routine here - often it does not pass the login page
-            time.sleep(1)
             driver.find_element(By.ID, 'login_Login').click()
 
-            WebDriverWait(driver, 1)
             driver.refresh()
-            WebDriverWait(driver, 1)
 
             WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable((By.ID, 'play_now_button')))
