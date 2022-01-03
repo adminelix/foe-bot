@@ -21,7 +21,6 @@ from foe_bot.domain.time import Time
 __ignored = [
     'TrackingService.trackLoginDone',  # is done by login sequence via selenium webdriver
     'ResourceService.getPlayerAutoRefills',  # timestamps about last auto refilled resource, forge points for instance
-    'ChatService.messages',  # chat messages that come mostly from websocket
     'CityMapService.relist',  # information about moppeled building when it can moppeled again
     'OtherPlayerService.rewardResources',  # resource reward of moppeled building
     'OtherPlayerService.polivateRandomBuilding',  # city_data_entity of moppeled building
@@ -32,6 +31,7 @@ __ignored = [
     'FriendService.deleteFriend',  # just player_id of deleted friend
     'RewardService.collectReward',  # reward type and amount
     'FriendsTavernService.getOtherTavern',  # details about friends tavern
+    'MessageService.newMessage',  # hint that new message is available
     'ChatService.message'  # temporary to avoid log spamming
 ]
 
@@ -44,7 +44,7 @@ def __map(acc: Account, **kwargs) -> None:
         acc.city_map = structure(kwargs['responseData']['city_map'], CityMap)
         acc.socket_connection_parameter = structure(kwargs['responseData']['socket_connection_parameter'],
                                                     SocketConnectionParameter)
-
+        acc.players = dict[int, Player]()
         acc.put_players(structure(kwargs['responseData']['socialbar_list'], list[Player]))
 
     elif 'TimeService' == kwargs['requestClass'] and 'updateTime' == kwargs['requestMethod']:
