@@ -20,13 +20,11 @@ class CityProductionService:
     # TODO take care about if strategy points >= 100 ?
     def pickup(self):
         entities = self.__acc.city_map.entities
-
         now = int(time.time())
 
         filtered_keys = [key for (key, value) in entities.items()
-                         if value.state.current_product
-                         and (value.state.klass == 'ProductionFinishedState'
-                              or value.state.next_state_transition_at <= now)]
+                         if value.state.next_state_transition_at <= now
+                         or value.state.klass == 'ProductionFinishedState']
 
         if len(filtered_keys) > 0:
             chunks = list(random_chunk(filtered_keys, min_chunk=1, max_chunk=10))
@@ -36,6 +34,20 @@ class CityProductionService:
                 response, _ = self.__request_session.send(request_body)
                 map_to_account(self.__acc, *response)
             self.__logger.info(f"picked up {len(filtered_keys)} building(s)")
+
+    def remove_plundered(self):
+        entities = self.__acc.city_map.entities
+
+        filtered_keys = [key for (key, value) in entities.items()
+                         if value.state.klass in 'PlunderedState']
+
+        if len(filtered_keys) > 0:
+            for key in filtered_keys:
+                request_body = self.__request_session.create_rest_body('CityProductionService',
+                                                                       'removePlunderedProduction', [key])
+                response, _ = self.__request_session.send(request_body)
+                map_to_account(self.__acc, *response)
+            self.__logger.info(f"removed plundered state from {len(filtered_keys)} building(s)")
 
     # TODO parameterize production time
     def produce(self):
@@ -76,7 +88,8 @@ class CityProductionService:
             elif value.type == 'military':  # if military building
                 for slot in value.unitSlots:
                     if slot['unit_id'] < 0 and slot['unlocked']:  # has empty slot
-                        unit = self.__static_data_service.find_available_products_in_city_entities(value.cityentity_id)[0]
+                        unit = self.__static_data_service.find_available_products_in_city_entities(value.cityentity_id)[
+                            0]
                         costs = unit['requirements']['cost']['resources']
 
                         #  can you afford

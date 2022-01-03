@@ -1,3 +1,5 @@
+import sys
+
 import attr
 
 from foe_bot.domain.resources import ResourcesWrapper
@@ -18,8 +20,8 @@ class State:
     current_product: CurrentProduct = attr.attrib(default=None)
     boosted: bool = attr.attrib(default=None)
     is_motivated: bool = attr.attrib(default=None)
-    next_state_transition_in: int = attr.attrib(default=None)
-    next_state_transition_at: int = attr.attrib(default=None)
+    next_state_transition_in: int = attr.attrib(default=-1)
+    next_state_transition_at: int = attr.attrib(default=sys.maxsize)
     klass: str = attr.ib(default=None)
 
 

@@ -95,6 +95,7 @@ def main():
         ls.log_state()
         ls.log_performance_metrics()
         cps.pickup()
+        cps.remove_plundered()
         cps.unlock_unit_slots()
         cps.produce()
         hrs.collect()

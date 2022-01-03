@@ -54,8 +54,7 @@ def __map(acc: Account, **kwargs) -> None:
         acc.connection_state_logging = structure(kwargs['responseData'], ConnectionStateLogging)
 
     elif ('CityProductionService' == kwargs['requestClass']
-          and ('startProduction' == kwargs['requestMethod']
-               or 'pickupProduction' == kwargs['requestMethod'])):
+          and kwargs['requestMethod'] in ['startProduction', 'pickupProduction', 'removePlunderedProduction']):
         acc.city_map.put_entities(structure(kwargs['responseData']['updatedEntities'], list[CityMapEntity]))
 
     elif 'ResourceService' == kwargs['requestClass'] and 'getPlayerResources' == kwargs['requestMethod']:
