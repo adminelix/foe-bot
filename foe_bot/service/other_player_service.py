@@ -25,16 +25,19 @@ class OtherPlayerService:
             return
         self.__refresh_player()
         player_map = self.__acc.players
+        count = 0
         player_to_moppel = [player for (key, player) in player_map.items()
                             if not player.next_interaction_in and not player.isInvitedFriend]
 
         for player in player_to_moppel:
             body = self.__request_session.create_rest_body('OtherPlayerService', 'polivateRandomBuilding',
                                                            [player.player_id])
-            response, _ = self.__request_session.send(body)
+            response, success = self.__request_session.send(body)
             map_to_account(self.__acc, *response)
+            if success:
+                count += 1
 
-        if len(player_to_moppel) > 0:
+        if count > 0:
             self.__logger.info(f"moppeled {len(player_to_moppel)} player")
 
     def accept_friend_invites(self):
