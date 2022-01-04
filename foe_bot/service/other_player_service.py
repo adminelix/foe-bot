@@ -189,7 +189,8 @@ class OtherPlayerService:
 
     def __refresh_player(self):
         now = int(time.time())
-        if self.__last_refresh + self.__refresh_interval < now:
+        if self.__last_refresh + self.__refresh_interval < now or len(self.__acc.players) == 0:
+            self.__acc.players = dict[int, Player]()
             self.__refresh_neighbor_list()  # must be refreshed at first because does not include all data about player
             self.__refresh_friend_list()  # overwrites object if friend is neighbor with more attributes
             self.__refresh_clan_member_list()
