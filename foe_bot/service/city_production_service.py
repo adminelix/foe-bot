@@ -61,8 +61,7 @@ class CityProductionService:
                              if value.type in types
                              and value.connected > 0
                              and (value.state.klass == 'IdleState'
-                                  or value.state.next_state_transition_at
-                                  and value.state.next_state_transition_at < now)}
+                                  or value.state.next_state_transition_at < now)}
 
         for value in filtered_entities.values():
             if value.type == 'production':
