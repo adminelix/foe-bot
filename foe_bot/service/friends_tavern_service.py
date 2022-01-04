@@ -19,7 +19,7 @@ class FriendsTavernService:
 
     def __refresh_own_tavern(self, force: bool):
         now = int(time.time())
-        if not self.__acc.own_tavern or force or now > self.__last_refresh + self.__refresh_interval:
+        if force or now > self.__last_refresh + self.__refresh_interval:
             request_body = self.__request_session.create_rest_body('FriendsTavernService', 'getOwnTavern', [])
             response, _ = self.__request_session.send(request_body)
             map_to_account(self.__acc, *response)
