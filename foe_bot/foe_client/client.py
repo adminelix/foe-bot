@@ -64,6 +64,7 @@ class Client:
         self.__acc: Account = AccountService().account
         self.__session: Request = self.__load_client()
         map_to_account(self.__acc, *self.__session.initial_response)
+        self.__session.initial_response = {}
         self.__ws_client = WsClient(self.__session)
         self.__ws_client.start()
         time.sleep(1)
