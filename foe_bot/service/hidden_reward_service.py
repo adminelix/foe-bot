@@ -1,5 +1,4 @@
 import logging
-import time
 
 from foe_bot.service.abstract_service import AbstractService
 
@@ -14,7 +13,7 @@ class HiddenRewardService(AbstractService):
         self._collect()
 
     def _collect(self):
-        now = int(time.time())
+        now = self._acc.time.time
         expiry_leeway = 60
         rewards = self._acc.hidden_rewards.values()
 
