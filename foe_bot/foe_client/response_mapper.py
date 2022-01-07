@@ -51,7 +51,7 @@ def __map(acc: Account, **kwargs) -> None:
     elif 'TimeService' == kwargs['requestClass'] and 'updateTime' == kwargs['requestMethod']:
         acc.time = structure(kwargs['responseData'], Time)
 
-    elif 'LogService' == kwargs['requestClass'] and 'listLogState' == kwargs['requestMethod']:
+    elif 'LogService' == kwargs['requestClass'] and kwargs['requestMethod'] in ['listLogState', 'setLogState']:
         acc.connection_state_logging = structure(kwargs['responseData'], ConnectionStateLogging)
 
     elif ('CityProductionService' == kwargs['requestClass']
