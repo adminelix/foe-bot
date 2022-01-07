@@ -16,6 +16,7 @@ from foe_bot.domain.player import Player
 from foe_bot.domain.resources import ResourcesWrapper
 from foe_bot.domain.socket_connection_parameter import SocketConnectionParameter
 from foe_bot.domain.static_data import StaticData
+from foe_bot.domain.tavern_config import TavernConfig
 from foe_bot.domain.time import Time
 
 __ignored = [
@@ -117,6 +118,10 @@ def __map(acc: Account, **kwargs) -> None:
             acc.city_map.put_entities(structure(kwargs['responseData'], list[CityMapEntity]))
         else:
             acc.city_map.put_entities([structure(kwargs['responseData'], CityMapEntity)])
+
+    elif ('FriendsTavernService' == kwargs['requestClass']
+          and kwargs['requestMethod'] == 'getConfig'):
+        acc.tavern_config = structure(kwargs['responseData'], TavernConfig)
 
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"

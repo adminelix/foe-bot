@@ -15,6 +15,7 @@ class FriendsTavernService(AbstractService):
     def do(self):
         self._collect()
         self._visit()
+        self._get_config()
 
     def _collect(self):
         own_tavern_state = self._acc.other_tavern_states.get(self._acc.city_user_data.player_id, None)
@@ -45,6 +46,10 @@ class FriendsTavernService(AbstractService):
         now = int(time.time())
         if force or now > self.__last_refresh + self.__refresh_interval:
             self._client.send('FriendsTavernService', 'getOwnTavern', [])
+
+    def _get_config(self):
+        if not self._acc.tavern_config:
+            success = self._client.send('FriendsTavernService', 'getConfig', [])
 
     def _extend_tavern(self):
         # TODO implement

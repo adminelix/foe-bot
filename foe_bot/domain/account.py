@@ -14,6 +14,7 @@ from foe_bot.domain.resources import Resources
 from foe_bot.domain.social_interaction_event import SocialInteractionEvent
 from foe_bot.domain.socket_connection_parameter import SocketConnectionParameter
 from foe_bot.domain.static_data import StaticData
+from foe_bot.domain.tavern_config import TavernConfig
 from foe_bot.domain.time import Time
 
 
@@ -62,6 +63,7 @@ class Account(object):
     events: dict[int, SocialInteractionEvent] = attr.attrib(default=dict[int, SocialInteractionEvent]())
     player_logs: dict[int, PlayerLog] = attr.attrib(default=dict[int, PlayerLog]())
     own_tavern: OwnTavern = attr.attrib(default=None)
+    tavern_config: TavernConfig = attr.attrib(default=None)
     other_tavern_states: dict[int, OtherTavernState] = attr.attrib(default={})
 
     def put_hidden_rewards(self, hidden_rewards: list[HiddenReward]) -> None:
