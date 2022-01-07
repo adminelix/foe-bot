@@ -28,6 +28,9 @@ class SocialInteractionEvent:
     need: CityGood = attr.ib(default=None)
     city_map_entity_id: str = attr.ib(default=None)
     cityentity_id: int = attr.ib(default=None)
+    new_era: int = attr.ib(default=None)
+    battle_id: int = attr.ib(default=None)
+    status: int = attr.ib(default=None)
     klass: str = attr.ib(default=None)
 
     @staticmethod

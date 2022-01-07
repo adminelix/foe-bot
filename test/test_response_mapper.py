@@ -1,6 +1,6 @@
 from foe_bot.domain.account import Account
 from foe_bot.domain.city_map_entity import CityMapEntity
-from foe_bot.response_mapper import map_to_account as map_
+from foe_bot.foe_client.response_mapper import map_to_account as map_
 from foe_bot.util import foe_json_loads
 
 

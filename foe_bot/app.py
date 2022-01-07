@@ -1,24 +1,13 @@
 import logging
-import os
-import pickle
 import signal
 import time
 
-from foe_bot import cfg
-from foe_bot.domain.account import Account
-from foe_bot.request import Request
-from foe_bot.response_mapper import map_to_account as map_
-from foe_bot.service.city_production_service import CityProductionService
-from foe_bot.service.friends_tavern_service import FriendsTavernService
-from foe_bot.service.hidden_reward_service import HiddenRewardService
-from foe_bot.service.log_service import LogService
-from foe_bot.service.other_player_service import OtherPlayerService
-from foe_bot.service.static_data_service import StaticDataService
-from foe_bot.ws_client import WsClient
+from foe_bot.foe_client.client import Client
+from foe_bot.service.abstract_service import AbstractService
+from foe_bot.service.account_service import AccountService
+from foe_bot.service import *
 
 logger = logging.getLogger("app")
-data_file = f"data/{cfg['username']}_data"
-session_file = f"data/{cfg['username']}_session"
 
 
 class GracefulKiller:
@@ -27,106 +16,34 @@ class GracefulKiller:
     def __init__(self):
         signal.signal(signal.SIGINT, self.exit_gracefully)
         signal.signal(signal.SIGTERM, self.exit_gracefully)
+        # signal.signal(signal.SIGKILL, sys.exit())
 
     def exit_gracefully(self, *args):
         logger.info("shutting down")
         self.kill_now = True
 
 
-def load_account() -> Account:
-    if os.path.isfile(data_file):
-        with open(data_file, 'rb') as acc_file:
-            return pickle.load(acc_file)
-    else:
-        return Account()
+def list_services():
+    services = []
+    for subclass in AbstractService.__subclasses__():
+        services.append(subclass())
+    return services
 
 
-def save_account(acc: Account) -> None:
-    os.makedirs(os.path.dirname(data_file), exist_ok=True)
-    with open(data_file, 'wb') as acc_file:
-        pickle.dump(acc, acc_file)
-
-
-def load_session() -> Request:
-    if os.path.isfile(session_file):
-        with open(session_file, 'rb') as req_file:
-            req = pickle.load(req_file)
-            foo = Request(**req.__dict__)
-            return foo
-    else:
-        return Request()
-
-
-def save_session(req: Request) -> None:
-    os.makedirs(os.path.dirname(session_file), exist_ok=True)
-    with open(session_file, 'wb') as req_file:
-        pickle.dump(req, req_file)
-
-
-# TODO put ws_client into request and pickle request also and try to reuse session
-# TODO simulate human play times
-# TODO react on SIGINT and shutdown ws_client
 def main():
     killer = GracefulKiller()
-    acc = load_account()
-
-    req = load_session()
-    map_(acc, *req.initial_response)
-    req.initial_response = []
-    ws_client = WsClient(acc)
-    ws_client.start()
-
-    time.sleep(1)
-    ws_client, _ = relog_if_needed(acc, req, ws_client, 0)
-
-    cps = CityProductionService(acc)
-    hrs = HiddenRewardService(acc)
-    ls = LogService(acc, ws_client)
-    ops = OtherPlayerService(acc)
-    fts = FriendsTavernService(acc)
-    StaticDataService(acc)
+    services = list_services()
+    client = Client()
 
     while not killer.kill_now:
-        ws_client, new = relog_if_needed(acc, req, ws_client, cfg['relog_leeway'])
-        if new:
-            ls = LogService(acc, ws_client)
-        if not ws_client.is_alive() or not ws_client.is_connected:
-            continue
-        ls.log_state()
-        ls.log_performance_metrics()
-        cps.pickup()
-        cps.remove_plundered()
-        cps.unlock_unit_slots()
-        cps.produce()
-        hrs.collect()
-        ops.get_events()
-        ops.moppel()
-        ops.accept_friend_invites()
-        ops.revoke_friend_invites()
-        ops.remove_useless_friends()
-        ops.send_friend_invites()
-        fts.collect()
-        fts.visit()
+        for service in services:
+            if not killer.kill_now and client.is_connected:
+                service.do()
+            elif not client.is_connected:
+                client.relog_in()
 
-        save_account(acc)
-        save_session(req)
-        if not killer.kill_now:
-            time.sleep(10)
+        time.sleep(0.5)
 
-    ws_client.shutdown_flag.set()
-    ws_client.join()
-
-
-def relog_if_needed(acc, req, ws_client, wait):
-    new = False
-    if not ws_client.is_alive():
-        if wait > 0:
-            logger.info(f"session expired, relog in {wait}s")
-            time.sleep(wait)
-        req.login()
-        ws_client = WsClient(acc)
-        ws_client.start()
-        map_(acc, *req.initial_response)
-        req.initial_response = []
-        new = True
-    return ws_client, new
+    AccountService().save()
+    client.tear_down()
+    client.save_session()

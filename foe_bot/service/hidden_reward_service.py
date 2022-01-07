@@ -1,32 +1,33 @@
 import logging
 import time
 
-from foe_bot.domain.account import Account
-from foe_bot.request import Request
-from foe_bot.response_mapper import map_to_account
+from foe_bot.service.abstract_service import AbstractService
 
 
-class HiddenRewardService:
+class HiddenRewardService(AbstractService):
 
-    def __init__(self, acc: Account):
-        self.__acc = acc
-        self.__request_session = Request()
+    def __init__(self):
+        super().__init__()
         self.__logger = logging.getLogger(self.__class__.__name__)
 
-    def collect(self):
+    def do(self):
+        self._collect()
+
+    def _collect(self):
         now = int(time.time())
         expiry_leeway = 60
-        rewards = self.__acc.hidden_rewards.values()
+        rewards = self._acc.hidden_rewards.values()
 
         filtered_rewards = [reward for reward in rewards if reward.startTime < now < reward.expireTime - expiry_leeway]
 
+        counter = 0
         if len(filtered_rewards) > 0:
             for reward in filtered_rewards:
-                request_body = self.__request_session.create_rest_body('HiddenRewardService', 'collectReward',
-                                                                       [reward.hiddenRewardId])
-                response, _ = self.__request_session.send(request_body)
-                map_to_account(self.__acc, *response)
+                success = self._client.send('HiddenRewardService', 'collectReward', [reward.hiddenRewardId])
+                self._acc.hidden_rewards.pop(reward.hiddenRewardId)
 
-                self.__acc.hidden_rewards.pop(reward.hiddenRewardId)
+                if success:
+                    counter += 1
 
-            self.__logger.info(f"collected {len(filtered_rewards)} hidden reward(s)")
+        if counter > 0:
+            self.__logger.info(f"collected {counter} hidden reward(s)")

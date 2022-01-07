@@ -9,22 +9,18 @@ from requests import Session
 
 from foe_bot import cfg
 from foe_bot.exceptions import RequestException
-from foe_bot.login import Login
+from foe_bot.foe_client.login import Login
 from foe_bot.util import foe_json_loads
 
 
-class Request(object):
-    __shared_state = {}
+class Request:
 
-    def __init__(self, **kwargs):
-        self.__dict__ = self.__shared_state
-        self.__dict__.update(**kwargs)
-        if not Request.__shared_state:
-            self.__logger: logging.Logger = logging.getLogger("Request")
-            self.__wait_between_req: float = 0
-            self.initial_response: list[dict]
-            self.__session: Session
-            self.login()
+    def __init__(self):
+        self.__logger: logging.Logger = logging.getLogger("Request")
+        self.__wait_between_req: float = 0
+        self.initial_response: list[dict]
+        self.__session: Session
+        self.login()
 
     def send(self, body: str):
         successful: bool = True

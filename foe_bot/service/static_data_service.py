@@ -2,17 +2,17 @@ import logging
 
 import requests
 
-from foe_bot.domain.account import Account
+from foe_bot.service.account_service import AccountService
 
 
 class StaticDataService:
     __shared_state = {}
 
-    def __init__(self, acc: Account):
+    def __init__(self):
         self.__dict__ = self.__shared_state
         if not StaticDataService.__shared_state:
             self.__logger = logging.getLogger(self.__class__.__name__)
-            self.__acc = acc
+            self.__acc = AccountService().account
             self.__data = {}
 
     def get_data(self, identifier: str):

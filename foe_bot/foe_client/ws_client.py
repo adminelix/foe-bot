@@ -7,20 +7,21 @@ from asyncio import exceptions
 import websockets
 
 from foe_bot.domain.account import Account
-from foe_bot.request import Request
-from foe_bot.response_mapper import map_to_account
+from foe_bot.foe_client.request import Request
+from foe_bot.foe_client.response_mapper import map_to_account
+from foe_bot.service.account_service import AccountService
 from foe_bot.util import foe_json_loads
 
 
 class WsClient(threading.Thread):
 
-    def __init__(self, acc: Account):
-        self.shutdown_flag = threading.Event()
+    def __init__(self, request: Request):
+        self.__shutdown_flag = threading.Event()
         self.__logger = logging.getLogger("ws_client")
-        self.__acc: Account = acc
+        self.__acc: Account = AccountService().account
         self.__is_connected: bool = False
         self.__req_queue: list[str] = []
-        self.__req_session: Request = Request()
+        self.__req_session: Request = request
         self.__connected_since: int = 0
         self.__reconnects: int = -1
         self.__loop = asyncio.new_event_loop()
@@ -30,6 +31,9 @@ class WsClient(threading.Thread):
     def run(self):
         asyncio.set_event_loop(self.__loop)
         self.__loop.run_forever()
+
+    def stop(self):
+        self.__shutdown_flag.set()
 
     async def socket(self):
         header = self.__get_header()
@@ -50,7 +54,7 @@ class WsClient(threading.Thread):
                     self.__connected_since = int(time.time())
                     self.__register_chats()
 
-                while not self.shutdown_flag.is_set():
+                while not self.__shutdown_flag.is_set():
                     if len(self.__req_queue) != 0:
                         body = self.__req_queue.pop(0)
                         await websocket.send(body)

@@ -3,8 +3,8 @@ import json
 from pytest_assert_utils import util
 
 from foe_bot.domain.account import Account
-from foe_bot.request import Request
-from foe_bot.response_mapper import map_to_account
+from foe_bot.foe_client.request import Request
+from foe_bot.foe_client.response_mapper import map_to_account
 
 
 def test_sample_request():

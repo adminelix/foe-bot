@@ -48,7 +48,7 @@ def map_of_other_tavern_states(list_: list[OtherTavernState]) -> dict[int, Other
 
 
 @attr.define
-class Account:
+class Account(object):
     user_name: str = attr.ib(default=None)
     city_user_data: CityUserData = attr.attrib(default=None)
     city_map: CityMap = attr.attrib(default=None)

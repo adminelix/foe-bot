@@ -84,8 +84,10 @@ def __map(acc: Account, **kwargs) -> None:
 
     elif ('OtherPlayerService' == kwargs['requestClass']
           and kwargs['requestMethod'] == 'getEventsPaginated'):
-        acc.put_social_interaction_events(structure(kwargs['responseData']['events'], list[SocialInteractionEvent]))
         # TODO consider towerRankings ?
+        event_ids = acc.events.keys()
+        events = [event for event in kwargs['responseData']['events'] if event['id'] not in event_ids]
+        acc.put_social_interaction_events(structure(events, list[SocialInteractionEvent]))
 
     elif ('OtherPlayerService' == kwargs['requestClass']
           and kwargs['requestMethod'] == 'newEvent'):

@@ -1,26 +1,41 @@
 import json
 import logging
+import threading
 import time
 
-from foe_bot.domain.account import Account
-from foe_bot.request import Request
-from foe_bot.response_mapper import map_to_account
-from foe_bot.ws_client import WsClient
+from foe_bot.foe_client.request import Request
+from foe_bot.foe_client.response_mapper import map_to_account
+from foe_bot.foe_client.ws_client import WsClient
+from foe_bot.service.account_service import AccountService
 
 
-class LogService:
+class LogService(threading.Thread):
 
-    def __init__(self, acc: Account, ws_client: WsClient):
-        self.__acc = acc
+    def __init__(self, ws_client: WsClient, request: Request):
+        super().__init__()
+        self.__shutdown_flag = threading.Event()
+        self.__logger = logging.getLogger(self.__class__.__name__)
+        self.__acc = AccountService().account
         self.__ws_client = ws_client
         self.__log_state_interval: int = 300
         self.__last_log_state: int = 0
         self.__log_performance_metrics_interval: int = 3600
         self.__last_log_performance_metrics: int = int(time.time()) + self.__log_performance_metrics_interval
-        self.__request_session = Request()
-        self.__logger = logging.getLogger(self.__class__.__name__)
+        self.__request_session = request
 
-    def log_state(self):
+    def run(self):
+        while not self.__shutdown_flag.is_set():
+            self.do()
+            time.sleep(0.5)
+
+    def do(self):
+        self._log_state()
+        self._log_performance_metrics()
+
+    def stop(self):
+        self.__shutdown_flag.set()
+
+    def _log_state(self):
         reconnects = self.__ws_client.reconnects
         connection_time = self.__ws_client.connection_time
         # doubles interval if socket is connected longer than 900s
@@ -39,7 +54,7 @@ class LogService:
             self.__logger.info(f'sent socketServer logState with connectedTime: {connection_time} '
                                f'and reconnects: {reconnects}')
 
-    def log_performance_metrics(self):
+    def _log_performance_metrics(self):
         now = int(time.time())
         if now > self.__last_log_performance_metrics + self.__log_performance_metrics_interval:
             raw_body = self.__get_logPerformanceMetrics_body()

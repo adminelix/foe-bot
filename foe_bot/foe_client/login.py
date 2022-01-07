@@ -12,8 +12,6 @@ from seleniumwire import webdriver
 
 from foe_bot.util import foe_json_loads
 
-logger = logging.getLogger("login")
-
 
 class Login:
     def __init__(self, lang, world):
@@ -23,7 +21,7 @@ class Login:
         self.retries = 0
 
     def login(self, username, password):
-        logger.info("logging in")
+        self.__logger.info("logging in")
 
         options = Options()
         options.add_argument("--headless")
