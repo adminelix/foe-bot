@@ -23,8 +23,8 @@ class Client:
 
         if not Client.__shared_state:
             self.__logger: logging.Logger = logging.getLogger(self.__class__.__name__)
-            self.__relog_in = 0
             self.__setup()
+            self.__relog_in = 0
 
     def send(self, klass: str, method: str, data) -> bool:
         body = self.__session.create_rest_body(klass, method, data)
