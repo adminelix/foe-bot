@@ -24,8 +24,9 @@ class Login:
         self.__logger.info("logging in")
 
         options = Options()
-        # options.add_argument("--headless")
+        options.add_argument("--headless")
         driver = webdriver.Firefox(options=options)
+        # blocks creation of websocket that would increase the request counter
         driver.rewrite_rules = [(r'.*/socket/$', 'https://localhost:9876/')]
 
         try:
