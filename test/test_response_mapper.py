@@ -41,6 +41,37 @@ def test_pickup_production():
     assert acc.city_map.entities[85].state.next_state_transition_at == 1639507690
 
 
+def test_unlock_chair():
+    acc = load_startup()
+
+    u = open('unlock_chair_response.json')
+    data = foe_json_loads(u.read())
+    map_(acc, *data)
+
+    assert acc.own_tavern.view.unlockedChairs == 5
+
+
+def test_unlock_table():
+    acc = load_startup()
+
+    u = open('unlock_table_response.json')
+    data = foe_json_loads(u.read())
+    map_(acc, *data)
+
+    assert acc.own_tavern.view.tableLevel == 2
+
+
+def test_unlock_customization():
+    acc = load_startup()
+
+    u = open('unlock_customization_response.json')
+    data = foe_json_loads(u.read())
+    map_(acc, *data)
+
+    assert len(acc.own_tavern.unlockedCustomizationIds) == 4
+    assert 'tray_1' in acc.own_tavern.unlockedCustomizationIds
+
+
 def load_startup():
     f = open('startup.json')
     data = foe_json_loads(f.read())
