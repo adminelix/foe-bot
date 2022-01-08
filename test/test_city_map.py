@@ -7,7 +7,7 @@ from foe_bot.util import foe_json_loads
 
 
 def test_process():
-    f = open('startup.json')
+    f = open('test_data/startup.json')
     data = foe_json_loads(f.read())
 
     startup_service_data = json.dumps(data[30]['responseData']['city_map'])

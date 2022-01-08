@@ -19,7 +19,7 @@ def test_start_production():
     ent: CityMapEntity = acc.city_map.entities[50]
     assert ent.state.klass == "ProductionFinishedState"
 
-    u = open('start_production_response.json')
+    u = open('test_data/start_production_response.json')
     data = foe_json_loads(u.read())
 
     map_(acc, *data)
@@ -33,7 +33,7 @@ def test_pickup_production():
 
     assert acc.city_map.entities[85].state.klass == "ProductionFinishedState"
 
-    u = open('pickup_production_response.json')
+    u = open('test_data/pickup_production_response.json')
     data = foe_json_loads(u.read())
     map_(acc, *data)
 
@@ -44,7 +44,7 @@ def test_pickup_production():
 def test_unlock_chair():
     acc = load_startup()
 
-    u = open('unlock_chair_response.json')
+    u = open('test_data/unlock_chair_response.json')
     data = foe_json_loads(u.read())
     map_(acc, *data)
 
@@ -54,7 +54,7 @@ def test_unlock_chair():
 def test_unlock_table():
     acc = load_startup()
 
-    u = open('unlock_table_response.json')
+    u = open('test_data/unlock_table_response.json')
     data = foe_json_loads(u.read())
     map_(acc, *data)
 
@@ -64,7 +64,7 @@ def test_unlock_table():
 def test_unlock_customization():
     acc = load_startup()
 
-    u = open('unlock_customization_response.json')
+    u = open('test_data/unlock_customization_response.json')
     data = foe_json_loads(u.read())
     map_(acc, *data)
 
@@ -73,7 +73,7 @@ def test_unlock_customization():
 
 
 def load_startup():
-    f = open('startup.json')
+    f = open('test_data/startup.json')
     data = foe_json_loads(f.read())
     acc = map_(Account(), *data)
     return acc
