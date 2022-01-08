@@ -17,7 +17,7 @@ class WsClient(threading.Thread):
 
     def __init__(self, request: Request):
         self.__shutdown_flag = threading.Event()
-        self.__logger = logging.getLogger("ws_client")
+        self.__logger = logging.getLogger(self.__class__.__name__)
         self.__acc: Account = AccountService().account
         self.__is_connected: bool = False
         self.__req_queue: list[str] = []

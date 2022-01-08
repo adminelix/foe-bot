@@ -16,7 +16,7 @@ from foe_bot.util import foe_json_loads
 class Request:
 
     def __init__(self):
-        self.__logger: logging.Logger = logging.getLogger("Request")
+        self.__logger = logging.getLogger(self.__class__.__name__)
         self.__wait_between_req: float = 0
         self.initial_response: list[dict]
         self.__session: Session
