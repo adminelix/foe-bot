@@ -40,7 +40,7 @@ class LogService(threading.Thread):
         reconnects = self.__ws_client.reconnects
         connection_time = self.__ws_client.connection_time
         # doubles interval if socket is connected longer than 900s
-        interval = self.__log_state_interval if connection_time < 1500 else 2 * self.__log_state_interval
+        interval = self.__log_state_interval if self.__last_log_state < 900 else 2 * self.__log_state_interval
 
         if reconnects >= 0 and connection_time > self.__last_log_state + interval:
             raw_body = self.__get_logstate_body()

@@ -102,7 +102,7 @@ def __map(acc: Account, **kwargs) -> None:
             acc.put_other_tavern_states([structure(kwargs['responseData'], OtherTavernState)])
 
     elif ('FriendsTavernService' == kwargs['requestClass']
-          and kwargs['requestMethod'] == 'getOwnTavern'):
+          and kwargs['requestMethod'] in ['getOwnTavern', 'unlockChair', 'upgradeTable', 'unlockCustomization']):
         acc.own_tavern = structure(kwargs['responseData'], OwnTavern)
 
     elif ('FriendsTavernService' == kwargs['requestClass']
