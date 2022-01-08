@@ -60,6 +60,8 @@ class OtherPlayerService(AbstractService):
                 if success:
                     self.__logger.info(f"accept friend invite from {player.name}")
 
+            self._refresh_player()
+
     def _send_friend_invites(self):
         now = int(time.time())
         player_map = self._acc.players
