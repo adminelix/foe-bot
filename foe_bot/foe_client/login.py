@@ -26,16 +26,14 @@ class Login:
         options = Options()
         options.add_argument("--headless")
         driver = webdriver.Firefox(options=options)
+        # blocks creation of websocket that would increase the request counter
         driver.rewrite_rules = [(r'.*/socket/$', 'https://localhost:9876/')]
 
         try:
             driver.get(self.BASE_URL)
-            driver.refresh()  # login frame is sometimes bugged and results in connection error
             driver.find_element(By.ID, 'login_userid').send_keys(username)
             driver.find_element(By.ID, 'login_password').send_keys(password)
             driver.find_element(By.ID, 'login_Login').click()
-
-            driver.refresh()
 
             WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable((By.ID, 'play_now_button')))

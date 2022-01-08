@@ -6,4 +6,6 @@ relog_leeway: 120
 deepl_api_key: xxx
 other_player_service:
     moppel: true
-    manage_friends: true
+    manage_friends: false
+friends_tavern_service:
+    upgrade: false

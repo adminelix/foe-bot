@@ -1,5 +1,6 @@
 import json
 import logging
+import math
 import threading
 import time
 
@@ -38,8 +39,10 @@ class LogService(threading.Thread):
     def _log_state(self):
         reconnects = self.__ws_client.reconnects
         connection_time = self.__ws_client.connection_time
-        # doubles interval if socket is connected longer than 900s
-        interval = self.__log_state_interval if connection_time < 900 else 2 * self.__log_state_interval
+        interval_pools = self.__acc.connection_state_logging.intervalPools
+        interval = list(interval_pools.values())[0]
+        for key in interval_pools.keys():
+            interval = interval_pools[key] if self.__round_down(connection_time) > int(key) else interval
 
         if reconnects >= 0 and connection_time > self.__last_log_state + interval:
             raw_body = self.__get_logstate_body()
@@ -50,7 +53,7 @@ class LogService(threading.Thread):
             response, _ = self.__request_session.send(body)
             map_to_account(self.__acc, *response)
 
-            self.__last_log_state = int(time.time())
+            self.__last_log_state = self.__round_down(connection_time)
             self.__logger.info(f'sent socketServer logState with connectedTime: {connection_time} '
                                f'and reconnects: {reconnects}')
 
@@ -88,3 +91,7 @@ class LogService(threading.Thread):
             "vram": 0
         }"""
         return json.loads(string)
+
+    @staticmethod
+    def __round_down(x) -> int:
+        return int(math.floor(x / 100.0)) * 100

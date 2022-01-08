@@ -19,12 +19,12 @@ class Client:
     __shared_state = {}
 
     def __init__(self):
+        self.__relog_in = 0
         self.__dict__ = self.__shared_state
 
         if not Client.__shared_state:
             self.__logger: logging.Logger = logging.getLogger(self.__class__.__name__)
             self.__setup()
-            self.__relog_in = 0
 
     def send(self, klass: str, method: str, data) -> bool:
         body = self.__session.create_rest_body(klass, method, data)
@@ -48,11 +48,11 @@ class Client:
             if os.path.isfile(session_file):
                 os.remove(session_file)
             now = int(time.time())
+            self.tear_down()
             if self.__relog_in < 0:
-                self.tear_down()
                 leeway = cfg.get('relog_leeway')
                 self.__relog_in = now + leeway
-                self.__logger.info(f"session expired, relog in {leeway}")
+                self.__logger.info(f"session expired, relog in {leeway}s")
             elif self.__relog_in < now:
                 self.__setup()
 

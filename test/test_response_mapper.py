@@ -19,7 +19,7 @@ def test_start_production():
     ent: CityMapEntity = acc.city_map.entities[50]
     assert ent.state.klass == "ProductionFinishedState"
 
-    u = open('start_production.json')
+    u = open('test_data/start_production_response.json')
     data = foe_json_loads(u.read())
 
     map_(acc, *data)
@@ -33,7 +33,7 @@ def test_pickup_production():
 
     assert acc.city_map.entities[85].state.klass == "ProductionFinishedState"
 
-    u = open('pickup_production.json')
+    u = open('test_data/pickup_production_response.json')
     data = foe_json_loads(u.read())
     map_(acc, *data)
 
@@ -41,8 +41,47 @@ def test_pickup_production():
     assert acc.city_map.entities[85].state.next_state_transition_at == 1639507690
 
 
+def test_unlock_chair():
+    acc = load_startup()
+
+    u = open('test_data/unlock_chair_response.json')
+    data = foe_json_loads(u.read())
+    map_(acc, *data)
+
+    assert acc.own_tavern.view.unlockedChairs == 5
+
+
+def test_unlock_table():
+    acc = load_startup()
+
+    u = open('test_data/unlock_table_response.json')
+    data = foe_json_loads(u.read())
+    map_(acc, *data)
+
+    assert acc.own_tavern.view.tableLevel == 2
+
+
+def test_unlock_customization():
+    acc = load_startup()
+
+    u = open('test_data/unlock_customization_response.json')
+    data = foe_json_loads(u.read())
+    map_(acc, *data)
+
+    assert len(acc.own_tavern.unlockedCustomizationIds) == 4
+    assert 'tray_1' in acc.own_tavern.unlockedCustomizationIds
+
+
+def test_new_message_event_response():
+    acc = load_startup()
+
+    u = open('test_data/new_message_event_response.json')
+    data = foe_json_loads(u.read())
+    map_(acc, *data)
+
+
 def load_startup():
-    f = open('startup.json')
+    f = open('test_data/startup.json')
     data = foe_json_loads(f.read())
     acc = map_(Account(), *data)
     return acc

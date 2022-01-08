@@ -3,6 +3,6 @@ import attr
 
 @attr.define
 class ConnectionStateLogging:
-    intervalPools: dict[str, int]
+    intervalPools: dict[int, int]
     klass: str = attr.ib(default=None)
 

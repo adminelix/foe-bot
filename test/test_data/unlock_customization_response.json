@@ -1,0 +1,50 @@
+[
+    {
+        "responseData": {
+            "view": {
+                "tableLevel": 1,
+                "unlockedChairs": 5,
+                "visitors": [
+                    {
+                        "player_id": 850934251,
+                        "name": "fez112",
+                        "avatar": "portrait_id_1",
+                        "__class__": "BasePlayer"
+                    },
+                    {
+                        "player_id": 850896433,
+                        "name": "ORCA der Große",
+                        "avatar": "portrait_id_7",
+                        "__class__": "BasePlayer"
+                    },
+                    {
+                        "player_id": 850952403,
+                        "name": "hrwhrw",
+                        "avatar": "portrait_id_8",
+                        "__class__": "BasePlayer"
+                    }
+                ],
+                "selectedCustomizationIds": {
+                    "tablecloth": "tablecloth_0",
+                    "tray": "tray_1",
+                    "flooring": "flooring_0"
+                },
+                "tavernSilverBase": 52,
+                "tavernSilverAdd": 2,
+                "__class__": "TavernView"
+            },
+            "unlockedCustomizationIds": [
+                "tablecloth_0",
+                "tray_0",
+                "flooring_0",
+                "tray_1"
+            ],
+            "friendCount": 9,
+            "__class__": "OwnTavern"
+        },
+        "requestClass": "FriendsTavernService",
+        "requestMethod": "unlockCustomization",
+        "requestId": 20,
+        "__class__": "ServerResponse"
+    }
+]
