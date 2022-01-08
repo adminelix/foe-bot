@@ -19,7 +19,7 @@ def test_start_production():
     ent: CityMapEntity = acc.city_map.entities[50]
     assert ent.state.klass == "ProductionFinishedState"
 
-    u = open('start_production.json')
+    u = open('start_production_response.json')
     data = foe_json_loads(u.read())
 
     map_(acc, *data)
@@ -33,7 +33,7 @@ def test_pickup_production():
 
     assert acc.city_map.entities[85].state.klass == "ProductionFinishedState"
 
-    u = open('pickup_production.json')
+    u = open('pickup_production_response.json')
     data = foe_json_loads(u.read())
     map_(acc, *data)
 
