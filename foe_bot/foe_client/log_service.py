@@ -40,9 +40,9 @@ class LogService(threading.Thread):
         reconnects = self.__ws_client.reconnects
         connection_time = self.__ws_client.connection_time
         interval_pools = self.__acc.connection_state_logging.intervalPools
-        interval = 0
+        interval = list(interval_pools.values())[0]
         for key in interval_pools.keys():
-            interval = interval_pools[key] if self.__round_down(connection_time) >= int(key) else interval
+            interval = interval_pools[key] if self.__round_down(connection_time) > int(key) else interval
 
         if reconnects >= 0 and connection_time > self.__last_log_state + interval:
             raw_body = self.__get_logstate_body()
