@@ -72,6 +72,14 @@ def test_unlock_customization():
     assert 'tray_1' in acc.own_tavern.unlockedCustomizationIds
 
 
+def test_new_message_event_response():
+    acc = load_startup()
+
+    u = open('test_data/new_message_event_response.json')
+    data = foe_json_loads(u.read())
+    map_(acc, *data)
+
+
 def load_startup():
     f = open('test_data/startup.json')
     data = foe_json_loads(f.read())

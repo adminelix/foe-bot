@@ -1,0 +1,18 @@
+[
+    {
+        "responseData": {
+            "messageContent": "Hallo was nützt di Gilden Kasse",
+            "other_player": {
+                "canSabotage": false,
+                "showAvatarFrame": false,
+                "name": "Raffael 2011",
+                "avatar": "portrait_id_1",
+                "klass": "OtherPlayer"
+            },
+            "klass": "MessageEvent"
+        },
+        "requestClass": "OtherPlayerService",
+        "requestMethod": "newEvent",
+        "klass": "ServerResponse"
+    }
+]
