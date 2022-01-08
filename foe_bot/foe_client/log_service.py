@@ -92,4 +92,4 @@ class LogService(threading.Thread):
 
     @staticmethod
     def __round_down(x) -> int:
-        return int(math.ceil(x / 100.0)) * 100
+        return int(math.floor(x / 100.0)) * 100
