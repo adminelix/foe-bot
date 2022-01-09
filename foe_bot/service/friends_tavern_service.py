@@ -105,3 +105,5 @@ class FriendsTavernService(AbstractService):
         now = int(time.time())
         if force or now > self.__last_refresh + self.__refresh_interval:
             self._client.send('FriendsTavernService', 'getOwnTavern', [])
+            self.__last_refresh = now
+            self.__logger.info("refreshed tavern")
