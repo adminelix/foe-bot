@@ -17,9 +17,10 @@ class Request:
 
     def __init__(self):
         self.__logger = logging.getLogger(self.__class__.__name__)
+        self.__world = cfg['world']
         self.__wait_between_req: float = 0
-        self.initial_response: list[dict]
         self.__session: Session
+        self.initial_response: list[dict]
         self.login()
 
     def send(self, body: str):
@@ -30,8 +31,8 @@ class Request:
         header = {'Signature': signature}
 
         try:
-            response = self.__session.post('https://de14.forgeofempires.com/game/json', data=body, params=query,
-                                           headers=header)
+            response = self.__session.post(f"https://{self.__world}.forgeofempires.com/game/json", data=body,
+                                           params=query, headers=header)
         except requests.exceptions.ConnectionError:
             return [], False
 
@@ -75,7 +76,7 @@ class Request:
         return json.dumps(raw_body, separators=(',', ':'))
 
     def login(self):
-        self.__session, self.initial_response = Login(cfg['lang'], cfg['world']).login(cfg['username'], cfg['password'])
+        self.__session, self.initial_response = Login(cfg['lang'], self.__world).login(cfg['username'], cfg['password'])
 
     def __get_and_increment_request_id(self):
         request_id = self.__session.cookies['request_id'] + 1
