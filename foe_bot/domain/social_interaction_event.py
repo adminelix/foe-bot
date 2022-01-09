@@ -31,6 +31,8 @@ class SocialInteractionEvent:
     new_era: int = attr.ib(default=None)
     battle_id: int = attr.ib(default=None)
     status: int = attr.ib(default=None)
+    great_building_name = attr.ib(default=None)
+    rank = attr.ib(default=None)
     klass: str = attr.ib(default=None)
 
     @staticmethod
