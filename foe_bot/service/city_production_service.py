@@ -27,12 +27,14 @@ class CityProductionService(AbstractService):
 
     # TODO take care about if strategy points >= 100 ?
     def _pickup(self):
+        types: list[str] = ['production', 'military', 'goods']
         entities = self._acc.city_map.entities
         now = int(time.time())
 
         filtered_keys = [key for (key, value) in entities.items()
-                         if value.state.next_state_transition_at <= now
-                         or value.state.klass == 'ProductionFinishedState']
+                         if value.type in types and (
+                             value.state.next_state_transition_at <= now
+                             or value.state.klass == 'ProductionFinishedState')]
 
         if len(filtered_keys) > 0:
             counter = 0
