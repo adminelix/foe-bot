@@ -132,7 +132,7 @@ class OtherPlayerService(AbstractService):
             self.__refresh_clan_member_list()
             self.__last_players_refresh = now
 
-            self.__logger.info(f"players refreshed")
+            self.__logger.info(f"refreshed players")
 
     def _update_events(self):
         now = int(time.time())
