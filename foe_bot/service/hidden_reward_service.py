@@ -1,5 +1,6 @@
 import logging
 
+from foe_bot import cfg
 from foe_bot.service.abstract_service import AbstractService
 
 
@@ -8,9 +9,11 @@ class HiddenRewardService(AbstractService):
     def __init__(self):
         super().__init__()
         self.__logger = logging.getLogger(self.__class__.__name__)
+        self.__config = cfg.get('hidden_reward_service')
 
     def do(self):
-        self._collect()
+        if self.__config.get('collect', None):
+            self._collect()
 
     def _collect(self):
         now = self._acc.time.time

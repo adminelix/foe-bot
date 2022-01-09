@@ -5,7 +5,15 @@ world: de14
 relog_leeway: 120
 deepl_api_key: xxx
 other_player_service:
-    moppel: true
+    moppel: false
     manage_friends: false
 friends_tavern_service:
+    collect: false
+    visit: false
     upgrade: false
+hidden_reward_service:
+    collect: false
+city_production_service:
+    pickup: false
+    produce: false
+    unlock_unit_slots: false

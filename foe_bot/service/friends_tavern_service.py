@@ -18,9 +18,11 @@ class FriendsTavernService(AbstractService):
 
     def do(self) -> None:
         # FIXME check if tavern is unlocked
-        self._collect()
-        self._visit()
         self._get_config()
+        if self.__config.get('collect', None):
+            self._collect()
+        if self.__config.get('visit', None):
+            self._visit()
         if self.__config.get('upgrade', None):
             self._extend_tavern()
 
