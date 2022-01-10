@@ -58,6 +58,10 @@ class OtherPlayerService(AbstractService):
                 success = self._client.send('FriendService', 'acceptInvitation', [player.player_id])
 
                 if success:
+                    player_log = self._acc.player_logs.get(player.player_id, PlayerLog(player.player_id))
+                    player_log.invited_at = int(time.time())
+                    player_log.invite_blocked_until = player_log.invited_at + (60 * 60 * 24 * 30)
+                    self._acc.put_player_log([player_log])
                     self.__logger.info(f"accept friend invite from {player.name}")
 
             self._refresh_player()
@@ -194,14 +198,22 @@ class OtherPlayerService(AbstractService):
         player_map = self._acc.players
         events = self._acc.events
         friends = {key: player for (key, player) in player_map.items() if player.is_friend}
+
         moppeling_player_ids = set([event.other_player.player_id for event in events.values()
                                     if event.date > before_7_days
                                     and (event.interaction_type in ['motivate', 'polish']
                                          or 'friend_tavern_sat_down' in event.type)])
+
         fresh_friendships_ids = set([event.other_player.player_id for event in events.values() if
                                      event.type == 'friend_accepted' and event.date > before_7_days])
+
+        fresh_friendships_ids.update(
+            [log.player_id for log in list(self._acc.player_logs.values()) if log.invited_at > before_7_days])
+
         useless_friends = [player for player in friends.values() if
-                           player.player_id not in moppeling_player_ids and player.player_id not in fresh_friendships_ids]
+                           player.player_id not in moppeling_player_ids
+                           and player.player_id not in fresh_friendships_ids]
+
         return useless_friends
 
     def __refresh_neighbor_list(self):
