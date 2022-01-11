@@ -19,10 +19,10 @@ class Client:
     __shared_state = {}
 
     def __init__(self):
-        self.__relog_in = 0
         self.__dict__ = self.__shared_state
+        self.__relog_in = 0
 
-        if not Client.__shared_state:
+        if len(Client.__shared_state) < 2:
             self.__logger: logging.Logger = logging.getLogger(self.__class__.__name__)
             self.__setup()
 
@@ -70,7 +70,10 @@ class Client:
         time.sleep(1)
         self.__log_service = LogService(self.__ws_client, self.__session)
         self.__log_service.start()
-        self.__relog_in = -1
+        if self.is_connected:
+            self.__relog_in = -1
+        else:
+            self.__relog_in = 0
 
     @classmethod
     def __load_client(cls) -> Request:
