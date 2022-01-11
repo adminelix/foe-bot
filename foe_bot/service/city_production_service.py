@@ -27,7 +27,7 @@ class CityProductionService(AbstractService):
 
     # TODO take care about if strategy points >= 100 ?
     def _pickup(self):
-        types: list[str] = ['production', 'military', 'goods']
+        types: list[str] = ['production', 'military', 'goods', 'greatbuilding', 'residential', 'main_building']
         entities = self._acc.city_map.entities
         now = int(time.time())
 
