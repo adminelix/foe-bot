@@ -40,7 +40,7 @@ class CityProductionService(AbstractService):
             counter = 0
             chunks = list(random_chunk(filtered_keys, min_chunk=1, max_chunk=10))
             for chunk in chunks:
-                success = self._client.send('CityProductionService', 'pickupProduction', [chunk])
+                success = self._client.send_and_map('CityProductionService', 'pickupProduction', [chunk])
                 if success:
                     counter += len(chunk)
 
@@ -56,7 +56,7 @@ class CityProductionService(AbstractService):
         if len(filtered_keys) > 0:
             counter = 0
             for key in filtered_keys:
-                success = self._client.send('CityProductionService', 'removePlunderedProduction', [key])
+                success = self._client.send_and_map('CityProductionService', 'removePlunderedProduction', [key])
                 if success:
                     counter += 1
             if counter > 0:
@@ -78,7 +78,7 @@ class CityProductionService(AbstractService):
 
         for value in filtered_entities.values():
             if value.type == 'production':
-                success = self._client.send('CityProductionService', 'startProduction', [value.id, 1])
+                success = self._client.send_and_map('CityProductionService', 'startProduction', [value.id, 1])
                 if success:
                     counter += 1
 
@@ -89,7 +89,8 @@ class CityProductionService(AbstractService):
 
                 if (costs['money'] < self._acc.resources.money * budget_factor
                     and costs['supplies'] < self._acc.resources.supplies * budget_factor):
-                    success = self._client.send('CityProductionService', 'startProduction', [value.id, slot + 1])
+                    success = self._client.send_and_map('CityProductionService', 'startProduction',
+                                                        [value.id, slot + 1])
                     if success:
                         counter += 1
 
@@ -106,8 +107,8 @@ class CityProductionService(AbstractService):
                             and costs['population'] < self._acc.resources.population * budget_factor
                             and costs['premium'] == 0):
                             nr_ = 0 if 'nr' not in slot.keys() else slot['nr']
-                            success = self._client.send('CityProductionService', 'startProduction',
-                                                        [value.id, nr_])
+                            success = self._client.send_and_map('CityProductionService', 'startProduction',
+                                                                [value.id, nr_])
                             if success:
                                 counter += 1
                             break
@@ -129,8 +130,8 @@ class CityProductionService(AbstractService):
                         and slot['unlockCosts']['resources'][
                             'supplies'] <= self._acc.resources.supplies + budget_factor):
                         # TODO what is the meaning of 0 in request body? - it was 0 at everytime
-                        success = self._client.send('CityProductionService', 'unlockSlot',
-                                                    [slot['entity_id'], slot['nr'], 0])
+                        success = self._client.send_and_map('CityProductionService', 'unlockSlot',
+                                                            [slot['entity_id'], slot['nr'], 0])
 
                         if success:
                             self.__logger.info(f"unlocked slot {slot['nr']} for buidling {value.cityentity_id}")

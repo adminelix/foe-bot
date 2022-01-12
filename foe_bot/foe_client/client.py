@@ -26,12 +26,17 @@ class Client:
         self.__relog_in = 0
         self.__is_reload_needed = False
 
-    def send(self, klass: str, method: str, data) -> bool:
+    def send_and_map(self, klass: str, method: str, data) -> bool:
         body = self.__session.create_rest_body(klass, method, data)
         response, success = self.__session.send(body)  # TODO extract success validation to here
         self.__is_reload_needed = self.__get_reload_need(response)
         map_to_account(self.__acc, *response)
         return success
+
+    def send(self, klass: str, method: str, data):
+        body = self.__session.create_rest_body(klass, method, data)
+        response, success = self.__session.send(body)  # TODO extract success validation to here
+        return response
 
     def save_session(self) -> None:
         os.makedirs(os.path.dirname(self.__session_file), exist_ok=True)

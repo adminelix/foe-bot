@@ -29,7 +29,7 @@ class FriendsTavernService(AbstractService):
         own_tavern_state = self._acc.other_tavern_states.get(self._acc.city_user_data.player_id, None)
 
         if own_tavern_state and own_tavern_state.unlockedChairCount == own_tavern_state.sittingPlayerCount:
-            success = self._client.send('FriendsTavernService', 'collectReward', [])
+            success = self._client.send_and_map('FriendsTavernService', 'collectReward', [])
 
             if success:
                 self.__logger.info("collected tavern rewards")
@@ -42,7 +42,7 @@ class FriendsTavernService(AbstractService):
                                not state.state and state.sittingPlayerCount < state.unlockedChairCount]
         counter = 0
         for id_ in player_ids_to_visit:
-            success = self._client.send('FriendsTavernService', 'getOtherTavern', [id_])
+            success = self._client.send_and_map('FriendsTavernService', 'getOtherTavern', [id_])
 
             if success:
                 counter += 1
@@ -52,7 +52,7 @@ class FriendsTavernService(AbstractService):
 
     def _get_config(self) -> None:
         if not self._acc.tavern_config:
-            self._client.send('FriendsTavernService', 'getConfig', [])
+            self._client.send_and_map('FriendsTavernService', 'getConfig', [])
 
     def _extend_tavern(self) -> None:
         self.__refresh_own_tavern(False)
@@ -72,7 +72,7 @@ class FriendsTavernService(AbstractService):
                 table_level].normalCosts.resources.tavern_silver
 
             if tavern_silver_costs < self._acc.resources.tavern_silver * self.__budget_factor:
-                success = self._client.send('FriendsTavernService', 'upgradeTable', [False])
+                success = self._client.send_and_map('FriendsTavernService', 'upgradeTable', [False])
                 if success:
                     self.__logger.info(f"unlocked table level {self._acc.own_tavern.view.tableLevel}")
 
@@ -85,7 +85,7 @@ class FriendsTavernService(AbstractService):
                 unlocked_chairs - 1].normalCosts.resources.tavern_silver
 
             if tavern_silver_costs < self._acc.resources.tavern_silver * self.__budget_factor:
-                success = self._client.send('FriendsTavernService', 'unlockChair', [False])
+                success = self._client.send_and_map('FriendsTavernService', 'unlockChair', [False])
                 if success:
                     self.__logger.info(f"unlocked chair {self._acc.own_tavern.view.unlockedChairs}")
 
@@ -98,13 +98,14 @@ class FriendsTavernService(AbstractService):
         for customization in unlockable_customizations:
             tavern_silver_costs = customization.unlockCosts.normalCosts.resources.tavern_silver
             if tavern_silver_costs < self._acc.resources.tavern_silver * self.__budget_factor:
-                success = self._client.send('FriendsTavernService', 'unlockCustomization', [customization.id, False])
+                success = self._client.send_and_map('FriendsTavernService', 'unlockCustomization',
+                                                    [customization.id, False])
                 if success:
                     self.__logger.info(f"unlocked customization '{customization.name}'")
 
     def __refresh_own_tavern(self, force: bool) -> None:
         now = int(time.time())
         if force or now > self.__last_refresh + self.__refresh_interval:
-            self._client.send('FriendsTavernService', 'getOwnTavern', [])
+            self._client.send_and_map('FriendsTavernService', 'getOwnTavern', [])
             self.__last_refresh = now
             self.__logger.info("refreshed tavern")
