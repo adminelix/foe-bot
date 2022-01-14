@@ -95,7 +95,7 @@ def __map(acc: Account, **kwargs) -> None:
         acc.put_social_interaction_events([structure(kwargs['responseData'], SocialInteractionEvent)])
 
     elif ('FriendsTavernService' == kwargs['requestClass']
-          and kwargs['requestMethod'] in ['getOtherTavernStates', 'getOtherTavernState']):
+          and kwargs['requestMethod'] in ['getOtherTavernStates', 'getOtherTavernState', 'receiveInvite']):
         if type(kwargs['responseData']) == list:
             acc.put_other_tavern_states(structure(kwargs['responseData'], list[OtherTavernState]))
         else:
