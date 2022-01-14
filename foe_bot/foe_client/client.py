@@ -21,14 +21,16 @@ class Client:
     def __init__(self):
         self.__dict__ = self.__shared_state
         self.__relog_in = 0
+        self.__is_reload_needed = False
 
-        if len(Client.__shared_state) < 2:
+        if len(Client.__shared_state) < 3:
             self.__logger: logging.Logger = logging.getLogger(self.__class__.__name__)
             self.__setup()
 
     def send(self, klass: str, method: str, data) -> bool:
         body = self.__session.create_rest_body(klass, method, data)
         response, success = self.__session.send(body)  # TODO extract success validation to here
+        self.__is_reload_needed = self.__get_reload_need(response)
         map_to_account(self.__acc, *response)
         return success
 
@@ -58,7 +60,7 @@ class Client:
 
     @property
     def is_connected(self) -> bool:
-        return self.__ws_client.is_connected
+        return self.__ws_client.is_connected and not self.__is_reload_needed
 
     def __setup(self):
         self.__acc: Account = AccountService().account
@@ -70,6 +72,7 @@ class Client:
         time.sleep(1)
         self.__log_service = LogService(self.__ws_client, self.__session)
         self.__log_service.start()
+        self.__is_reload_needed = False
         if self.is_connected:
             self.__relog_in = -1
         else:
@@ -83,3 +86,15 @@ class Client:
                 return session
         else:
             return Request()
+
+    def __get_reload_need(self, response) -> bool:
+        for data in response:
+            klass = data.get('requestClass', '')
+            method = data.get('requestMethod', '')
+            if data and klass == 'SessionService' and method == 'getSessionStatus':
+                reload_needed = data.get('responseData', dict()).get('isReloadNeeded', False)
+                if reload_needed:
+                    self.__logger.info("reload session needed")
+                return reload_needed
+
+        return False
