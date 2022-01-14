@@ -1,0 +1,9 @@
+{
+    "responseData": {
+        "isReloadNeeded": true,
+        "klass": "SessionStatus"
+    },
+    "requestClass": "SessionService",
+    "requestMethod": "getSessionStatus",
+    "klass": "ServerResponse"
+}
