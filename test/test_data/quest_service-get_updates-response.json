@@ -1,0 +1,496 @@
+[
+    {
+        "responseData": [
+            {
+                "id": 2200,
+                "windowTitle": "Haupt-Quest - Ragu Silvertongue",
+                "title": "Schnell handeln",
+                "type": "story",
+                "questGiver": {
+                    "id": "righthand",
+                    "name": "Ragu Silvertongue",
+                    "klass": "QuestGiver"
+                },
+                "priority": 2200,
+                "state": "accepted",
+                "successConditions": [
+                    {
+                        "id": 1,
+                        "iconType": "icon_quest_map_flag",
+                        "description": "West-Nagach in deinen Besitz bringen",
+                        "hint": "Erobere oder kaufe alle Sektoren von West-Nagach.",
+                        "hintIcon": "",
+                        "maxProgress": 1,
+                        "payload": [],
+                        "flags": [],
+                        "guidanceActions": [],
+                        "klass": "QuestSuccessCondition"
+                    }
+                ],
+                "successConditionGroups": [
+                    {
+                        "conditionIds": [
+                            1
+                        ],
+                        "type": "none",
+                        "klass": "SuccessConditionGroup"
+                    }
+                ],
+                "genericRewards": [
+                    {
+                        "id": "resource#money#2250",
+                        "name": "2.250 M\u00fcnzen",
+                        "description": "M\u00fcnzen sind eine wichtige Ressource im Spiel.",
+                        "iconAssetName": "large_coins",
+                        "flags": [
+                            "boosted"
+                        ],
+                        "type": "resource",
+                        "subType": "money",
+                        "amount": 2250,
+                        "klass": "GenericReward"
+                    }
+                ],
+                "headline": "Eure Majest\u00e4t!",
+                "description": "Hasdrubaal hat seine gro\u00dfe Armee verloren. Dies schw\u00e4cht ihn betr\u00e4chtlich - Ihr solltet Druck aus\u00fcben und West-Nagach einnehmen, die letzte Bastion vor seiner Heimatprovinz!",
+                "accomplishedHeadline": "Eure Majest\u00e4t!",
+                "accomplishedDescription": "Indem Ihr West-Nagach kontrolliert, erstreckt sich Euer Reich bis zur Heimatprovinz von Hasdrubaal Barkas. Nur noch ein kleiner Schritt ...",
+                "category": "story",
+                "context": "",
+                "flags": [],
+                "klass": "Quest"
+            },
+            {
+                "id": 41200,
+                "windowTitle": "Neben-Quest - Fernikus",
+                "title": "Errichte einen Triumphbogen",
+                "type": "normal",
+                "questGiver": {
+                    "id": "architect",
+                    "name": "Fernikus",
+                    "klass": "QuestGiver"
+                },
+                "priority": 41200,
+                "state": "accepted",
+                "successConditions": [
+                    {
+                        "id": 1,
+                        "iconType": "culture",
+                        "description": "Einen Triumphbogen errichten",
+                        "hint": "",
+                        "hintIcon": "",
+                        "maxProgress": 1,
+                        "payload": [],
+                        "flags": [],
+                        "guidanceActions": [],
+                        "klass": "QuestSuccessCondition"
+                    }
+                ],
+                "successConditionGroups": [
+                    {
+                        "conditionIds": [
+                            1
+                        ],
+                        "type": "none",
+                        "klass": "SuccessConditionGroup"
+                    }
+                ],
+                "genericRewards": [
+                    {
+                        "id": "resource#money#300",
+                        "name": "300 M\u00fcnzen",
+                        "description": "M\u00fcnzen sind eine wichtige Ressource im Spiel.",
+                        "iconAssetName": "small_coins",
+                        "flags": [
+                            "boosted"
+                        ],
+                        "type": "resource",
+                        "subType": "money",
+                        "amount": 300,
+                        "klass": "GenericReward"
+                    }
+                ],
+                "headline": "Eure Majest\u00e4t!",
+                "description": "W\u00e4re es nicht einfach wundervoll, einen Triumphbogen zu haben, an dem man Prozessionen und \u00c4hnliches veranstalten k\u00f6nnte? Bitte lasst mich einen bauen!",
+                "accomplishedHeadline": "Eure Majest\u00e4t!",
+                "accomplishedDescription": "Fantastisch! Es war ein Vergn\u00fcgen, den neuen Triumphbogen zu bauen! Ich hoffe, er gef\u00e4llt Euch und Ihr habt h\u00e4ufig Verwendung daf\u00fcr!",
+                "abortable": true,
+                "category": "story",
+                "context": "",
+                "flags": [],
+                "klass": "Quest"
+            },
+            {
+                "id": 604800,
+                "windowTitle": "Event-Quest - Cal Rogers",
+                "title": "Forge-Bowl 2022",
+                "type": "SeasonSpecial_forge_bowl_2022_rush",
+                "questGiver": {
+                    "id": "bowl_cal",
+                    "name": "Cal Rogers",
+                    "klass": "QuestGiver"
+                },
+                "priority": 604800,
+                "state": "accepted",
+                "successConditions": [
+                    {
+                        "id": 1,
+                        "iconType": "icon_supplies_plus",
+                        "description": "3.000 Vorr\u00e4te sammeln",
+                        "hint": "",
+                        "hintIcon": "",
+                        "currentProgress": 2685,
+                        "maxProgress": 3000,
+                        "payload": [],
+                        "flags": [],
+                        "guidanceActions": [],
+                        "klass": "QuestSuccessCondition"
+                    }
+                ],
+                "successConditionGroups": [
+                    {
+                        "conditionIds": [
+                            1
+                        ],
+                        "type": "none",
+                        "klass": "SuccessConditionGroup"
+                    }
+                ],
+                "genericRewards": [
+                    {
+                        "id": "resource#forge_bowl_footballs#80",
+                        "name": "80 Footballs",
+                        "description": "Verwende Footballs, um im Forge Bowl Event-Fenster mit deinem Team auf dem Feld voranzuschreiten.",
+                        "iconAssetName": "forge_bowl_footballs",
+                        "flags": [],
+                        "type": "resource",
+                        "subType": "forge_bowl_footballs",
+                        "amount": 80,
+                        "klass": "GenericReward"
+                    }
+                ],
+                "headline": "Hut hut!",
+                "description": "OMAHA! OMA\u2026 Oh, gut, dass Ihr hier seid! Cal Rogers hier, Quarterback der InnoForgers. Wir sind f\u00fcr den Forge-Bowl wieder in testibo2s Stadt und es freut uns, Euch wieder als Trainer und Besitzer des Teams zu haben. Seid Ihr f\u00fcr den Frontalangriff bereit?",
+                "accomplishedHeadline": "Hey, Trainer!",
+                "accomplishedDescription": "Das war ein tolles Spiel! Nimm diese Footballs und dann probieren wir eine neue Taktik auf dem Feld aus, um mehr Preise zu gewinnen!",
+                "maxSeasonProgress": 35,
+                "category": "events",
+                "context": "forge_bowl_event",
+                "flags": [],
+                "klass": "Quest"
+            },
+            {
+                "id": 604880,
+                "windowTitle": "Event-Quest - Cal Rogers",
+                "title": "Z\u00e4hler 1",
+                "type": "SeasonSpecial_forge_bowl_2022_counter",
+                "questGiver": {
+                    "id": "bowl_cal",
+                    "name": "Cal Rogers",
+                    "klass": "QuestGiver"
+                },
+                "priority": 604880,
+                "state": "accepted",
+                "successConditions": [
+                    {
+                        "id": 1,
+                        "iconType": "quest",
+                        "description": "5 Quests der Forge-Bowl-Event-Questreihe abschlie\u00dfen",
+                        "hint": "Schlie\u00dfe alle Quests der Questreihe vor dem Ende des Events ab.",
+                        "hintIcon": "quest",
+                        "maxProgress": 5,
+                        "payload": [],
+                        "flags": [
+                            "static_counter",
+                            "stacked_counter"
+                        ],
+                        "guidanceActions": [],
+                        "klass": "QuestSuccessCondition"
+                    }
+                ],
+                "successConditionGroups": [
+                    {
+                        "conditionIds": [
+                            1
+                        ],
+                        "type": "none",
+                        "klass": "SuccessConditionGroup"
+                    }
+                ],
+                "genericRewards": [
+                    {
+                        "id": "building#R_MultiAge_ForgeBonus22a",
+                        "name": "Fiore-Dorf - St. 1",
+                        "isHighlighted": true,
+                        "flags": [],
+                        "type": "building",
+                        "subType": "R_MultiAge_ForgeBonus22a",
+                        "amount": 1,
+                        "klass": "GenericReward"
+                    }
+                ],
+                "headline": "Hey, Trainer!",
+                "description": "Gut gemacht! Du hast 5 Quests abgeschlossen.",
+                "accomplishedHeadline": "Hey, Trainer!",
+                "accomplishedDescription": "Gut gemacht! Du hast 5 Quests abgeschlossen.",
+                "maxSeasonProgress": 5,
+                "category": "events",
+                "context": "forge_bowl_event",
+                "flags": [],
+                "klass": "Quest"
+            },
+            {
+                "id": 604881,
+                "windowTitle": "Event-Quest - Cal Rogers",
+                "title": "Z\u00e4hler 2",
+                "type": "SeasonSpecial_forge_bowl_2022_counter",
+                "questGiver": {
+                    "id": "bowl_cal",
+                    "name": "Cal Rogers",
+                    "klass": "QuestGiver"
+                },
+                "priority": 604881,
+                "state": "accepted",
+                "successConditions": [
+                    {
+                        "id": 1,
+                        "iconType": "quest",
+                        "description": "15 Quests der Forge-Bowl-Event-Questreihe abschlie\u00dfen",
+                        "hint": "Schlie\u00dfe alle Quests der Questreihe vor dem Ende des Events ab.",
+                        "hintIcon": "quest",
+                        "maxProgress": 15,
+                        "payload": [],
+                        "flags": [
+                            "static_counter",
+                            "stacked_counter"
+                        ],
+                        "guidanceActions": [],
+                        "klass": "QuestSuccessCondition"
+                    }
+                ],
+                "successConditionGroups": [
+                    {
+                        "conditionIds": [
+                            1
+                        ],
+                        "type": "none",
+                        "klass": "SuccessConditionGroup"
+                    }
+                ],
+                "genericRewards": [
+                    {
+                        "id": "resource#forge_bowl_footballs#350",
+                        "name": "350 Footballs",
+                        "description": "Verwende Footballs, um im Forge Bowl Event-Fenster mit deinem Team auf dem Feld voranzuschreiten.",
+                        "iconAssetName": "forge_bowl_footballs",
+                        "flags": [],
+                        "type": "resource",
+                        "subType": "forge_bowl_footballs",
+                        "amount": 350,
+                        "klass": "GenericReward"
+                    }
+                ],
+                "headline": "Hey, Trainer!",
+                "description": "Gut gemacht! Du hast 15 Quests abgeschlossen.",
+                "accomplishedHeadline": "Hey, Trainer!",
+                "accomplishedDescription": "Gut gemacht! Du hast 15 Quests abgeschlossen.",
+                "maxSeasonProgress": 5,
+                "category": "events",
+                "context": "forge_bowl_event",
+                "flags": [],
+                "klass": "Quest"
+            },
+            {
+                "id": 604882,
+                "windowTitle": "Event-Quest - Cal Rogers",
+                "title": "Z\u00e4hler 3",
+                "type": "SeasonSpecial_forge_bowl_2022_counter",
+                "questGiver": {
+                    "id": "bowl_cal",
+                    "name": "Cal Rogers",
+                    "klass": "QuestGiver"
+                },
+                "priority": 604882,
+                "state": "accepted",
+                "successConditions": [
+                    {
+                        "id": 1,
+                        "iconType": "quest",
+                        "description": "30 Quests der Forge-Bowl-Event-Questreihe abschlie\u00dfen",
+                        "hint": "Schlie\u00dfe alle Quests der Questreihe vor dem Ende des Events ab.",
+                        "hintIcon": "quest",
+                        "maxProgress": 30,
+                        "payload": [],
+                        "flags": [
+                            "static_counter",
+                            "stacked_counter"
+                        ],
+                        "guidanceActions": [],
+                        "klass": "QuestSuccessCondition"
+                    }
+                ],
+                "successConditionGroups": [
+                    {
+                        "conditionIds": [
+                            1
+                        ],
+                        "type": "none",
+                        "klass": "SuccessConditionGroup"
+                    }
+                ],
+                "genericRewards": [
+                    {
+                        "id": "upgrade_kit_fiore_village",
+                        "name": "Fiore-Dorf-Kit",
+                        "description": "Wertet dein Fiore-Dorf zu einer verbesserten Version auf, die mehr Ressourcen produziert.",
+                        "iconAssetName": "upgrade_kit_fiore_village",
+                        "flags": [
+                            "epic"
+                        ],
+                        "type": "consumable",
+                        "subType": "upgrade_kit",
+                        "amount": 1,
+                        "klass": "GenericReward"
+                    }
+                ],
+                "headline": "Hey, Trainer!",
+                "description": "Gut gemacht! Du hast 30 Quests abgeschlossen.",
+                "accomplishedHeadline": "Hey, Trainer!",
+                "accomplishedDescription": "Gut gemacht! Du hast 30 Quests abgeschlossen.",
+                "maxSeasonProgress": 5,
+                "category": "events",
+                "context": "forge_bowl_event",
+                "flags": [],
+                "klass": "Quest"
+            },
+            {
+                "id": 604883,
+                "windowTitle": "Event-Quest - Cal Rogers",
+                "title": "Z\u00e4hler 4",
+                "type": "SeasonSpecial_forge_bowl_2022_counter",
+                "questGiver": {
+                    "id": "bowl_cal",
+                    "name": "Cal Rogers",
+                    "klass": "QuestGiver"
+                },
+                "priority": 604883,
+                "state": "accepted",
+                "successConditions": [
+                    {
+                        "id": 1,
+                        "iconType": "quest",
+                        "description": "40 Quests der Forge-Bowl-Event-Questreihe abschlie\u00dfen",
+                        "hint": "Schlie\u00dfe alle Quests der Questreihe vor dem Ende des Events ab.",
+                        "hintIcon": "quest",
+                        "maxProgress": 40,
+                        "payload": [],
+                        "flags": [
+                            "static_counter",
+                            "stacked_counter"
+                        ],
+                        "guidanceActions": [],
+                        "klass": "QuestSuccessCondition"
+                    }
+                ],
+                "successConditionGroups": [
+                    {
+                        "conditionIds": [
+                            1
+                        ],
+                        "type": "none",
+                        "klass": "SuccessConditionGroup"
+                    }
+                ],
+                "genericRewards": [
+                    {
+                        "id": "resource#forge_bowl_footballs#1000",
+                        "name": "1.000 Footballs",
+                        "description": "Verwende Footballs, um im Forge Bowl Event-Fenster mit deinem Team auf dem Feld voranzuschreiten.",
+                        "iconAssetName": "forge_bowl_footballs",
+                        "flags": [],
+                        "type": "resource",
+                        "subType": "forge_bowl_footballs",
+                        "amount": 1000,
+                        "klass": "GenericReward"
+                    }
+                ],
+                "headline": "Hey, Trainer!",
+                "description": "Gut gemacht! Du hast 40 Quests abgeschlossen.",
+                "accomplishedHeadline": "Hey, Trainer!",
+                "accomplishedDescription": "Gut gemacht! Du hast 40 Quests abgeschlossen.",
+                "maxSeasonProgress": 5,
+                "category": "events",
+                "context": "forge_bowl_event",
+                "flags": [],
+                "klass": "Quest"
+            },
+            {
+                "id": 604884,
+                "windowTitle": "Event-Quest - Cal Rogers",
+                "title": "Z\u00e4hler 5",
+                "type": "SeasonSpecial_forge_bowl_2022_counter",
+                "questGiver": {
+                    "id": "bowl_cal",
+                    "name": "Cal Rogers",
+                    "klass": "QuestGiver"
+                },
+                "priority": 604884,
+                "state": "accepted",
+                "successConditions": [
+                    {
+                        "id": 1,
+                        "iconType": "quest",
+                        "description": "Alle Quests der Forge-Bowl-Event-Questreihe abschlie\u00dfen",
+                        "hint": "Schlie\u00dfe alle Quests der Questreihe vor dem Ende des Events ab.",
+                        "hintIcon": "quest",
+                        "maxProgress": 56,
+                        "payload": [],
+                        "flags": [
+                            "static_counter",
+                            "stacked_counter"
+                        ],
+                        "guidanceActions": [],
+                        "klass": "QuestSuccessCondition"
+                    }
+                ],
+                "successConditionGroups": [
+                    {
+                        "conditionIds": [
+                            1
+                        ],
+                        "type": "none",
+                        "klass": "SuccessConditionGroup"
+                    }
+                ],
+                "genericRewards": [
+                    {
+                        "id": "upgrade_kit_fiore_village",
+                        "name": "Fiore-Dorf-Kit",
+                        "description": "Wertet dein Fiore-Dorf zu einer verbesserten Version auf, die mehr Ressourcen produziert.",
+                        "iconAssetName": "upgrade_kit_fiore_village",
+                        "flags": [
+                            "epic"
+                        ],
+                        "type": "consumable",
+                        "subType": "upgrade_kit",
+                        "amount": 1,
+                        "klass": "GenericReward"
+                    }
+                ],
+                "headline": "Hey, Trainer!",
+                "description": "Gut gemacht! Ihr habt alle Quests abgeschlossen.",
+                "accomplishedHeadline": "Hey, Trainer!",
+                "accomplishedDescription": "Gut gemacht! Ihr habt alle Quests abgeschlossen.",
+                "maxSeasonProgress": 5,
+                "category": "events",
+                "context": "forge_bowl_event",
+                "flags": [],
+                "klass": "Quest"
+            }
+        ],
+        "requestClass": "QuestService",
+        "requestMethod": "getUpdates",
+        "requestId": 158,
+        "klass": "ServerResponse"
+    }
+]
