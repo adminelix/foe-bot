@@ -80,6 +80,12 @@ def test_new_message_event_response():
     map_(acc, *data)
 
 
+def test_hidden_reward_overview_get_overview_response():
+    u = open('test_data/hidden_reward_overview-get_overview-response.json')
+    data = foe_json_loads(u.read())
+    map_(Account(), *data)
+
+
 def load_startup():
     f = open('test_data/startup.json')
     data = foe_json_loads(f.read())

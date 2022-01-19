@@ -1,0 +1,123 @@
+[
+    {
+        "responseData": {
+            "hiddenRewards": [
+                {
+                    "hiddenRewardId": 295790065,
+                    "type": "incident_kite",
+                    "startTime": 1642641012,
+                    "expireTime": 1642727412,
+                    "position": {
+                        "context": "nature",
+                        "klass": "HiddenRewardPosition"
+                    },
+                    "rarity": "common",
+                    "klass": "HiddenReward"
+                },
+                {
+                    "hiddenRewardId": 295790068,
+                    "type": "incident_clothesline",
+                    "startTime": 1642650558,
+                    "expireTime": 1642736958,
+                    "position": {
+                        "context": "nature",
+                        "klass": "HiddenRewardPosition"
+                    },
+                    "animated": true,
+                    "rarity": "common",
+                    "klass": "HiddenReward"
+                },
+                {
+                    "hiddenRewardId": 295790069,
+                    "type": "incident_sos",
+                    "startTime": 1642628913,
+                    "expireTime": 1642715313,
+                    "position": {
+                        "context": "shore",
+                        "klass": "HiddenRewardPosition"
+                    },
+                    "rarity": "common",
+                    "klass": "HiddenReward"
+                },
+                {
+                    "hiddenRewardId": 295790070,
+                    "type": "incident_sos",
+                    "startTime": 1642630980,
+                    "expireTime": 1642717380,
+                    "position": {
+                        "context": "shore",
+                        "klass": "HiddenRewardPosition"
+                    },
+                    "rarity": "common",
+                    "klass": "HiddenReward"
+                },
+                {
+                    "hiddenRewardId": 295790071,
+                    "type": "incident_blocked_road_2x2",
+                    "startTime": 1642654985,
+                    "expireTime": 1642741385,
+                    "position": {
+                        "context": "cityRoadBig",
+                        "klass": "HiddenRewardPosition"
+                    },
+                    "rarity": "uncommon",
+                    "klass": "HiddenReward"
+                },
+                {
+                    "hiddenRewardId": 295790073,
+                    "type": "incident_overgrowth",
+                    "startTime": 1642633025,
+                    "expireTime": 1642719425,
+                    "position": {
+                        "context": "nature",
+                        "klass": "HiddenRewardPosition"
+                    },
+                    "rarity": "common",
+                    "klass": "HiddenReward"
+                },
+                {
+                    "hiddenRewardId": 295790074,
+                    "type": "incident_kite",
+                    "startTime": 1642638613,
+                    "expireTime": 1642725013,
+                    "position": {
+                        "context": "nature",
+                        "klass": "HiddenRewardPosition"
+                    },
+                    "rarity": "common",
+                    "klass": "HiddenReward"
+                },
+                {
+                    "hiddenRewardId": 295790075,
+                    "type": "incident_fruit_vendor",
+                    "startTime": 1642605006,
+                    "expireTime": 1642691406,
+                    "position": {
+                        "context": "nature",
+                        "klass": "HiddenRewardPosition"
+                    },
+                    "animated": true,
+                    "rarity": "common",
+                    "klass": "HiddenReward"
+                },
+                {
+                    "hiddenRewardId": 295790076,
+                    "type": "incident_sos",
+                    "startTime": 1642648932,
+                    "expireTime": 1642735332,
+                    "position": {
+                        "context": "shore",
+                        "klass": "HiddenRewardPosition"
+                    },
+                    "rarity": "common",
+                    "klass": "HiddenReward"
+                }
+            ],
+            "klass": "HiddenRewardOverview"
+        },
+        "requestClass": "HiddenRewardService",
+        "requestMethod": "getOverview",
+        "requestId": 79,
+        "klass": "ServerResponse"
+    }
+]

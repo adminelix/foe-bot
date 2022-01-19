@@ -8,8 +8,8 @@ class HiddenReward:
     startTime: int
     expireTime: int
     position: dict
-    animated: bool
     rarity: str
+    animated: bool = attr.ib(default=False)
     klass: str = attr.ib(default=None)
 
     def __hash__(self):
