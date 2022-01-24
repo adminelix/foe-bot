@@ -19,7 +19,6 @@ class SocialInteractionEvent:
     entity_id: str = attr.ib(default=None)
     id: int = attr.ib(default=None)
     player_id: int = attr.ib(default=None)
-    messageContent: int = attr.ib(default=None)
     date: int = attr.ib(default=None)
     other_player: Player = attr.ib(default=None)
     type: str = attr.ib(default=None)
@@ -34,6 +33,7 @@ class SocialInteractionEvent:
     status: int = attr.ib(default=None)
     great_building_name = attr.ib(default=None)
     rank = attr.ib(default=None)
+    messageContent: int = attr.ib(default=None)
     klass: str = attr.ib(default=None)
 
     @staticmethod
