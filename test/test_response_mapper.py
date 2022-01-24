@@ -6,17 +6,17 @@ from foe_bot.util import foe_json_loads
 
 def test_startup():
     acc = load_startup()
-    assert len(acc.city_map.entities) == 72
-    assert acc.resources.supplies == 426
-    assert len(acc.hidden_rewards) == 8
-    assert len(acc.players) == 4
+    assert len(acc.city_map.entities) == 113
+    assert acc.resources.supplies == 255268
+    assert len(acc.hidden_rewards) == 15
+    assert len(acc.players) == 86
     assert acc.city_user_data.player_id == 8365227
 
 
 def test_start_production():
     acc = load_startup()
 
-    ent: CityMapEntity = acc.city_map.entities[50]
+    ent: CityMapEntity = acc.city_map.entities[212]
     assert ent.state.klass == "ProductionFinishedState"
 
     u = open('test_data/start_production_response.json')
@@ -24,21 +24,21 @@ def test_start_production():
 
     map_(acc, *data)
 
-    ent = acc.city_map.entities[50]
+    ent = acc.city_map.entities[212]
     assert ent.state.klass == "ProducingState"
 
 
 def test_pickup_production():
     acc = load_startup()
 
-    assert acc.city_map.entities[85].state.klass == "ProductionFinishedState"
+    assert acc.city_map.entities[252].state.klass == "ProductionFinishedState"
 
     u = open('test_data/pickup_production_response.json')
     data = foe_json_loads(u.read())
     map_(acc, *data)
 
-    assert acc.city_map.entities[85].state.klass == "ProducingState"
-    assert acc.city_map.entities[85].state.next_state_transition_at == 1639507690
+    assert acc.city_map.entities[252].state.klass == "ProducingState"
+    assert acc.city_map.entities[252].state.next_state_transition_at == 1643034341
 
 
 def test_unlock_chair():

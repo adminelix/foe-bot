@@ -85,30 +85,28 @@
         "responseData": {
             "updatedEntities": [
                 {
-                    "id": 85,
+                    "id": 252,
                     "player_id": 8365227,
-                    "cityentity_id": "R_BronzeAge_Residential3",
+                    "cityentity_id": "R_IronAge_Residential2",
                     "type": "residential",
-                    "x": 20,
-                    "y": 13,
+                    "x": 12,
+                    "y": 23,
                     "connected": 1,
                     "state": {
                         "current_product": {
                             "product": {
                                 "resources": {
-                                    "money": 11
+                                    "money": 110
                                 },
                                 "__class__": "Resources"
                             },
                             "name": "money",
-                            "production_time": 900,
+                            "production_time": 14400,
                             "asset_name": "production_icon_money",
                             "__class__": "CityEntityProductionProduct"
                         },
-                        "boosted": false,
-                        "is_motivated": false,
-                        "next_state_transition_in": 900,
-                        "next_state_transition_at": 1639507690,
+                        "next_state_transition_in": 13298,
+                        "next_state_transition_at": 1643034341,
                         "__class__": "ProducingState"
                     },
                     "__class__": "CityMapEntity"

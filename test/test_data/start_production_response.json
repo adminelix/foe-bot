@@ -85,31 +85,29 @@
         "responseData": {
             "updatedEntities": [
                 {
-                    "id": 50,
+                    "id": 212,
                     "player_id": 8365227,
-                    "cityentity_id": "P_StoneAge_Hunter",
+                    "cityentity_id": "P_IronAge_Butcher",
                     "type": "production",
-                    "x": 14,
-                    "y": 16,
+                    "x": 20,
+                    "y": 18,
                     "connected": 1,
                     "state": {
                         "current_product": {
                             "product": {
                                 "resources": {
-                                    "supplies": 7
+                                    "supplies": 30
                                 },
                                 "__class__": "Resources"
                             },
-                            "name": "Troph\u00e4e",
+                            "name": "Schinken",
                             "production_time": 300,
-                            "asset_name": "hunter_0",
+                            "asset_name": "butcher_0",
                             "production_option": 1,
                             "__class__": "CityEntityProductionProduct"
                         },
-                        "boosted": false,
-                        "is_motivated": false,
-                        "next_state_transition_in": 300,
-                        "next_state_transition_at": 1639501398,
+                        "next_state_transition_in": 205,
+                        "next_state_transition_at": 1644021248,
                         "__class__": "ProducingState"
                     },
                     "__class__": "CityMapEntity"

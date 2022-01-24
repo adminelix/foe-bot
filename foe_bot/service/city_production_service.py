@@ -95,7 +95,7 @@ class CityProductionService(AbstractService):
 
             elif value.type == 'military':  # if military building
                 for slot in value.unitSlots:
-                    if slot['unit_id'] < 0 and slot['unlocked']:  # has empty slot
+                    if slot['unit_id'] < 0 and slot.get('unlocked', False):  # has empty slot
                         unit = self.__static_data_service.find_available_products_in_city_entities(value.cityentity_id)[
                             0]
                         costs = unit['requirements']['cost']['resources']
@@ -122,7 +122,7 @@ class CityProductionService(AbstractService):
         for value in entities.values():
             if value.type == 'military' and value.connected > 0:
                 for slot in value.unitSlots:
-                    if (not slot['unlocked']
+                    if (not slot.get('unlocked', False)
                         and slot['is_unlockable']
                         and slot['unlockCosts']['resources']['premium'] == 0
                         and slot['unlockCosts']['resources']['money'] <= self._acc.resources.money * budget_factor
