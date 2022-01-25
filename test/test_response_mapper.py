@@ -86,12 +86,6 @@ def test_hidden_reward_overview_get_overview_response():
     map_(Account(), *data)
 
 
-def test_events_response():
-    u = open('test_data/events.json')
-    data = foe_json_loads(u.read())
-    map_(Account(), *data)
-
-
 def load_startup():
     f = open('test_data/startup.json')
     data = foe_json_loads(f.read())
