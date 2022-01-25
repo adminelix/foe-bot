@@ -38,9 +38,6 @@ class SocialInteractionEvent:
 
     @staticmethod
     def serialize(**kwargs):
-        other_player = kwargs.pop('other_player')
-        other_player['player_id'] = other_player.get('player_id', 0)
-        return SocialInteractionEvent(
-            date=parse_date(kwargs.pop('date')) if 'date' in kwargs.keys() else None,
-            other_player=structure(other_player, Player) if 'other_player' in kwargs.keys() else None,
-            **kwargs)
+        other_player = structure(kwargs.pop('other_player'), Player) if 'other_player' in kwargs.keys() else None
+        date = parse_date(kwargs.pop('date')) if 'date' in kwargs.keys() else None
+        return SocialInteractionEvent(date=date, other_player=other_player, **kwargs)
