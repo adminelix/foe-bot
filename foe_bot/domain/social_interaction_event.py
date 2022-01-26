@@ -42,6 +42,6 @@ class SocialInteractionEvent:
         if 'other_player' in kwargs.keys():
             other_player = kwargs.pop('other_player')
             other_player['player_id'] = other_player.get('player_id', 0)
-            other_player = structure(kwargs.pop('other_player'), Player)
+            other_player = structure(other_player, Player)
         date = parse_date(kwargs.pop('date')) if 'date' in kwargs.keys() else None
         return SocialInteractionEvent(date=date, other_player=other_player, **kwargs)
