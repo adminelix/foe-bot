@@ -197,6 +197,10 @@ class OtherPlayerService(AbstractService):
         before_7_days = now - (60 * 60 * 24 * 7)
         player_map = self._acc.players
         events = self._acc.events
+
+        if len(events) < 1:
+            return []
+
         friends = {key: player for (key, player) in player_map.items() if player.is_friend}
 
         moppeling_player_ids = set([event.other_player.player_id for event in events.values()
