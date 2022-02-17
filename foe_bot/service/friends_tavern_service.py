@@ -13,7 +13,7 @@ class FriendsTavernService(AbstractService):
         self.__last_refresh = 0
         self.__refresh_interval = 15 * 60  # in seconds
         self.__budget_factor: float = 0.1
-        self.__min_chairs = 6
+        self.__min_chairs = 4
         self.__refresh_own_tavern(False)
 
     def do(self) -> None:
