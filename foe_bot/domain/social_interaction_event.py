@@ -1,47 +1,37 @@
-import attr
-from cattr import structure
+from attr import attrib, define
 
 from foe_bot.domain.player import Player
 from foe_bot.util import parse_date
 
 
-@attr.define
+@define
 class CityGood:
-    good_id: str = attr.ib(default=None)
-    value: int = attr.ib(default=None)
-    klass: str = attr.ib(default=None)
+    good_id: str = attrib()
+    value: int = attrib()
+    klass: str = attrib()
 
 
-@attr.define
+@define
 class SocialInteractionEvent:
-    expansions: int = attr.ib(default=None)
-    interaction_type: str = attr.ib(default=None)
-    entity_id: str = attr.ib(default=None)
-    id: int = attr.ib(default=None)
-    player_id: int = attr.ib(default=None)
-    date: int = attr.ib(default=None)
-    other_player: Player = attr.ib(default=None)
-    type: str = attr.ib(default=None)
-    level: int = attr.ib(default=None)
-    achievementName: str = attr.ib(default=None)
-    offer: CityGood = attr.ib(default=None)
-    need: CityGood = attr.ib(default=None)
-    city_map_entity_id: str = attr.ib(default=None)
-    cityentity_id: int = attr.ib(default=None)
-    new_era: int = attr.ib(default=None)
-    battle_id: int = attr.ib(default=None)
-    status: int = attr.ib(default=None)
-    great_building_name = attr.ib(default=None)
-    rank = attr.ib(default=None)
-    messageContent: int = attr.ib(default=None)
-    klass: str = attr.ib(default=None)
+    id: int = attrib()
+    player_id: int = attrib()
+    date = attrib(converter=parse_date)
+    klass: str = attrib()
+    type: str = attrib()
 
-    @staticmethod
-    def serialize(**kwargs):
-        other_player = None
-        if 'other_player' in kwargs.keys():
-            other_player = kwargs.pop('other_player')
-            other_player['player_id'] = other_player.get('player_id', 0)
-            other_player = structure(other_player, Player)
-        date = parse_date(kwargs.pop('date')) if 'date' in kwargs.keys() else None
-        return SocialInteractionEvent(date=date, other_player=other_player, **kwargs)
+    other_player: Player = attrib(default=None)
+    interaction_type: str = attrib(default=None)
+    status: str = attrib(default=None)
+    expansions: int = attrib(default=None)
+    entity_id: str = attrib(default=None)
+    level: int = attrib(default=None)
+    achievementName: str = attrib(default=None)
+    offer: CityGood = attrib(default=None)
+    need: CityGood = attrib(default=None)
+    city_map_entity_id: str = attrib(default=None)
+    cityentity_id: str = attrib(default=None)
+    new_era: int = attrib(default=None)
+    battle_id: int = attrib(default=None)
+    great_building_name = attrib(default=None)
+    rank = attrib(default=None)
+    messageContent: int = attrib(default=None)

@@ -6,4 +6,3 @@ from foe_bot.domain.time import Time
 
 cattr.register_structure_hook(Time, lambda d, t: Time.serialize(**d))
 cattr.register_structure_hook(CityMap, lambda d, t: CityMap.serialize(**d))
-cattr.register_structure_hook(SocialInteractionEvent, lambda d, t: SocialInteractionEvent.serialize(**d))
