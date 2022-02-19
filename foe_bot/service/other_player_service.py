@@ -1,6 +1,5 @@
 import json
 import logging
-import sys
 import time
 
 from foe_bot import cfg
@@ -14,7 +13,7 @@ class OtherPlayerService(AbstractService):
     def __init__(self):
         super().__init__()
         self.__logger = logging.getLogger(self.__class__.__name__)
-        self.__last_events_refresh = sys.maxsize
+        self.__last_events_refresh = 0
         self.__last_players_refresh = 0
         self.__refresh_players_interval = 15 * 60  # in seconds
         self.__config = cfg.get('other_player_service')
@@ -140,14 +139,9 @@ class OtherPlayerService(AbstractService):
 
     def _update_events(self):
         now = int(time.time())
-        last_event_time: int = 0
-        events = self._acc.events
-        for event in events.values():
-            last_event_time = event.date if event.date > last_event_time else last_event_time
 
-        one_hour_ago = now - (60 * 60)
-        six_hours_ago = now - (60 * 60 * 6)
-        if last_event_time < six_hours_ago and self.__last_events_refresh > one_hour_ago:
+        three_hour_ago = now - (60 * 60 * 3)
+        if three_hour_ago > self.__last_events_refresh:
             self.__logger.info(f"updating events")
 
             raw_body = json.loads("""
