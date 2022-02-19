@@ -1,4 +1,4 @@
-from attr import attrib, define
+from attr import field, define
 
 from foe_bot.domain.player import Player
 from foe_bot.util import parse_date
@@ -6,32 +6,31 @@ from foe_bot.util import parse_date
 
 @define
 class CityGood:
-    good_id: str = attrib()
-    value: int = attrib()
-    klass: str = attrib()
+    good_id: str = field()
+    value: int = field()
+    klass: str = field()
 
 
-@define
+@define(auto_detect=True)
 class SocialInteractionEvent:
-    id: int = attrib()
-    player_id: int = attrib()
-    date = attrib(converter=parse_date)
-    klass: str = attrib()
-    type: str = attrib()
+    klass: str = field()
 
-    other_player: Player = attrib(default=None)
-    interaction_type: str = attrib(default=None)
-    status: str = attrib(default=None)
-    expansions: int = attrib(default=None)
-    entity_id: str = attrib(default=None)
-    level: int = attrib(default=None)
-    achievementName: str = attrib(default=None)
-    offer: CityGood = attrib(default=None)
-    need: CityGood = attrib(default=None)
-    city_map_entity_id: str = attrib(default=None)
-    cityentity_id: str = attrib(default=None)
-    new_era: int = attrib(default=None)
-    battle_id: int = attrib(default=None)
-    great_building_name = attrib(default=None)
-    rank = attrib(default=None)
-    messageContent: int = attrib(default=None)
+    date: int = field(converter=parse_date, default="-1")
+    type: str = field(default=None)
+    id: int = field(default=None)
+    other_player: Player = field(default=None)
+    interaction_type: str = field(default=None)
+    status: str = field(default=None)
+    expansions: int = field(default=None)
+    entity_id: str = field(default=None)
+    level: int = field(default=None)
+    achievementName: str = field(default=None)
+    offer: CityGood = field(default=None)
+    need: CityGood = field(default=None)
+    city_map_entity_id: str = field(default=None)
+    cityentity_id: str = field(default=None)
+    new_era: str = field(default=None)
+    battle_id: int = field(default=None)
+    great_building_name: str = field(default=None)
+    rank: int = field(default=None)
+    messageContent: str = field(default=None)
