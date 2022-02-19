@@ -1,11 +1,11 @@
-import attr
+from attr import field, define
 
 
-@attr.define
+@define
 class OtherTavernState:
-    ownerId: int
-    state: str = attr.ib(default=None)
-    unlockedChairCount: int = attr.ib(default=-1)
-    sittingPlayerCount: int = attr.ib(default=-1)
-    nextVisitTime: int = attr.ib(default=-1)
-    klass: str = attr.ib(default=None)
+    ownerId: int = field()
+    state: str = field(default=None)
+    unlockedChairCount: int = field(default=-1)
+    sittingPlayerCount: int = field(default=-1)
+    nextVisitTime: int = field(default=-1)
+    klass: str = field(default=None)

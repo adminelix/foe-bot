@@ -1,16 +1,16 @@
-import attr
+from attr import define, field
 
 
-@attr.define
+@define
 class HiddenReward:
-    hiddenRewardId: int
-    type: str
-    startTime: int
-    expireTime: int
-    position: dict
-    rarity: str
-    animated: bool = attr.ib(default=False)
-    klass: str = attr.ib(default=None)
+    hiddenRewardId: int = field()
+    type: str = field()
+    startTime: int = field()
+    expireTime: int = field()
+    position: dict = field()
+    rarity: str = field()
+    animated: bool = field(default=False)
+    klass: str = field(default=None)
 
     def __hash__(self):
         return hash(self.hiddenRewardId)

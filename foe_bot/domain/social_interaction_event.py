@@ -11,7 +11,7 @@ class CityGood:
     klass: str = field()
 
 
-@define(auto_detect=True)
+@define
 class SocialInteractionEvent:
     klass: str = field()
 

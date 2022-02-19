@@ -1,9 +1,7 @@
 import json
 import logging
 
-from cattr import structure
-
-from foe_bot.domain import SocialInteractionEvent
+from foe_bot.domain import structure
 from foe_bot.domain.account import Account
 from foe_bot.domain.city_map import CityMap
 from foe_bot.domain.city_map_entity import CityMapEntity
@@ -14,6 +12,7 @@ from foe_bot.domain.other_tavern_state import OtherTavernState
 from foe_bot.domain.own_tavern import OwnTavern
 from foe_bot.domain.player import Player
 from foe_bot.domain.resources import ResourcesWrapper
+from foe_bot.domain.social_interaction_event import SocialInteractionEvent
 from foe_bot.domain.socket_connection_parameter import SocketConnectionParameter
 from foe_bot.domain.static_data import StaticData
 from foe_bot.domain.tavern_config import TavernConfig

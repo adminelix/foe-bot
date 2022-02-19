@@ -1,25 +1,25 @@
-import attr
+from attr import define, field
 
 
-@attr.define
+@define
 class CityUserData:
-    player_id: int
-    city_name: str
-    user_name: str
-    era: str
-    profile_text: str
-    portrait_id: str
-    unlocked_avatars: str
-    clan_name: str
-    time_left_to_validate_email: bool
-    hasPiiAccess: bool
-    canSetEmail: bool
-    createdAt: int
-    isRealEmail: bool = attr.attrib(default=False)
-    is_guest: bool = attr.attrib(default=False)
-    has_new_neighbors: bool = attr.attrib(default=False)
-    has_new_event: bool = attr.attrib(default=False)
-    email_validated: bool = attr.attrib(default=False)
-    is_tester: bool = attr.attrib(default=False)
-    rank: int = attr.attrib(default=None)
-    klass: str = attr.ib(default=None)
+    player_id: int = field()
+    city_name: str = field()
+    user_name: str = field()
+    era: str = field()
+    profile_text: str = field()
+    portrait_id: str = field()
+    unlocked_avatars: str = field()
+    clan_name: str = field()
+    time_left_to_validate_email: bool = field()
+    hasPiiAccess: bool = field()
+    canSetEmail: bool = field()
+    createdAt: int = field()
+    isRealEmail: bool = field(default=False)
+    is_guest: bool = field(default=False)
+    has_new_neighbors: bool = field(default=False)
+    has_new_event: bool = field(default=False)
+    email_validated: bool = field(default=False)
+    is_tester: bool = field(default=False)
+    rank: int = field(default=None)
+    klass: str = field(default=None)

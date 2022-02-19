@@ -1,8 +1,8 @@
-import attr
+from attr import field, define
 
 
-@attr.define
+@define
 class SocketConnectionParameter:
-    socketServerHost: str
-    socketServerPort: int
-    klass: str = attr.ib(default=None)
+    socketServerHost: str = field()
+    socketServerPort: int = field()
+    klass: str = field()

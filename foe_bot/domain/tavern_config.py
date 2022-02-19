@@ -1,43 +1,43 @@
-import attr
+from attr import define, field
 
 from foe_bot.domain.resources import ResourcesWrapper
 
 
-@attr.define
+@define
 class ChairUnlockCost:
-    premiumCosts: ResourcesWrapper
-    normalCosts: ResourcesWrapper
-    klass: str = attr.ib(default=None)
+    premiumCosts: ResourcesWrapper = field()
+    normalCosts: ResourcesWrapper = field()
+    klass: str = field(default=None)
 
 
-@attr.define
+@define
 class TableUnlockCost:
-    premiumCosts: ResourcesWrapper
-    normalCosts: ResourcesWrapper
-    klass: str = attr.ib(default=None)
+    premiumCosts: ResourcesWrapper = field()
+    normalCosts: ResourcesWrapper = field()
+    klass: str = field(default=None)
 
 
-@attr.define
+@define
 class UnlockCost:
-    premiumCosts: ResourcesWrapper
-    normalCosts: ResourcesWrapper
-    klass: str = attr.ib(default=None)
+    premiumCosts: ResourcesWrapper = field()
+    normalCosts: ResourcesWrapper = field()
+    klass: str = field(default=None)
 
 
-@attr.define
+@define
 class Customization:
-    id: str
-    type: str
-    name: str
-    description: str
-    unlockCosts: UnlockCost = attr.ib(default=None)
-    requiredCustomizationIds: list[str] = attr.ib(default=list[str])
-    klass: str = attr.ib(default=None)
+    id: str = field()
+    type: str = field()
+    name: str = field()
+    description: str = field()
+    unlockCosts: UnlockCost = field(default=None)
+    requiredCustomizationIds: list[str] = field(default=list[str])
+    klass: str = field(default=None)
 
 
-@attr.define
+@define
 class TavernConfig:
     chairUnlockCosts: list[ChairUnlockCost]
     tableUnlockCosts: list[TableUnlockCost]
     customizations: list[Customization]
-    klass: str = attr.ib(default=None)
+    klass: str = field(default=None)

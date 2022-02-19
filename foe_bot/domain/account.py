@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import attr
+from attr import define, field
 
 from foe_bot.domain.city_map import CityMap
 from foe_bot.domain.city_user_data import CityUserData
@@ -48,23 +48,23 @@ def map_of_other_tavern_states(list_: list[OtherTavernState]) -> dict[int, Other
         return {v.ownerId: v for v in list_}
 
 
-@attr.define
+@define
 class Account(object):
-    user_name: str = attr.ib(default=None)  # FIXME is in use?
-    city_user_data: CityUserData = attr.attrib(default=None)
-    city_map: CityMap = attr.attrib(default=None)
-    socket_connection_parameter: SocketConnectionParameter = attr.attrib(default=None)
-    time: Time = attr.attrib(default=None)
-    connection_state_logging: ConnectionStateLogging = attr.attrib(default=None)
-    resources: Resources = attr.attrib(default=None)
-    hidden_rewards: dict[int, HiddenReward] = attr.attrib(default=dict[int, HiddenReward]())
-    static_data: dict[str, StaticData] = attr.attrib(default=dict[str, StaticData]())
-    players: dict[int, Player] = attr.attrib(default=dict[int, Player]())
-    events: dict[int, SocialInteractionEvent] = attr.attrib(default=dict[int, SocialInteractionEvent]())
-    player_logs: dict[int, PlayerLog] = attr.attrib(default=dict[int, PlayerLog]())
-    own_tavern: OwnTavern = attr.attrib(default=None)
-    tavern_config: TavernConfig = attr.attrib(default=None)
-    other_tavern_states: dict[int, OtherTavernState] = attr.attrib(default={})
+    user_name: str = field(default=None)  # FIXME is in use?
+    city_user_data: CityUserData = field(default=None)
+    city_map: CityMap = field(default=None)
+    socket_connection_parameter: SocketConnectionParameter = field(default=None)
+    time: Time = field(default=None)
+    connection_state_logging: ConnectionStateLogging = field(default=None)
+    resources: Resources = field(default=None)
+    hidden_rewards: dict[int, HiddenReward] = field(default=dict[int, HiddenReward]())
+    static_data: dict[str, StaticData] = field(default=dict[str, StaticData]())
+    players: dict[int, Player] = field(default=dict[int, Player]())
+    events: dict[int, SocialInteractionEvent] = field(default=dict[int, SocialInteractionEvent]())
+    player_logs: dict[int, PlayerLog] = field(default=dict[int, PlayerLog]())
+    own_tavern: OwnTavern = field(default=None)
+    tavern_config: TavernConfig = field(default=None)
+    other_tavern_states: dict[int, OtherTavernState] = field(default={})
 
     def put_hidden_rewards(self, hidden_rewards: list[HiddenReward]) -> None:
         dict_ = map_of_hidden_rewards(hidden_rewards)

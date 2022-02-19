@@ -1,19 +1,15 @@
 import time as time_
 
-import attr
+from attr import field, define
 
 
-@attr.define
+@define
 class Time:
-    time: int
-    klass: str = attr.ib(default=None)
+    time: int = field()
+    klass: str = field(default=None)
 
     # custom field that stores system time when server time is received
-    sys_time: int = int(time_.time())
-
-    @staticmethod
-    def serialize(**kwargs):
-        return Time(sys_time=int(time_.time()), **kwargs)
+    sys_time: int = field(default=int(time_.time()))
 
     @property
     def diff(self):

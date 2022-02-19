@@ -1,8 +1,7 @@
-import attr
+from attr import define, field
 
 
-@attr.define
+@define
 class ConnectionStateLogging:
-    intervalPools: dict[int, int]
-    klass: str = attr.ib(default=None)
-
+    intervalPools: dict[int, int] = field()
+    klass: str = field(default=None)

@@ -1,34 +1,34 @@
-import attr
+from attr import define, field
 
 
-@attr.define
+@define
 class SelectedCustomizationIds:
-    tablecloth: str
-    tray: str
-    flooring: str
+    tablecloth: str = field()
+    tray: str = field()
+    flooring: str = field()
 
 
-@attr.define
+@define
 class Visitor:
-    player_id: int
-    name: str
-    avatar: str
-    klass: str
+    player_id: int = field()
+    name: str = field()
+    avatar: str = field()
+    klass: str = field()
 
 
-@attr.define
+@define
 class View:
-    tableLevel: int
-    unlockedChairs: int
-    visitors: list[Visitor]
-    selectedCustomizationIds: SelectedCustomizationIds
-    tavernSilverBase: int
-    tavernSilverAdd: int
-    klass: str
+    tableLevel: int = field()
+    unlockedChairs: int = field()
+    visitors: list[Visitor] = field()
+    selectedCustomizationIds: SelectedCustomizationIds = field()
+    tavernSilverBase: int = field()
+    tavernSilverAdd: int = field()
+    klass: str = field()
 
 
-@attr.define
+@define
 class OwnTavern:
-    view: View
-    unlockedCustomizationIds: list[str]
-    friendCount: int
+    view: View = field()
+    unlockedCustomizationIds: list[str] = field()
+    friendCount: int = field()

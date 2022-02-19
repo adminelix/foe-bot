@@ -1,7 +1,6 @@
 import json
 
-from cattr import structure
-
+from foe_bot.domain import structure
 from foe_bot.domain.city_map import CityMap
 from foe_bot.util import foe_json_loads
 
