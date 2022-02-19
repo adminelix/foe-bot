@@ -66,7 +66,7 @@ class FriendsTavernService(AbstractService):
 
     def __unlock_table(self, table_level, unlocked_chairs) -> None:
         table_unlockable = (unlocked_chairs == self.__min_chairs + table_level * 2
-                            and table_level != len(self._acc.tavern_config.tableUnlockCosts))
+                            and table_level != len(self._acc.tavern_config.tableUnlockCosts) - 1)
 
         if table_unlockable:
             tavern_silver_costs = self._acc.tavern_config.tableUnlockCosts[
