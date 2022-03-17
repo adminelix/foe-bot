@@ -164,7 +164,7 @@ class OtherPlayerService(AbstractService):
 
     def __cleanup_events(self):
         four_weeks_ago = int(time.time()) - (60 * 60 * 24 * 28)
-        keys = self._acc.events.keys()
+        keys = self._acc.events.copy().keys()
         for key in keys:
             if self._acc.events.get(key).date < four_weeks_ago:
                 self._acc.events.pop(key)
