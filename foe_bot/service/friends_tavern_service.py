@@ -1,7 +1,7 @@
 import logging
 import time
 
-from foe_bot import cfg
+from foe_bot import ARGS
 from foe_bot.service.abstract_service import AbstractService
 
 
@@ -9,7 +9,6 @@ class FriendsTavernService(AbstractService):
     def __init__(self):
         super().__init__()
         self.__logger = logging.getLogger(self.__class__.__name__)
-        self.__config = cfg.get('friends_tavern_service')
         self.__last_refresh = 0
         self.__refresh_interval = 15 * 60  # in seconds
         self.__budget_factor: float = 0.1
@@ -19,11 +18,11 @@ class FriendsTavernService(AbstractService):
     def do(self) -> None:
         # FIXME check if tavern is unlocked
         self._get_config()
-        if self.__config.get('collect', None):
+        if ARGS.collect_tavern:
             self._collect()
-        if self.__config.get('visit', None):
+        if ARGS.visit_tavern:
             self._visit()
-        if self.__config.get('upgrade', None):
+        if ARGS.upgrade_tavern:
             self._extend_tavern()
 
     def _collect(self) -> None:

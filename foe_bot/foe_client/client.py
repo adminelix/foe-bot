@@ -3,7 +3,7 @@ import os
 import pickle
 import time
 
-from foe_bot import cfg
+from foe_bot import ARGS
 from foe_bot.domain.account import Account
 from foe_bot.foe_client.log_service import LogService
 from foe_bot.foe_client.request import Request
@@ -11,7 +11,7 @@ from foe_bot.foe_client.response_mapper import map_to_account
 from foe_bot.foe_client.ws_client import WsClient
 from foe_bot.service.account_service import AccountService
 
-session_file = f"{os.path.dirname(os.path.realpath(__file__))}/../../data/{cfg['username']}_session"
+session_file = f"{os.path.dirname(os.path.realpath(__file__))}/../../data/{ARGS.username}_session"
 
 
 #  TODO count if send was not success and relog with > 2/10s to reapply city data
@@ -52,7 +52,7 @@ class Client:
             now = int(time.time())
             self.tear_down()
             if self.__relog_in < 0:
-                leeway = cfg.get('relog_leeway')
+                leeway = ARGS.relog_waiting_time
                 self.__relog_in = now + leeway
                 self.__logger.info(f"session expired, relog in {leeway}s")
             elif self.__relog_in < now:
