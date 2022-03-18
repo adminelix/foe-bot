@@ -21,6 +21,7 @@ translate = "3.6.1"
 
 [dev-packages]
 black = "*"
+pyinstaller = "*"
 flake8 = "*"
 isort = "*"
 mypy = "*"
