@@ -1,10 +1,10 @@
 import os
 import pickle
 
-from foe_bot import cfg
+from foe_bot import ARGS
 from foe_bot.domain.account import Account
 
-data_file = f"{os.path.dirname(os.path.realpath(__file__))}/../../data/{cfg['username']}_data"
+data_file = f"{os.path.dirname(os.path.realpath(__file__))}/../../data/{ARGS.username}_data"
 
 
 class AccountService:

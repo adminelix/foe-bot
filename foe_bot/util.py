@@ -6,9 +6,9 @@ from random import randint
 import parsedatetime
 from translate import Translator
 
-from foe_bot import cfg
+from foe_bot import ARGS
 
-translator = Translator(to_lang="en", from_lang='autodetect', provider='deepl', secret_access_key=cfg['deepl_api_key'])
+translator = Translator(to_lang="en", from_lang='autodetect', provider='deepl', secret_access_key=ARGS.deepl_api_key)
 cal = parsedatetime.Calendar()
 
 

@@ -2,7 +2,7 @@ import json
 import logging
 import time
 
-from foe_bot import cfg
+from foe_bot import ARGS
 from foe_bot.domain.player import Player
 from foe_bot.domain.player_log import PlayerLog
 from foe_bot.service.abstract_service import AbstractService
@@ -16,14 +16,13 @@ class OtherPlayerService(AbstractService):
         self.__last_events_refresh = 0
         self.__last_players_refresh = 0
         self.__refresh_players_interval = 15 * 60  # in seconds
-        self.__config = cfg.get('other_player_service')
 
     def do(self):
         self._refresh_player()
         self._update_events()
-        if self.__config.get('moppel', None):
+        if ARGS.moppel:
             self._moppel()
-        if self.__config.get('manage_friends', None):
+        if ARGS.manage_friends:
             self._accept_friend_invites()
             self._revoke_friend_invites()
             self._remove_useless_friends()
@@ -164,7 +163,7 @@ class OtherPlayerService(AbstractService):
 
     def __cleanup_events(self):
         four_weeks_ago = int(time.time()) - (60 * 60 * 24 * 28)
-        keys = self._acc.events.keys()
+        keys = self._acc.events.copy().keys()
         for key in keys:
             if self._acc.events.get(key).date < four_weeks_ago:
                 self._acc.events.pop(key)
