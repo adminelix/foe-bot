@@ -19,7 +19,7 @@ class Request:
     def __init__(self):
         self.__logger = logging.getLogger(self.__class__.__name__)
         self.__world = ARGS.world
-        self.__lang = re.sub(r'[a-zA-Z]', '', ARGS.world)
+        self.__lang = re.sub(r'[^a-zA-Z]', '', ARGS.world)
         self.__wait_between_req: float = 0
         self.__session: Session
         self.initial_response: list[dict]
