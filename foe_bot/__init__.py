@@ -10,6 +10,18 @@ logging.getLogger("seleniumwire.handler").setLevel(logging.WARN)
 logging.getLogger("seleniumwire.server").setLevel(logging.WARN)
 logging.getLogger("urllib3.connectionpool").setLevel(logging.WARN)
 
+
+def _str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise configargparse.ArgumentTypeError('Boolean value expected.')
+
+
 parser = configargparse.ArgumentParser(
     prog="FoE-Bot",
     description="""
@@ -33,37 +45,37 @@ general.add_argument('--relog-waiting-time', type=int, nargs='?', required=False
                      your login (default: 120)""")
 
 other_player_service = parser.add_argument_group('other player (optional)', description='')
-other_player_service.add_argument('--moppel', type=bool, nargs='?', required=False, env_var='MOPPEL', default=True,
+other_player_service.add_argument('--moppel', type=_str2bool, nargs='?', required=False, env_var='MOPPEL', default=True,
                                   help='moppel other players - friends, guild members and neighbours (default: true)')
-other_player_service.add_argument('--manage-friends', type=bool, nargs='?', required=False, env_var='MANAGE_FRIENDS',
-                                  default=True,
+other_player_service.add_argument('--manage-friends', type=_str2bool, nargs='?', required=False,
+                                  env_var='MANAGE_FRIENDS', default=True,
                                   help="""accept and send friend invites and remove friends who do not support
                                   you in terms of moppeling you or visiting your friends tavern (default: true)""")
 
 friends_tavern_service = parser.add_argument_group('friends tavern (optional)', description='')
-friends_tavern_service.add_argument('--collect-tavern', type=bool, nargs='?', required=False, env_var='COLLECT_TAVERN',
-                                    default=True,
+friends_tavern_service.add_argument('--collect-tavern', type=_str2bool, nargs='?', required=False,
+                                    env_var='COLLECT_TAVERN', default=True,
                                     help="""collect silver from own tavern if it is full (default: true)""")
-friends_tavern_service.add_argument('--visit-tavern', type=bool, nargs='?', required=False, env_var='VISIT_TAVERN',
+friends_tavern_service.add_argument('--visit-tavern', type=_str2bool, nargs='?', required=False, env_var='VISIT_TAVERN',
                                     default=True,
                                     help="""visit taverns of all friends (default: true)""")
-friends_tavern_service.add_argument('--upgrade-tavern', type=bool, nargs='?', required=False, env_var='UPGRADE_TAVERN',
-                                    default=True,
+friends_tavern_service.add_argument('--upgrade-tavern', type=_str2bool, nargs='?', required=False,
+                                    env_var='UPGRADE_TAVERN', default=True,
                                     help="""upgrade table, chairs and decorations of own tavern (default: true)""")
 
 hidden_reward_service = parser.add_argument_group('hidden reward (optional)', description='')
-hidden_reward_service.add_argument('--collect-hidden-rewards', type=bool, nargs='?', required=False,
+hidden_reward_service.add_argument('--collect-hidden-rewards', type=_str2bool, nargs='?', required=False,
                                    env_var='COLLECT_HIDDEN_REWARDS', default=True,
                                    help="""gather hidden rewards on city map (default: true)""")
 
 city_production_service = parser.add_argument_group('city production (optional)', description='')
-city_production_service.add_argument('--pickup-city-production', type=bool, nargs='?', required=False,
+city_production_service.add_argument('--pickup-city-production', type=_str2bool, nargs='?', required=False,
                                      env_var='PICKUP_CITY_PRODUCTION', default=True,
                                      help="""pickup city buildings (default: true)""")
-city_production_service.add_argument('--start-city-production', type=bool, nargs='?', required=False,
+city_production_service.add_argument('--start-city-production', type=_str2bool, nargs='?', required=False,
                                      env_var='START_CITY_PRODUCTION', default=True,
                                      help="""start production of buildings (default: true)""")
-city_production_service.add_argument('--unlock-unit-slots', type=bool, nargs='?', required=False,
+city_production_service.add_argument('--unlock-unit-slots', type=_str2bool, nargs='?', required=False,
                                      env_var='UNLOCK_UNIT_SLOTS', default=True,
                                      help="""unlock unit slots in military buildings (default: true)""")
 
