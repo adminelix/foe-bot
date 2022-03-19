@@ -1,5 +1,3 @@
-from unittest.mock import patch
-
 from foe_bot.domain.account import Account
 from foe_bot.domain.city_map_entity import CityMapEntity
 from foe_bot.foe_client.response_mapper import map_to_account as map_
@@ -7,13 +5,13 @@ from foe_bot.util import foe_json_loads
 
 
 def test_startup():
-    with patch("sys.argv", ["--deepl-api-key", "x"]):
-        acc = load_startup()
-        assert len(acc.city_map.entities) == 113
-        assert acc.resources.supplies == 255268
-        assert len(acc.hidden_rewards) == 15
-        assert len(acc.players) == 86
-        assert acc.city_user_data.player_id == 8365227
+    acc = load_startup()
+    assert len(acc.city_map.entities) == 113
+    assert acc.city_map.entities.get(140).type == 'street'
+    assert acc.resources.supplies == 255268
+    assert len(acc.hidden_rewards) == 15
+    assert len(acc.players) == 86
+    assert acc.city_user_data.player_id == 8365227
 
 
 def test_start_production():
