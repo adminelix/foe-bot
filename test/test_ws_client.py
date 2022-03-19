@@ -1,21 +1,24 @@
 import time
 
-from foe_bot.domain.account import Account
 from foe_bot.foe_client.request import Request
-from foe_bot.foe_client.response_mapper import map_to_account as map_
+from foe_bot.foe_client.response_mapper import map_to_account
 from foe_bot.foe_client.ws_client import WsClient
+from foe_bot.service.account_service import AccountService
+from test import set_args
+
+set_args()
 
 
 def test_run():
     req = Request()
+    map_to_account(AccountService().account, *req.initial_response)
 
-    acc = map_(Account(), *req.initial_response)
-    token = req.__session.cookies['socket_token']
-    url = req.__session.cookies['socketGatewayUrl']
+    ws_client = WsClient(req)
+    ws_client.start()
+    start = time.time()
+    while not ws_client.is_connected and time.time() - start < 100000:
+        time.sleep(0.1)
 
-    with WsClient(acc, url, token) as ws_client:
-        start = time.time()
-        while not ws_client.is_connected and time.time() - start < 10:
-            time.sleep(0.1)
-
-        assert ws_client.is_connected
+    assert ws_client.is_connected
+    ws_client.stop()
+    ws_client.join()
