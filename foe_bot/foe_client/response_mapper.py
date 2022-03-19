@@ -91,8 +91,8 @@ def __map(acc: Account, **kwargs) -> None:
         acc.put_social_interaction_events(structure(events, list[SocialInteractionEvent]))
 
     elif ('OtherPlayerService' == kwargs['requestClass']
-          and kwargs['requestMethod'] == 'newEvent'
-          and not kwargs['klass'] == 'MessageEvent'):
+          and 'newEvent' in kwargs['requestMethod']
+          and 'MessageEvent' not in kwargs['responseData']['klass']):
         acc.put_social_interaction_events([structure(kwargs['responseData'], SocialInteractionEvent)])
 
     elif ('FriendsTavernService' == kwargs['requestClass']
