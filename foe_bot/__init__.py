@@ -82,5 +82,6 @@ city_production_service.add_argument('--unlock-unit-slots', type=_str2bool, narg
 if any("pytest_runner" in sub for sub in sys.argv):
     ARGS = lambda: None  # function as generic object() equivalent that can have attributes
     setattr(ARGS, 'deepl_api_key', 'none')
+    setattr(ARGS, 'username', 'none')
 else:
     ARGS = parser.parse_args()
