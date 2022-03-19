@@ -134,14 +134,14 @@ class OtherPlayerService(AbstractService):
             self.__refresh_clan_member_list()
             self.__last_players_refresh = now
 
-            self.__logger.info(f"refreshed players")
+            self.__logger.info("refreshed players")
 
     def _update_events(self):
         now = int(time.time())
 
         three_hour_ago = now - (60 * 60 * 3)
         if three_hour_ago > self.__last_events_refresh:
-            self.__logger.info(f"updating events")
+            self.__logger.info("updating events")
 
             raw_body = json.loads("""
             {
@@ -159,7 +159,7 @@ class OtherPlayerService(AbstractService):
             if success:
                 self.__cleanup_events()
                 self.__last_events_refresh = now
-                self.__logger.info(f"updated events")
+                self.__logger.info("updated events")
 
     def __cleanup_events(self):
         four_weeks_ago = int(time.time()) - (60 * 60 * 24 * 28)

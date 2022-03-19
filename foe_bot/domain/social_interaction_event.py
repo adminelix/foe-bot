@@ -1,4 +1,4 @@
-from attr import field, define
+from attr import define, field
 
 from foe_bot.domain.player import Player
 from foe_bot.util import parse_date

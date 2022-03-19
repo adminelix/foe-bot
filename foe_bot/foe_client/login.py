@@ -104,15 +104,15 @@ class Login:
     @staticmethod
     def __is_loaded(reqs) -> bool:
         return True if [req for req in reqs if
-                        re.match(".+/game/json\?h=.+", req.url) and
-                        re.match(".+LoadTimePerformance.+", req.body.decode())] \
+                        re.match(r".+/game/json\?h=.+", req.url)
+                        and re.match(r".+LoadTimePerformance.+", req.body.decode())] \
             else False
 
     @staticmethod
     def __get_headers(reqs):
         headers = reqs[-1].headers._headers
-        res = [i for i in headers if not (i[0] == 'Host') and
-               not (i[0] == 'content-length')
+        res = [i for i in headers if not (i[0] == 'Host')
+               and not (i[0] == 'content-length')
                and not (i[0] == 'origin')
                and not (i[0] == 'referer')
                and not (i[0] == 'cookie')
@@ -121,7 +121,7 @@ class Login:
 
     @staticmethod
     def __filter_requests(reqs):
-        return [req for req in reqs if re.match(".+/game/json\?h=.+", req.url)]
+        return [req for req in reqs if re.match(r".+/game/json\?h=.+", req.url)]
 
     @staticmethod
     def __get_contents(reqs):
@@ -147,8 +147,8 @@ class Login:
 
     @staticmethod
     def __extract_signature_key(reqs):
-        re_filter = '.+foede\.innogamescdn\.com\/cache\/Forge.+\.js'
-        re_extract = '(?<=encode\(this\._hash\+")(.*)(?="\+a\),1,10\)},)'
+        re_filter = r'.+foede\.innogamescdn\.com\/cache\/Forge.+\.js'
+        re_extract = r'(?<=encode\(this\._hash\+")(.*)(?="\+a\),1,10\)},)'
 
         filtered = [req for req in reqs if re.match(re_filter, req.url)]
         url = filtered[0].url

@@ -31,10 +31,10 @@ class CityProductionService(AbstractService):
         now = int(time.time())
 
         filtered_keys = [key for (key, value) in entities.items()
-                         if value.type in types and
-                         value.state.next_state_transition_in > 0 and (
-                             value.state.next_state_transition_at <= now
-                             or value.state.klass == 'ProductionFinishedState')]
+                         if value.type in types
+                         and value.state.next_state_transition_in > 0
+                         and (value.state.next_state_transition_at <= now
+                              or value.state.klass == 'ProductionFinishedState')]
 
         if len(filtered_keys) > 0:
             counter = 0

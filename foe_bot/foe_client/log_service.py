@@ -67,7 +67,7 @@ class LogService(threading.Thread):
             map_to_account(self.__acc, *response)
 
             self.__last_log_performance_metrics = now
-            self.__logger.info(f'sent logPerformanceMetrics')
+            self.__logger.info('sent logPerformanceMetrics')
 
     @staticmethod
     def __get_logstate_body():
