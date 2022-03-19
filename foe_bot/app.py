@@ -3,9 +3,9 @@ import signal
 import time
 
 from foe_bot.foe_client.client import Client
+from foe_bot.service import *
 from foe_bot.service.abstract_service import AbstractService
 from foe_bot.service.account_service import AccountService
-from foe_bot.service import *
 
 logger = logging.getLogger("app")
 

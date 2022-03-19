@@ -1,8 +1,8 @@
 from datetime import datetime
+from test.test_response_mapper import load_startup
 
 from foe_bot.service.static_data_service import StaticDataService
-from foe_bot.util import parse_date, cal
-from test.test_response_mapper import load_startup
+from foe_bot.util import cal, parse_date
 
 
 def test_find_unit_in_city_entities():

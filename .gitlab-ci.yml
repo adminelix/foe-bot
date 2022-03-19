@@ -1,0 +1,62 @@
+image: python:3.10-slim
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  PIPENV_VENV_IN_PROJECT: 1
+
+cache:
+  paths:
+    - .cache/pip
+    - .venv/
+
+before_script:
+  - pip install pipenv
+  - apt-get update
+  - apt-get install -y --no-install-recommends gcc upx
+  - pipenv install --dev
+
+stages:
+  - test
+  - package
+
+lint:
+  stage: test
+  script:
+    - pipenv run mypy
+    - pipenv run flake8
+
+test:
+  stage: test
+  script:
+    - pipenv run pytest --cov --cov-fail-under=90 --junitxml=report.xml
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+
+package-linux:
+  stage: package
+  only:
+    - master
+  script:
+    - pipenv run pyinstaller --name foe-bot --onefile --windowed ./foe_bot/app.py
+  artifacts:
+    paths:
+      - dist/foe-bot
+    expire_in: 4 weeks
+
+package-windows:
+  stage: package
+  only:
+      - master
+  image: tobix/pywine:3.10
+  before_script:
+      - wine pip install pipenv
+      - wine pipenv install --dev
+  script:
+    - wine pipenv run pyinstaller --name foe-bot --onefile --windowed ./foe_bot/app.py
+  artifacts:
+    paths:
+      - dist/foe-bot.exe
+    expire_in: 4 weeks
+

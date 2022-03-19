@@ -1,6 +1,6 @@
 import time as time_
 
-from attr import field, define
+from attr import define, field
 
 
 @define
