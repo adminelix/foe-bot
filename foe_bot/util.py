@@ -6,7 +6,7 @@ from random import randint
 import parsedatetime
 from translate import Translator
 
-from foe_bot import ARGS
+from foe_bot import get_args
 
 global translator
 cal = parsedatetime.Calendar()
@@ -30,7 +30,7 @@ def foe_json_loads(data: str):
 def parse_date(date: str) -> int:
     if 'translator' not in globals():
         translator = Translator(to_lang="en", from_lang='autodetect', provider='deepl',
-                                secret_access_key=ARGS.deepl_api_key)
+                                secret_access_key=get_args().deepl_api_key)
 
     translation = translator.translate(date)
 

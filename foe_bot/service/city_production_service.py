@@ -1,7 +1,7 @@
 import logging
 import time
 
-from foe_bot import ARGS
+from foe_bot import get_args
 from foe_bot.domain.city_map_entity import CityMapEntity
 from foe_bot.service.abstract_service import AbstractService
 from foe_bot.service.static_data_service import StaticDataService
@@ -16,12 +16,12 @@ class CityProductionService(AbstractService):
         self.__static_data_service = StaticDataService()
 
     def do(self):
-        if ARGS.pickup_city_production:
+        if get_args().pickup_city_production:
             self._pickup()
             self._remove_plundered()
-        if ARGS.unlock_unit_slots:
+        if get_args().unlock_unit_slots:
             self._unlock_unit_slots()
-        if ARGS.start_city_production:
+        if get_args().start_city_production:
             self._produce()
 
     # TODO take care about if strategy points >= 100 ?

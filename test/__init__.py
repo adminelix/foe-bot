@@ -1,6 +1,6 @@
 import os
 
-from foe_bot import ARGS
+from foe_bot import _args
 
 
 def get_env_or_raise(name: str) -> str:
@@ -11,7 +11,7 @@ def get_env_or_raise(name: str) -> str:
 
 
 def set_args():
-    ARGS.__setattr__('username', get_env_or_raise("FOE_BOT_USERNAME"))
-    ARGS.__setattr__('password', get_env_or_raise("FOE_BOT_PASSWORD"))
-    ARGS.__setattr__('world', get_env_or_raise("FOE_BOT_WORLD"))
-    ARGS.__setattr__('deepl_api_key', get_env_or_raise("FOE_BOT_DEEPL_API_KEY"))
+    _args.__setattr__('username', get_env_or_raise("FOE_BOT_USERNAME"))
+    _args.__setattr__('password', get_env_or_raise("FOE_BOT_PASSWORD"))
+    _args.__setattr__('world', get_env_or_raise("FOE_BOT_WORLD"))
+    _args.__setattr__('deepl_api_key', get_env_or_raise("FOE_BOT_DEEPL_API_KEY"))

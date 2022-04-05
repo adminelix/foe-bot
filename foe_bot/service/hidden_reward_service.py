@@ -1,6 +1,6 @@
 import logging
 
-from foe_bot import ARGS
+from foe_bot import get_args
 from foe_bot.service.abstract_service import AbstractService
 
 
@@ -11,7 +11,7 @@ class HiddenRewardService(AbstractService):
         self.__logger = logging.getLogger(self.__class__.__name__)
 
     def do(self):
-        if ARGS.collect_hidden_rewards:
+        if get_args().collect_hidden_rewards:
             self._collect()
 
     def _collect(self):

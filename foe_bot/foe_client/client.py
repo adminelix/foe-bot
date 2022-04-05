@@ -3,15 +3,13 @@ import os
 import pickle
 import time
 
-from foe_bot import ARGS
+from foe_bot import get_args
 from foe_bot.domain.account import Account
 from foe_bot.foe_client.log_service import LogService
 from foe_bot.foe_client.request import Request
 from foe_bot.foe_client.response_mapper import map_to_account
 from foe_bot.foe_client.ws_client import WsClient
 from foe_bot.service.account_service import AccountService
-
-session_file = f"{os.path.dirname(os.path.realpath(__file__))}/../../data/{ARGS.username}_session"
 
 
 #  TODO count if send was not success and relog with > 2/10s to reapply city data
@@ -20,12 +18,13 @@ class Client:
 
     def __init__(self):
         self.__dict__ = self.__shared_state
-        self.__relog_in = 0
-        self.__is_reload_needed = False
-
-        if len(Client.__shared_state) < 3:
+        if not self.__shared_state:
+            self.__session_file = f"{os.path.dirname(os.path.realpath(__file__))}/../../data/{get_args().username}_session"
             self.__logger: logging.Logger = logging.getLogger(self.__class__.__name__)
             self.__setup()
+
+        self.__relog_in = 0
+        self.__is_reload_needed = False
 
     def send(self, klass: str, method: str, data) -> bool:
         body = self.__session.create_rest_body(klass, method, data)
@@ -35,8 +34,8 @@ class Client:
         return success
 
     def save_session(self) -> None:
-        os.makedirs(os.path.dirname(session_file), exist_ok=True)
-        with open(session_file, 'wb') as req_file:
+        os.makedirs(os.path.dirname(self.__session_file), exist_ok=True)
+        with open(self.__session_file, 'wb') as req_file:
             pickle.dump(self.__session, req_file)
 
     def tear_down(self) -> None:
@@ -47,12 +46,12 @@ class Client:
 
     def relog_in(self):
         if not self.is_connected:
-            if os.path.isfile(session_file):
-                os.remove(session_file)
+            if os.path.isfile(self.__session_file):
+                os.remove(self.__session_file)
             now = int(time.time())
             self.tear_down()
             if self.__relog_in < 0:
-                leeway = ARGS.relog_waiting_time
+                leeway = get_args().relog_waiting_time
                 self.__relog_in = now + leeway
                 self.__logger.info(f"session expired, relog in {leeway}s")
             elif self.__relog_in < now:
@@ -78,10 +77,9 @@ class Client:
         else:
             self.__relog_in = 0
 
-    @classmethod
-    def __load_client(cls) -> Request:
-        if os.path.isfile(session_file):
-            with open(session_file, 'rb') as req_file:
+    def __load_client(self) -> Request:
+        if os.path.isfile(self.__session_file):
+            with open(self.__session_file, 'rb') as req_file:
                 session: Request = pickle.load(req_file)
                 return session
         else:

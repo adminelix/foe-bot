@@ -8,7 +8,7 @@ from collections import OrderedDict
 import requests
 from requests import Session
 
-from foe_bot import ARGS
+from foe_bot import get_args
 from foe_bot.exceptions import RequestException
 from foe_bot.foe_client.login import Login
 from foe_bot.util import foe_json_loads
@@ -18,8 +18,8 @@ class Request:
 
     def __init__(self):
         self.__logger = logging.getLogger(self.__class__.__name__)
-        self.__world = ARGS.world
-        self.__lang = re.sub(r'[^a-zA-Z]', '', ARGS.world)
+        self.__world = get_args().world
+        self.__lang = re.sub(r'[^a-zA-Z]', '', get_args().world)
         self.__wait_between_req: float = 0
         self.__session: Session
         self.initial_response: list[dict]
@@ -78,7 +78,7 @@ class Request:
         return json.dumps(raw_body, separators=(',', ':'))
 
     def login(self):
-        self.__session, self.initial_response = Login(self.__lang, self.__world).login(ARGS.username, ARGS.password)
+        self.__session, self.initial_response = Login(self.__lang, self.__world).login(get_args().username, get_args().password)
 
     def __get_and_increment_request_id(self):
         request_id = self.__session.cookies['request_id'] + 1

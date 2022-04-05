@@ -2,7 +2,7 @@ import json
 import logging
 import time
 
-from foe_bot import ARGS
+from foe_bot import get_args
 from foe_bot.domain.player import Player
 from foe_bot.domain.player_log import PlayerLog
 from foe_bot.service.abstract_service import AbstractService
@@ -20,9 +20,9 @@ class OtherPlayerService(AbstractService):
     def do(self):
         self._refresh_player()
         self._update_events()
-        if ARGS.moppel:
+        if get_args().moppel:
             self._moppel()
-        if ARGS.manage_friends:
+        if get_args().manage_friends:
             self._accept_friend_invites()
             self._revoke_friend_invites()
             self._remove_useless_friends()
