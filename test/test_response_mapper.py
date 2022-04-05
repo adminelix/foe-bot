@@ -1,3 +1,5 @@
+import os
+
 from foe_bot.domain.account import Account
 from foe_bot.domain.city_map_entity import CityMapEntity
 from foe_bot.foe_client.response_mapper import map_to_account as map_
@@ -20,7 +22,7 @@ def test_start_production():
     ent: CityMapEntity = acc.city_map.entities[212]
     assert ent.state.klass == "ProductionFinishedState"
 
-    u = open('test_data/start_production_response.json')
+    u = open(f"{os.path.dirname(os.path.realpath(__file__))}/test_data/start_production_response.json")
     data = foe_json_loads(u.read())
 
     map_(acc, *data)
@@ -34,7 +36,7 @@ def test_pickup_production():
 
     assert acc.city_map.entities[252].state.klass == "ProductionFinishedState"
 
-    u = open('test_data/pickup_production_response.json')
+    u = open(f"{os.path.dirname(os.path.realpath(__file__))}/test_data/pickup_production_response.json")
     data = foe_json_loads(u.read())
     map_(acc, *data)
 
@@ -45,7 +47,7 @@ def test_pickup_production():
 def test_unlock_chair():
     acc = load_startup()
 
-    u = open('test_data/unlock_chair_response.json')
+    u = open(f"{os.path.dirname(os.path.realpath(__file__))}/test_data/unlock_chair_response.json")
     data = foe_json_loads(u.read())
     map_(acc, *data)
 
@@ -55,7 +57,7 @@ def test_unlock_chair():
 def test_unlock_table():
     acc = load_startup()
 
-    u = open('test_data/unlock_table_response.json')
+    u = open(f"{os.path.dirname(os.path.realpath(__file__))}/test_data/unlock_table_response.json")
     data = foe_json_loads(u.read())
     map_(acc, *data)
 
@@ -65,7 +67,7 @@ def test_unlock_table():
 def test_unlock_customization():
     acc = load_startup()
 
-    u = open('test_data/unlock_customization_response.json')
+    u = open(f"{os.path.dirname(os.path.realpath(__file__))}/test_data/unlock_customization_response.json")
     data = foe_json_loads(u.read())
     map_(acc, *data)
 
@@ -74,13 +76,13 @@ def test_unlock_customization():
 
 
 def test_hidden_reward_overview_get_overview_response():
-    u = open('test_data/hidden_reward_overview-get_overview-response.json')
+    u = open(f"{os.path.dirname(os.path.realpath(__file__))}/test_data/hidden_reward_overview-get_overview-response.json")
     data = foe_json_loads(u.read())
     map_(Account(), *data)
 
 
 def load_startup():
-    f = open('test_data/startup.json')
+    f = open(f"{os.path.dirname(os.path.realpath(__file__))}/test_data/startup.json")
     data = foe_json_loads(f.read())
     acc = map_(Account(), *data)
     return acc

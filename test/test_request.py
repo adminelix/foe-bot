@@ -1,4 +1,5 @@
 import json
+import os
 
 from pytest_assert_utils import util
 
@@ -15,7 +16,7 @@ def test_sample_request():
     map_to_account(Account(), *req.initial_response)
 
     json.dumps(req.initial_response)
-    with open('test_startup.json', 'w') as file:
+    with open(f"{os.path.dirname(os.path.realpath(__file__))}/test_startup.json", 'w') as file:
         file.write(json.dumps(req.initial_response))
 
     body = req.create_rest_body('InventoryService', 'getItems', [])
