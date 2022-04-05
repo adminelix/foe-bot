@@ -13033,12 +13033,12 @@
             },
             {
                 "identifier": "building_sets",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=building_sets-cd5f43825d13488b51802a38d6769278079132c7",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=building_sets-c5a95783542790b92461d8173b22b30ece656ccc",
                 "klass": "StaticData"
             },
             {
                 "identifier": "building_upgrades",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=building_upgrades-e8e1cdf3bfad01a406ebeb1bc33a3c51a729d3fc",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=building_upgrades-af1397c5749ac26d6a80982b6fac828b74f95ef5",
                 "klass": "StaticData"
             },
             {
@@ -13048,7 +13048,7 @@
             },
             {
                 "identifier": "city_entities",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=city_entities-7fd8649f524ea937b46e137805551d8e76a45346",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=city_entities-5b94ac28a2265c7ce5cc83587b1a41e1655364e8",
                 "klass": "StaticData"
             },
             {
@@ -13063,7 +13063,7 @@
             },
             {
                 "identifier": "forge_plus",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=forge_plus-ebb3109abc0edc1ff071eca113cd7260e71ecda6",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=forge_plus-565114774602a53a19e86fbbbc7466b02427e3e9",
                 "klass": "StaticData"
             },
             {
@@ -13073,7 +13073,7 @@
             },
             {
                 "identifier": "grid",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=grid-1e5be1ffd3deb4ddbdf8d188df7f387c122b07b8",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=grid-7338a38752c60dbaf22b15385a407596bb9cc348",
                 "klass": "StaticData"
             },
             {
@@ -13093,7 +13093,7 @@
             },
             {
                 "identifier": "info_screens",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=info_screens-ed53131a8d17db6ad4016fbd010871fc765aca4e",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=info_screens-f85968d77c116f28c461573eca9575607cd23665",
                 "klass": "StaticData"
             },
             {
@@ -13133,12 +13133,12 @@
             },
             {
                 "identifier": "selection_kits",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=selection_kits-bf2931e041a37bc26783930748e2352246295c01",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=selection_kits-46fb37bf8b6cab1e6c65e9d8a1549b07dbde0f26",
                 "klass": "StaticData"
             },
             {
                 "identifier": "translations",
-                "url": "https://foede.innogamescdn.com/lang/de_DE/client_lang-1e52114c63eba926f8b5a4fb06f316ba.mo",
+                "url": "https://foede.innogamescdn.com/lang/de_DE/client_lang-6135c312ec9d33a5d2ebb57d34d2e66a.mo",
                 "klass": "StaticData"
             },
             {
