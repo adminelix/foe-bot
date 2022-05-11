@@ -3,6 +3,7 @@ image: python:3.10-slim
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PIPENV_VENV_IN_PROJECT: 1
+  FOE_BOT_USERNAME: $FOE_BOT_USERNAME
 
 cache:
   paths:
