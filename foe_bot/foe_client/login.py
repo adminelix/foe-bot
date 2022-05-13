@@ -24,7 +24,7 @@ class Login:
         self.__logger.info("logging in")
 
         options = Options()
-        options.add_argument("--headless")
+        options.headless = False
         driver = webdriver.Firefox(options=options)
         # blocks creation of websocket that would increase the request counter
         driver.rewrite_rules = [(r'.*/socket/$', 'https://localhost:9876/')]
@@ -48,8 +48,10 @@ class Login:
                     element.click()
                     break
 
-            while not self.__is_loaded(driver.requests):
-                time.sleep(0.5)
+            self.__logger.info(f"successfully logged into world {self.WORLD} - waiting for token")
+            while not self.__is_loaded(driver.requests[-50:]):
+                time.sleep(3)
+                driver.save_screenshot("/tmp/foe-bot/foo.png")
 
             reqs = driver.requests
             filtered_reqs = self.__filter_requests(reqs)
@@ -64,6 +66,7 @@ class Login:
 
             driver.quit()
             self.retries = 0
+            self.__logger.info("got token")
 
         except Exception as ex:
             driver.quit()

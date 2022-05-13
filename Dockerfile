@@ -6,6 +6,9 @@ ENV LC_ALL C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONFAULTHANDLER 1
 
+RUN apt-get update
+RUN apt-get install -y xvfb curl firefox-esr
+RUN curl -L https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux64.tar.gz | tar xz -C /usr/local/bin
 
 FROM base AS python-deps
 
@@ -34,5 +37,4 @@ USER appuser
 COPY . .
 
 # Run the executable
-ENTRYPOINT ["python", "-m", "foe_bot"]
-CMD ["10"]
+ENTRYPOINT ["/bin/sh", "./startup.sh"]
