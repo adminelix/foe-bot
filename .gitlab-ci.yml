@@ -16,8 +16,7 @@ cache:
 before_script:
   - pip install pipenv
   - apt-get update
-  - apt-get install -y --no-install-recommends gcc upx xvfb curl firefox-esr
-  - curl -L https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux64.tar.gz | tar xz -C /usr/local/bin
+  - apt-get install -y --no-install-recommends gcc upx
   - pipenv install --dev
 
 stages:
@@ -32,8 +31,19 @@ lint:
 
 test:
   stage: test
+  before_script:
+    - apt-get update
+    - apt-get install -y xvfb wget gnupg
+    - |-
+        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - &&
+        echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+    - apt-get update
+    - apt-get install -y google-chrome-stable
   script:
-    - export DISPLAY=:99 && Xvfb :99 -ac -screen 0 ${XVFB_WHD:-1280x720x16} -nolisten tcp & pipenv run pytest --cov --cov-fail-under=90 --junitxml=report.xml
+    - |-
+        export DISPLAY=:99 &&
+        Xvfb :99 -ac -screen 0 ${XVFB_WHD:-1280x720x16} -nolisten tcp &
+        pipenv run pytest --cov --cov-fail-under=90 --junitxml=report.xml
   artifacts:
     when: always
     reports:

@@ -1,15 +1,20 @@
+import json
 import logging
+import os
 import re
 import time
 
-import brotli
 import requests
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from seleniumwire import webdriver
+from urllib import parse
+import undetected_chromedriver as webdriver
 
+from foe_bot.exceptions import WrongCredentialsException
 from foe_bot.util import foe_json_loads
 
 
@@ -24,8 +29,11 @@ class Login:
         self.__logger.info("logging in")
 
         options = Options()
-        options.headless = False
-        driver = webdriver.Firefox(options=options)
+        options.headless = True
+        options.add_argument('--no-sandbox')
+        capabilities = DesiredCapabilities.CHROME
+        capabilities["goog:loggingPrefs"] = {"performance": "ALL"}
+        driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
         # blocks creation of websocket that would increase the request counter
         driver.rewrite_rules = [(r'.*/socket/$', 'https://localhost:9876/')]
 
@@ -35,10 +43,15 @@ class Login:
             driver.find_element(By.ID, 'login_password').send_keys(password)
             driver.find_element(By.ID, 'login_Login').click()
 
-            WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.ID, 'play_now_button')))
-            driver.find_element(By.ID, 'play_now_button').click()
+            try:
+                WebDriverWait(driver, 2).until(
+                    EC.presence_of_element_located((By.CLASS_NAME, 'validation-message-error')))
+                raise WrongCredentialsException("wrong credentials provided")
+            except TimeoutException:
+                pass
 
+            WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.ID, 'play_now_button'))).click()
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CLASS_NAME, 'world_select_button')))
             elements = driver.find_elements(By.CLASS_NAME, 'world_select_button')
@@ -47,15 +60,17 @@ class Login:
                 if self.WORLD == element.get_attribute('value'):
                     element.click()
                     break
-
             self.__logger.info(f"successfully logged into world {self.WORLD} - waiting for token")
-            while not self.__is_loaded(driver.requests[-50:]):
-                time.sleep(3)
-                driver.save_screenshot("/tmp/foe-bot/foo.png")
 
-            reqs = driver.requests
-            filtered_reqs = self.__filter_requests(reqs)
+            reqs = self.__wait_until_loaded_and_get_requests(driver)
             signature_key = self.__extract_signature_key(reqs)
+            filtered_reqs = self.__filter_requests(reqs)
+
+            for req in filtered_reqs:
+                try:
+                    req['message']['message']['params']['response'] = driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': req["message"]["message"]["params"]["requestId"]})
+                except Exception:
+                    continue
 
             game_vars = driver.execute_script('return gameVars')
             cookies = driver.get_cookies()
@@ -64,13 +79,14 @@ class Login:
             cookies.append({'domain': 'local', 'name': 'socket_token',
                             'path': '/', 'secure': True, 'value': game_vars['socket_token']})
 
-            driver.quit()
             self.retries = 0
             self.__logger.info("got token")
 
+        except WrongCredentialsException as ex:
+            raise ex
         except Exception as ex:
-            driver.quit()
-            self.__logger.error(f"could not login, retry {self.retries}")
+            driver.save_screenshot(f"{os.path.dirname(os.path.realpath(__file__))}/../../data/error_screenshot.png")
+            self.__logger.error(f"could not login, retry {self.retries}", ex)
             self.retries += 1
             if self.retries < 3:
                 return self.login(username, password)
@@ -80,8 +96,24 @@ class Login:
 
         return self.__create_session(cookies, filtered_reqs, signature_key)
 
+    def __wait_until_loaded_and_get_requests(self, driver):
+        reqs: list = list()
+        timeout = time.time() + 40
+
+        while not self.__is_loaded(reqs):
+            if time.time() > timeout:
+                raise TimeoutError("waiting for token timed out")
+
+            reqs.extend([log for log in driver.get_log("performance")])
+            time.sleep(0.2)
+
+        for req in reqs:
+            req['message'] = json.loads(req['message'])
+
+        return reqs
+
     def __create_session(self, cookies, reqs, signature_key):
-        client_id = reqs[-1].params['h']
+        client_id = self.__get_client_id(reqs)
         headers = self.__get_headers(reqs)
         contents = self.__get_contents(reqs)
         request_id = self.__get_current_request_id(contents)
@@ -105,40 +137,45 @@ class Login:
         return session, contents
 
     @staticmethod
+    def __get_client_id(reqs) -> str:
+        url = reqs[-1]['message']['message']['params']['request']['url']
+        query_params = parse.parse_qs(parse.urlsplit(url).query)
+        return query_params['h'][0]
+
+    @staticmethod
     def __is_loaded(reqs) -> bool:
         return True if [req for req in reqs if
-                        re.match(r".+/game/json\?h=.+", req.url)
-                        and re.match(r".+LoadTimePerformance.+", req.body.decode())] \
+                        re.match(r".+/game/json\?h=.+", req['message'])
+                        and re.match(r".+LoadTimePerformance.+", req['message'])] \
             else False
 
     @staticmethod
     def __get_headers(reqs):
-        headers = reqs[-1].headers._headers
-        res = [i for i in headers if not (i[0] == 'Host')
-               and not (i[0] == 'content-length')
-               and not (i[0] == 'origin')
-               and not (i[0] == 'referer')
-               and not (i[0] == 'cookie')
-               and not (i[0] == 'signature')]
+        headers = reqs[-1]['message']['message']['params']['request']['headers']
+        excludes = ['Host', 'content-length', 'origin', 'referer', 'cookie', 'signature']
+        res = dict(filter(lambda val: val[0] not in excludes, headers.items()))
         return res
 
     @staticmethod
     def __filter_requests(reqs):
-        return [req for req in reqs if re.match(r".+/game/json\?h=.+", req.url)]
+        re_filter = r".+/game/json\?h=.+"
+        filtered: list = list()
+
+        for req in reqs:
+            try:
+                if re.match(re_filter, req['message']['message']['params']['request']['url']):
+                    filtered.append(req)
+            except KeyError:
+                continue
+
+        return filtered
 
     @staticmethod
     def __get_contents(reqs):
-        contents = []
+        contents: list = list()
         for req in reqs:
-            try:
-                content = foe_json_loads(req.response.body.decode())
+                content = foe_json_loads(req['message']['message']['params']['response']['body'])
                 [contents.append(item) for item in content]
-            except UnicodeDecodeError:
-                content = foe_json_loads(brotli.decompress(req.response.body).decode())
-                [contents.append(item) for item in content]
-            except AttributeError:
-                # no response body
-                pass
         return contents
 
     @staticmethod
@@ -153,8 +190,16 @@ class Login:
         re_filter = r'.+foede\.innogamescdn\.com\/cache\/Forge.+\.js'
         re_extract = r'(?<=encode\(this\._hash\+")(.*)(?="\+a\),1,10\)},)'
 
-        filtered = [req for req in reqs if re.match(re_filter, req.url)]
-        url = filtered[0].url
+        url: str = ""
+        for req in reqs:
+            try:
+                if re.match(re_filter, req['message']['message']['params']['request']['url']):
+                    url = req['message']['message']['params']['request']['url']
+            except KeyError:
+                continue
+
+        if not url:
+            raise KeyError("no url")
 
         response = requests.get(url)
         body = response.content.decode('utf-8')

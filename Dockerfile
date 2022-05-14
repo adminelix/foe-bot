@@ -6,10 +6,6 @@ ENV LC_ALL C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONFAULTHANDLER 1
 
-RUN apt-get update
-RUN apt-get install -y xvfb curl firefox-esr
-RUN curl -L https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux64.tar.gz | tar xz -C /usr/local/bin
-
 FROM base AS python-deps
 
 # Install pipenv and compilation dependencies
@@ -23,6 +19,13 @@ RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
 
 
 FROM base AS runtime
+
+RUN apt-get update
+RUN apt-get install -y xvfb wget gnupg
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+RUN apt-get update
+RUN apt-get install -y google-chrome-stable
 
 # Copy virtual env from python-deps stage
 COPY --from=python-deps /.venv /.venv

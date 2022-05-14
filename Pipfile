@@ -12,11 +12,11 @@ websockets = "10.1"
 attrs = "21.4.0"
 cattrs = "1.10.0"
 selenium = "4.1.0"
-selenium-wire = "4.6.0"
+undetected-chromedriver = "3.1.5.post4"
 requests = "2.27.1"
-brotli = "1.0.9"
 parsedatetime = "2.6"
 translate = "3.6.1"
+
 
 [dev-packages]
 black = "*"
