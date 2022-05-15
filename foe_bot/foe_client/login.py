@@ -29,7 +29,7 @@ class Login:
         self.__logger.info("logging in")
 
         options = Options()
-        options.headless = False
+        options.headless = True
         options.add_argument('--no-sandbox')
         capabilities = DesiredCapabilities.CHROME
         capabilities["goog:loggingPrefs"] = {"performance": "ALL"}
