@@ -13033,22 +13033,22 @@
             },
             {
                 "identifier": "building_sets",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=building_sets-c5a95783542790b92461d8173b22b30ece656ccc",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=building_sets-942c5cb1266d65b2271d02ace192b2008b952133",
                 "klass": "StaticData"
             },
             {
                 "identifier": "building_upgrades",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=building_upgrades-af1397c5749ac26d6a80982b6fac828b74f95ef5",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=building_upgrades-9c550d6816185d73969cd7831f9830e1b06b5b1b",
                 "klass": "StaticData"
             },
             {
                 "identifier": "castle_system_levels",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=castle_system_levels-6740635c5c5797123b7dd3e6c54c62726cc17e68",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=castle_system_levels-3e3b3383b59879e13dfc1ba86f152aa56c6b1df0",
                 "klass": "StaticData"
             },
             {
                 "identifier": "city_entities",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=city_entities-5b94ac28a2265c7ce5cc83587b1a41e1655364e8",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=city_entities-1002e34b8c82159d1b88db8639d5332c2f8fd2cd",
                 "klass": "StaticData"
             },
             {
@@ -13062,13 +13062,18 @@
                 "klass": "StaticData"
             },
             {
+                "identifier": "event_card",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=event_card-5eac75feb83992b2c97217c17762baf94a22bd5b",
+                "klass": "StaticData"
+            },
+            {
                 "identifier": "forge_plus",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=forge_plus-565114774602a53a19e86fbbbc7466b02427e3e9",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=forge_plus-d0da908a7d86bcaff4cf7cc2f86b228b7abd2735",
                 "klass": "StaticData"
             },
             {
                 "identifier": "generic_building_states",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=generic_building_states-d5becc76f7eb254a0ed20c93b1b6184e82b97c9f",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=generic_building_states-a530f7e314344054c0a7a63d71e1c5786a185858",
                 "klass": "StaticData"
             },
             {
@@ -13093,7 +13098,7 @@
             },
             {
                 "identifier": "info_screens",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=info_screens-f85968d77c116f28c461573eca9575607cd23665",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=info_screens-47c4392263e0fecf4925a4e035dbecb85a2caf05",
                 "klass": "StaticData"
             },
             {
@@ -13108,12 +13113,12 @@
             },
             {
                 "identifier": "pvp_arena_leagues",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=pvp_arena_leagues-2dec251912828bb8edbca0d92d30929d2c017d07",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=pvp_arena_leagues-43bbb256f932c3c608c0ae594d9cf397cf4ce36d",
                 "klass": "StaticData"
             },
             {
                 "identifier": "pvp_arena_rewards",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=pvp_arena_rewards-b689a26dea6e0ac9db9fb197caec532da0b62dc3",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=pvp_arena_rewards-4e7fe7f9d3c03076b4bc5d9ff8f97e96d30e7496",
                 "klass": "StaticData"
             },
             {
@@ -13123,27 +13128,27 @@
             },
             {
                 "identifier": "research",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=research-29ea812668fe846c23c31851442e4bb3d300572a",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=research-6f7eb0c244d7678c8bd83bc0844de65e0f345dce",
                 "klass": "StaticData"
             },
             {
                 "identifier": "research_eras",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=research_eras-e21a5b567a16172e9f0ee220e627cbf0dcd30bcc",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=research_eras-03e13bb536602138187a7a66ecb27ce4b1768217",
                 "klass": "StaticData"
             },
             {
                 "identifier": "selection_kits",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=selection_kits-46fb37bf8b6cab1e6c65e9d8a1549b07dbde0f26",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=selection_kits-8c5c99b46774beab462b672cfbc13014c195b9c9",
                 "klass": "StaticData"
             },
             {
                 "identifier": "translations",
-                "url": "https://foede.innogamescdn.com/lang/de_DE/client_lang-6135c312ec9d33a5d2ebb57d34d2e66a.mo",
+                "url": "https://foede.innogamescdn.com/lang/de_DE/client_lang-e7c4b0c350379b695b9183697cc610fd.mo",
                 "klass": "StaticData"
             },
             {
                 "identifier": "unit_types",
-                "url": "https://foede.innogamescdn.com/start/metadata?id=unit_types-e8343140a8f594f6118ef75ffd7fc516ea832bc9",
+                "url": "https://foede.innogamescdn.com/start/metadata?id=unit_types-bee544d6c62289add2ed0fbbf24958b1620dbad0",
                 "klass": "StaticData"
             },
             {

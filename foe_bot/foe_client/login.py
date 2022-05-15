@@ -5,7 +5,7 @@ import re
 import time
 
 import requests
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import  TimeoutException
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -14,7 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from urllib import parse
 import undetected_chromedriver as webdriver
 
-from foe_bot.exceptions import WrongCredentialsException
+from foe_bot.exceptions import WrongCredentialsException, WorldNotFoundException
 from foe_bot.util import foe_json_loads
 
 
@@ -29,7 +29,7 @@ class Login:
         self.__logger.info("logging in")
 
         options = Options()
-        options.headless = True
+        options.headless = False
         options.add_argument('--no-sandbox')
         capabilities = DesiredCapabilities.CHROME
         capabilities["goog:loggingPrefs"] = {"performance": "ALL"}
@@ -58,6 +58,8 @@ class Login:
 
             for element in elements:
                 if self.WORLD == element.get_attribute('value'):
+                    if not element.is_displayed():
+                        raise WorldNotFoundException('no city found for given world')
                     element.click()
                     break
             self.__logger.info(f"successfully logged into world {self.WORLD} - waiting for token")
@@ -82,7 +84,7 @@ class Login:
             self.retries = 0
             self.__logger.info("got token")
 
-        except WrongCredentialsException as ex:
+        except WrongCredentialsException | WorldNotFoundException as ex:
             raise ex
         except Exception as ex:
             driver.save_screenshot(f"{os.path.dirname(os.path.realpath(__file__))}/../../data/error_screenshot.png")

@@ -15,7 +15,6 @@ def test_sample_request():
     req = Request()
     map_to_account(Account(), *req.initial_response)
 
-    json.dumps(req.initial_response)
     with open(f"{os.path.dirname(os.path.realpath(__file__))}/test_startup.json", 'w') as file:
         file.write(json.dumps(req.initial_response))
 
