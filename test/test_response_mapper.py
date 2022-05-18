@@ -11,7 +11,6 @@ def test_startup():
     assert len(acc.city_map.entities) == 113
     assert acc.city_map.entities.get(140).type == 'street'
     assert acc.resources.supplies == 255268
-    assert len(acc.hidden_rewards) == 15
     assert len(acc.players) == 86
     assert acc.city_user_data.player_id == 8365227
 
