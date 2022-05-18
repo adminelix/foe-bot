@@ -10,6 +10,8 @@ logging.getLogger("seleniumwire.handler").setLevel(logging.WARN)
 logging.getLogger("seleniumwire.server").setLevel(logging.WARN)
 logging.getLogger("urllib3.connectionpool").setLevel(logging.WARN)
 
+_args = lambda: None  # function as generic object() equivalent that can have attributes
+
 
 def _str2bool(v):
     if isinstance(v, bool):
@@ -79,8 +81,11 @@ city_production_service.add_argument('--unlock-unit-slots', type=_str2bool, narg
                                      env_var='FOE_BOT_UNLOCK_UNIT_SLOTS', default=True,
                                      help="""unlock unit slots in military buildings (default: true)""")
 
-if any("pytest_runner" in sub for sub in sys.argv):
-    ARGS = lambda: None  # function as generic object() equivalent that can have attributes
-    setattr(ARGS, 'deepl_api_key', 'none')
-else:
-    ARGS = parser.parse_args()
+
+def parse_args():
+    global _args
+    _args = parser.parse_args()
+
+
+def get_args():
+    return _args

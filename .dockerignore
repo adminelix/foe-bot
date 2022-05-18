@@ -5,4 +5,4 @@
 !Pipfile
 !Pipfile.lock
 !foe_bot
-!logging.conf
+!startup.sh

@@ -1,7 +1,7 @@
 import logging
 import time
 
-from foe_bot import ARGS
+from foe_bot import get_args
 from foe_bot.service.abstract_service import AbstractService
 
 
@@ -18,11 +18,11 @@ class FriendsTavernService(AbstractService):
     def do(self) -> None:
         # FIXME check if tavern is unlocked
         self._get_config()
-        if ARGS.collect_tavern:
+        if get_args().collect_tavern:
             self._collect()
-        if ARGS.visit_tavern:
+        if get_args().visit_tavern:
             self._visit()
-        if ARGS.upgrade_tavern:
+        if get_args().upgrade_tavern:
             self._extend_tavern()
 
     def _collect(self) -> None:

@@ -47,7 +47,8 @@ def __map(acc: Account, **kwargs) -> None:
         acc.socket_connection_parameter = structure(kwargs['responseData']['socket_connection_parameter'],
                                                     SocketConnectionParameter)
         acc.players = dict[int, Player]()
-        acc.put_players(structure(kwargs['responseData']['socialbar_list'], list[Player]))
+        if kwargs['responseData'].get('socialbar_list'):
+            acc.put_players(structure(kwargs['responseData']['socialbar_list'], list[Player]))
 
     elif 'TimeService' == kwargs['requestClass'] and 'updateTime' == kwargs['requestMethod']:
         acc.time = structure(kwargs['responseData'], Time)
@@ -91,8 +92,8 @@ def __map(acc: Account, **kwargs) -> None:
         acc.put_social_interaction_events(structure(events, list[SocialInteractionEvent]))
 
     elif ('OtherPlayerService' == kwargs['requestClass']
-          and kwargs['requestMethod'] == 'newEvent'
-          and not kwargs['klass'] == 'MessageEvent'):
+          and 'newEvent' in kwargs['requestMethod']
+          and 'MessageEvent' not in kwargs['responseData']['klass']):
         acc.put_social_interaction_events([structure(kwargs['responseData'], SocialInteractionEvent)])
 
     elif ('FriendsTavernService' == kwargs['requestClass']

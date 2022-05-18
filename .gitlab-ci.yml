@@ -3,6 +3,10 @@ image: python:3.10-slim
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PIPENV_VENV_IN_PROJECT: 1
+  FOE_BOT_USERNAME: $FOE_BOT_USERNAME
+  FOE_BOT_PASSWORD: $FOE_BOT_PASSWORD
+  FOE_BOT_WORLD: $FOE_BOT_WORLD
+  FOE_BOT_DEEPL_API_KEY: $FOE_BOT_DEEPL_API_KEY
 
 cache:
   paths:
@@ -19,7 +23,7 @@ stages:
   - test
   - package
 
-lint:
+.lint:
   stage: test
   script:
     - pipenv run mypy
@@ -27,8 +31,21 @@ lint:
 
 test:
   stage: test
+  before_script:
+    - pip install pipenv
+    - apt-get update
+    - apt-get install -y --no-install-recommends xvfb wget gnupg
+    - |-
+        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - &&
+        echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+    - apt-get update
+    - apt-get install -y google-chrome-stable
+    - pipenv install --dev
   script:
-    - pipenv run pytest --cov --cov-fail-under=90 --junitxml=report.xml
+    - |-
+        export DISPLAY=:99 &&
+        Xvfb :99 -ac -screen 0 ${XVFB_WHD:-1280x720x16} -nolisten tcp &
+        pipenv run pytest --cov --cov-fail-under=50 --junitxml=report.xml
   artifacts:
     when: always
     reports:
