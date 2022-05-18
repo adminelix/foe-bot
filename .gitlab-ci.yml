@@ -45,7 +45,7 @@ test:
     - |-
         export DISPLAY=:99 &&
         Xvfb :99 -ac -screen 0 ${XVFB_WHD:-1280x720x16} -nolisten tcp &
-        pipenv run pytest --cov --cov-fail-under=90 --junitxml=report.xml
+        pipenv run pytest --cov --cov-fail-under=50 --junitxml=report.xml
   artifacts:
     when: always
     reports:
