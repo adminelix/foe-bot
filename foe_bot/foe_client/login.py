@@ -26,7 +26,7 @@ class Login:
         self.retries = 0
 
     def login(self, username, password):
-        self.__logger.info("logging in")
+        self.__logger.info(f"logging in {username} {password}")
 
         options = Options()
         options.headless = True
