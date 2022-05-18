@@ -23,7 +23,7 @@ stages:
   - test
   - package
 
-lint:
+.lint:
   stage: test
   script:
     - pipenv run mypy
