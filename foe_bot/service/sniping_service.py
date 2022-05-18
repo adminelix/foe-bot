@@ -1,7 +1,7 @@
 import logging
 import math
 
-from foe_bot import ARGS
+from foe_bot import get_args
 from foe_bot.service.abstract_service import AbstractService
 
 
@@ -10,10 +10,11 @@ class SnipingService(AbstractService):
     def __init__(self):
         super().__init__()
         self.__logger = logging.getLogger(self.__class__.__name__)
-        self.__config = ARGS.sniping_service
+        self.__auto_snipe_neighbours = get_args().auto_snipe_neighbours
+        # self.__interval_seconds = 60
 
     def do(self):
-        if self.__config.get('enable', None):
+        if self.__auto_snipe_neighbours:
             self._search()
 
     def _search(self):

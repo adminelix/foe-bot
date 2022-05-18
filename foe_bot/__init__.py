@@ -81,6 +81,11 @@ city_production_service.add_argument('--unlock-unit-slots', type=_str2bool, narg
                                      env_var='FOE_BOT_UNLOCK_UNIT_SLOTS', default=True,
                                      help="""unlock unit slots in military buildings (default: true)""")
 
+city_production_service = parser.add_argument_group('sniping (optional)', description='')
+city_production_service.add_argument('--auto-snipe-neighbours', type=_str2bool, nargs='?', required=False,
+                                     env_var='FOE_BOT_AUTO_SNIPE_NEIGHBOURS', default=True,
+                                     help="""scan and snipe neighbours automatically (default: true)""")
+
 
 def parse_args():
     global _args
