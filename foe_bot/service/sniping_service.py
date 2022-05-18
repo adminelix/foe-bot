@@ -1,8 +1,10 @@
 import logging
 import math
+from concurrent.futures import ThreadPoolExecutor, wait
 
 from foe_bot import get_args
 from foe_bot.service.abstract_service import AbstractService
+from foe_bot.service.time_service import TimeService
 
 
 class SnipingService(AbstractService):
@@ -11,51 +13,71 @@ class SnipingService(AbstractService):
         super().__init__()
         self.__logger = logging.getLogger(self.__class__.__name__)
         self.__auto_snipe_neighbours = get_args().auto_snipe_neighbours
-        # self.__interval_seconds = 60
+        self.__interval_seconds = 60
+        self.__last_scan = 0
+        self.__ark_factor: float = 0
 
     def do(self):
+        if self.__ark_factor == 0:
+            self.__ark_factor: float = 1 + self.__get_ark_bonus() / 100
         if self.__auto_snipe_neighbours:
-            self._search()
+            self._snipe_neighbours()
 
-    def _search(self):
-        resp = self._client.send('RankingService', 'searchRanking',
-                                 ["players", None, self._acc.city_user_data.user_name, True, ''])
-        ranking = self.extract_ranking(resp)
-        length = ranking['responseData']['length']
-        page_size = len(ranking['responseData']['rankings'])
-        pages = int(length / page_size)
-        result = list()
+    def _snipe_neighbours(self):
+        now = TimeService().time()
 
-        # executor = concurrent.futures.ProcessPoolExecutor(10)
-        # futures = [executor.submit(try_my_operation, item) for item in items]
-        # concurrent.futures.wait(futures)
+        if now > self.__last_scan + self.__interval_seconds:
+            self.__last_scan = now
+            neighbors = [player for player in self._acc.players.values() if (player.is_neighbor and
+                                                                             player.is_active and not
+                                                                             player.is_friend and not
+                                                                             player.isInvitedFriend and not
+                                                                             player.is_guild_member and not
+                                                                             player.isInvitedToClan)]
 
-        for i in range(pages):
-            self.__logger.info(f"page {i}")
-            resp = self._client.send('RankingService', 'getRanking', ["players", 'null', i])
-            ranking = self.extract_ranking(resp)
-            for rank in ranking['responseData']['rankings']:
-                resp = self._client.send('GreatBuildingsService', 'getOtherPlayerOverview',
-                                         [rank['player']['player_id']])
+            self.__logger.info('start scanning to snipe')
+            with ThreadPoolExecutor(10) as executor:
+                futures = [executor.submit(self._scan, neighbour.player_id) for neighbour in neighbors]
+                wait(futures)
+            self.__logger.info('end scanning to snipe')
 
-                overview = self.extract_overview(resp)['responseData']  # great buildings list
-                for great_building in overview:
-                    if great_building['level'] >= 30:
-                        resp = self._client.send('GreatBuildingsService', 'getConstruction',
-                                                 [great_building['entity_id'], great_building['player']['player_id']])
-                        construction = self.extract_construction(resp)['responseData']
-                        if great_building.get('current_progress', None):  # unlocked
-                            res = self.calculate(great_building['max_progress'], great_building['current_progress'],
-                                                 construction)
-                            if res:
-                                res['great_building'] = great_building
-                                result.append(res)
-                            pass
+    def _scan(self, player_id):
+        min_level = 30
+        resp = self._client.send('GreatBuildingsService', 'getOtherPlayerOverview', [player_id])
 
-    @staticmethod
-    def extract_ranking(resp):
-        #  TODO handle if not exact one match
-        return [data for data in resp if data['requestMethod'] in ['searchRanking', 'getRanking']][0]
+        overview = self.extract_overview(resp)['responseData']  # great buildings list
+        for great_building in overview:
+            if great_building['level'] >= min_level:
+                resp = self._client.send('GreatBuildingsService', 'getConstruction',
+                                         [great_building['entity_id'], great_building['player']['player_id']])
+                construction = self.extract_construction(resp)['responseData']
+                if great_building.get('current_progress', None):  # unlocked
+                    res = self.calculate(self.__ark_factor, great_building['max_progress'],
+                                         great_building['current_progress'], construction)
+                    if res:  # FIXME check if enough forge points available
+                        resp, success = self._client.send('GreatBuildingsService', 'contributeForgePoints',
+                                                          [great_building['entity_id'],
+                                                           great_building['player']['player_id'],
+                                                           great_building['level'], res['invest'], False])
+                        if success:
+                            self.__logger.info(f"sniped {great_building['player']['name']}'s lvl "
+                                               f"{great_building['level']} {great_building['name']} with "
+                                               f"{res['invest']}fp invest and {res['profit']}fp profit for "
+                                               f"rank {res['rank']}")
+
+    def __get_ark_bonus(self) -> float:
+        own_player_id = self._acc.city_user_data.player_id
+        resp = self._client.send('GreatBuildingsService', 'getOtherPlayerOverview', [own_player_id])
+        overview = self.extract_overview(resp)['responseData']
+        filtered = [entity for entity in overview if 'X_FutureEra_Landmark1' in entity['city_entity_id']]
+
+        if filtered:
+            ark = filtered[0]
+            resp2 = self._client.send('GreatBuildingsService', 'getConstruction', [ark['entity_id'], own_player_id])
+            construction = self.extract_construction(resp2)['responseData']
+            return construction['next_passive_bonus']['value']
+        else:
+            return 0
 
     @staticmethod
     def extract_overview(resp):
@@ -68,9 +90,7 @@ class SnipingService(AbstractService):
         return [data for data in resp if data['requestMethod'] in ['getConstruction']][0]
 
     @staticmethod
-    def calculate(max_progress, current_progress, construction):
-        ark_factor = 1.9
-
+    def calculate(ark_factor, max_progress, current_progress, construction):
         for rank in construction['rankings']:
             if not rank.get('reward', None):
                 continue
