@@ -8,6 +8,7 @@ from foe_bot.domain.city_map_entity import CityMapEntity
 from foe_bot.domain.city_user_data import CityUserData
 from foe_bot.domain.connection_state_logging import ConnectionStateLogging
 from foe_bot.domain.hidden_reward import HiddenReward
+from foe_bot.domain.inventory_item import InventoryItem
 from foe_bot.domain.other_tavern_state import OtherTavernState
 from foe_bot.domain.own_tavern import OwnTavern
 from foe_bot.domain.player import Player
@@ -124,6 +125,13 @@ def __map(acc: Account, **kwargs) -> None:
     elif ('FriendsTavernService' == kwargs['requestClass']
           and kwargs['requestMethod'] == 'getConfig'):
         acc.tavern_config = structure(kwargs['responseData'], TavernConfig)
+
+    elif ('InventoryService' == kwargs['requestClass']
+          and kwargs['requestMethod'] == 'getItems'):
+        if type(kwargs['responseData']) == list:
+            acc.put_inventory_items(structure(kwargs['responseData'], list[InventoryItem]))
+        else:
+            acc.put_inventory_items([structure(kwargs['responseData'], InventoryItem)])
 
     else:
         class_method = f"{kwargs['requestClass']}.{kwargs['requestMethod']}"

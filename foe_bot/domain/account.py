@@ -6,6 +6,7 @@ from foe_bot.domain.city_map import CityMap
 from foe_bot.domain.city_user_data import CityUserData
 from foe_bot.domain.connection_state_logging import ConnectionStateLogging
 from foe_bot.domain.hidden_reward import HiddenReward
+from foe_bot.domain.inventory_item import InventoryItem
 from foe_bot.domain.other_tavern_state import OtherTavernState
 from foe_bot.domain.own_tavern import OwnTavern
 from foe_bot.domain.player import Player
@@ -48,6 +49,11 @@ def map_of_other_tavern_states(list_: list[OtherTavernState]) -> dict[int, Other
         return {v.ownerId: v for v in list_}
 
 
+def map_of_inventory_items(list_: list[InventoryItem]) -> dict[int, InventoryItem]:
+    if type(list_) == list:
+        return {v.id: v for v in list_}
+
+
 @define
 class Account(object):
     user_name: str = field(default=None)  # FIXME is in use?
@@ -65,6 +71,7 @@ class Account(object):
     own_tavern: OwnTavern = field(default=None)
     tavern_config: TavernConfig = field(default=None)
     other_tavern_states: dict[int, OtherTavernState] = field(default={})
+    inventory_items: dict[int, InventoryItem] = field(default=dict[int, InventoryItem]())
 
     def put_hidden_rewards(self, hidden_rewards: list[HiddenReward]) -> None:
         dict_ = map_of_hidden_rewards(hidden_rewards)
@@ -91,3 +98,8 @@ class Account(object):
     def put_other_tavern_states(self, states: list[OtherTavernState]) -> None:
         dict_ = map_of_other_tavern_states(states)
         self.other_tavern_states.update(dict_)
+
+    def put_inventory_items(self, items: list[InventoryItem]) -> None:
+        import re
+        dict_ = map_of_inventory_items(items)
+        self.inventory_items.update(dict_)

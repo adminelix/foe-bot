@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor, wait
 
 from foe_bot import get_args
 from foe_bot.service.abstract_service import AbstractService
+from foe_bot.service.inventory_service import InventoryService
 from foe_bot.service.time_service import TimeService
 
 
@@ -12,6 +13,7 @@ class SnipingService(AbstractService):
     def __init__(self):
         super().__init__()
         self.__logger = logging.getLogger(self.__class__.__name__)
+        self.__inventory_service = InventoryService()
         self.__auto_snipe_neighbours = get_args().auto_snipe_neighbours
         self.__interval_seconds = 60
         self.__last_scan = 0
@@ -54,7 +56,7 @@ class SnipingService(AbstractService):
                 if great_building.get('current_progress', None):  # unlocked
                     res = self.calculate(self.__ark_factor, great_building['max_progress'],
                                          great_building['current_progress'], construction)
-                    if res:  # FIXME check if enough forge points available
+                    if res and res['invest'] < self.__inventory_service.sum_of_forge_points() * 0.1:
                         resp, success = self._client.send('GreatBuildingsService', 'contributeForgePoints',
                                                           [great_building['entity_id'],
                                                            great_building['player']['player_id'],
