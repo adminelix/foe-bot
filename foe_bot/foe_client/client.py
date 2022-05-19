@@ -33,6 +33,7 @@ class Client:
         map_to_account(self.__acc, *response)
         return success
 
+    # FIXME remove that method and filter entities that should not be stored instead
     def send(self, klass: str, method: str, data):
         body = self.__session.create_rest_body(klass, method, data)
         response, success = self.__session.send(body)  # TODO extract success validation to here
