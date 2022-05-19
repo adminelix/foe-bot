@@ -51,16 +51,17 @@ class SnipingService(AbstractService):
         for great_building in overview:
             if great_building['level'] >= min_level:
                 _, resp = self._client.send_and_map('GreatBuildingsService', 'getConstruction',
-                                                 [great_building['entity_id'], great_building['player']['player_id']])
+                                                    [great_building['entity_id'],
+                                                     great_building['player']['player_id']])
                 construction = self.extract_construction(resp)['responseData']
                 if great_building.get('current_progress', None):  # unlocked
                     res = self.calculate(self.__ark_factor, great_building['max_progress'],
                                          great_building['current_progress'], construction)
                     if res and res['invest'] < self.__inventory_service.sum_of_forge_points() * 0.1:
-                        resp, success = self._client.send('GreatBuildingsService', 'contributeForgePoints',
-                                                          [great_building['entity_id'],
-                                                           great_building['player']['player_id'],
-                                                           great_building['level'], res['invest'], False])
+                        resp, success = self._client.send_and_map('GreatBuildingsService', 'contributeForgePoints',
+                                                                  [great_building['entity_id'],
+                                                                   great_building['player']['player_id'],
+                                                                   great_building['level'], res['invest'], False])
                         if success:
                             self.__logger.info(f"sniped {great_building['player']['name']}'s lvl "
                                                f"{great_building['level']} {great_building['name']} with "
