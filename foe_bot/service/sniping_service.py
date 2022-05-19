@@ -45,13 +45,13 @@ class SnipingService(AbstractService):
 
     def _scan(self, player_id):
         min_level = 30
-        resp = self._client.send('GreatBuildingsService', 'getOtherPlayerOverview', [player_id])
+        _, resp = self._client.send_and_map('GreatBuildingsService', 'getOtherPlayerOverview', [player_id])
 
         overview = self.extract_overview(resp)['responseData']  # great buildings list
         for great_building in overview:
             if great_building['level'] >= min_level:
-                resp = self._client.send('GreatBuildingsService', 'getConstruction',
-                                         [great_building['entity_id'], great_building['player']['player_id']])
+                _, resp = self._client.send_and_map('GreatBuildingsService', 'getConstruction',
+                                                 [great_building['entity_id'], great_building['player']['player_id']])
                 construction = self.extract_construction(resp)['responseData']
                 if great_building.get('current_progress', None):  # unlocked
                     res = self.calculate(self.__ark_factor, great_building['max_progress'],
@@ -69,13 +69,14 @@ class SnipingService(AbstractService):
 
     def __get_ark_bonus(self) -> float:
         own_player_id = self._acc.city_user_data.player_id
-        resp = self._client.send('GreatBuildingsService', 'getOtherPlayerOverview', [own_player_id])
+        _, resp = self._client.send_and_map('GreatBuildingsService', 'getOtherPlayerOverview', [own_player_id])
         overview = self.extract_overview(resp)['responseData']
         filtered = [entity for entity in overview if 'X_FutureEra_Landmark1' in entity['city_entity_id']]
 
         if filtered:
             ark = filtered[0]
-            resp2 = self._client.send('GreatBuildingsService', 'getConstruction', [ark['entity_id'], own_player_id])
+            _, resp2 = self._client.send_and_map(
+                'GreatBuildingsService', 'getConstruction', [ark['entity_id'], own_player_id])
             construction = self.extract_construction(resp2)['responseData']
             return construction['next_passive_bonus']['value']
         else:

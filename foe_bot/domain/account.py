@@ -100,6 +100,5 @@ class Account(object):
         self.other_tavern_states.update(dict_)
 
     def put_inventory_items(self, items: list[InventoryItem]) -> None:
-        import re
         dict_ = map_of_inventory_items(items)
         self.inventory_items.update(dict_)

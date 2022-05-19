@@ -22,6 +22,7 @@ from foe_bot.domain.time import Time
 __ignored = [
     'TrackingService.trackLoginDone',  # is done by login sequence via selenium webdriver
     'ResourceService.getPlayerAutoRefills',  # timestamps about last auto refilled resource, forge points for instance
+    'ResourceService.getResourceDefinitions',  # timestamps about last auto refilled resource, forge points for instance
     'CityMapService.relist',  # information about moppeled building when it can moppeled again
     'OtherPlayerService.rewardResources',  # resource reward of moppeled building
     'OtherPlayerService.polivateRandomBuilding',  # city_data_entity of moppeled building
@@ -35,7 +36,43 @@ __ignored = [
     'FriendsTavernService.collectReward',  # empty confirmation message
     'MessageService.newMessage',  # hint that new message is available
     'ChatService.messages',  # temporary to avoid log spamming
-    'ChatService.message'  # temporary to avoid log spamming
+    'ChatService.message',  # temporary to avoid log spamming
+    'GreatBuildingsService.getOtherPlayerOverview',  # temporary to avoid log spamming
+    'GreatBuildingsService.getConstruction',  # temporary to avoid log spamming
+    'GreatBuildingsService.contributeForgePoints',  # temporary to avoid log spamming
+    'BonusService.getBonuses',  # temporary to avoid log spamming
+    'BoostService.getAllBoosts',  # temporary to avoid log spamming
+    'CrmService.getContent',  # temporary to avoid log spamming
+    'CampaignService.getDeposits',  # temporary to avoid log spamming
+    'CastleSystemService.getCastleSystemPlayer',  # temporary to avoid log spamming
+    'CastleSystemService.getOverview',  # temporary to avoid log spamming
+    'ChallengeService.getActiveChallenges',  # temporary to avoid log spamming
+    'ChallengeService.getOptions',  # temporary to avoid log spamming
+    'CityMapService.getNextId',  # temporary to avoid log spamming
+    'ResourceService.getResourceDefinition',  # temporary to avoid log spamming
+    'ForgePlusPackageService.getPackages',  # temporary to avoid log spamming
+    'FriendService.getInvitationLink',  # temporary to avoid log spamming
+    'BonusService.getLimitedBonuses',  # temporary to avoid log spamming
+    'ItemExchangeService.getConfig',  # temporary to avoid log spamming
+    'ItemShopService.getOffers',  # temporary to avoid log spamming
+    'OutpostService.getAll',  # temporary to avoid log spamming
+    'EmissaryService.getAssigned',  # temporary to avoid log spamming
+    'PremiumService.getActiveBundle',  # temporary to avoid log spamming
+    'SaleInfoService.getActiveSales',  # temporary to avoid log spamming
+    'IgnorePlayerService.getIgnoreList',  # temporary to avoid log spamming
+    'PlayerProfileService.getFreeNameChangeTime',  # temporary to avoid log spamming
+    'NoticeIndicatorService.getPlayerNoticeIndicators',  # temporary to avoid log spamming
+    'RankingService.newRank',  # temporary to avoid log spamming
+    'ResearchService.getProgress',  # temporary to avoid log spamming
+    'OtherPlayerService.updateActions',  # FIXME temporary to avoid log spamming
+    'OtherPlayerService.getSocialList',  # FIXME temporary to avoid log spamming
+    'TimerService.getTimers',  # temporary to avoid log spamming
+    'TutorialService.getProgress',  # temporary to avoid log spamming
+    'QuestService.getUpdates',  # temporary to avoid log spamming
+    'AnnouncementsService.fetchAllAnnouncements',  # temporary to avoid log spamming
+    'CashShopService.getPricingInformation',  # temporary to avoid log spamming
+    'ConversationService.getUpdatedMessage',  # temporary to avoid log spamming
+    'InventoryService.getGreatBuildings'  # temporary to avoid log spamming
 ]
 
 logger = logging.getLogger("ResponseMapper")
@@ -118,9 +155,14 @@ def __map(acc: Account, **kwargs) -> None:
     elif ('CityMapService' == kwargs['requestClass']
           and kwargs['requestMethod'] == 'updateEntity'):
         if type(kwargs['responseData']) == list:
-            acc.city_map.put_entities(structure(kwargs['responseData'], list[CityMapEntity]))
+            entities = structure(kwargs['responseData'], list[CityMapEntity])
+            entities = [entity for entity in entities if entity.player_id == acc.city_user_data.player_id]
+            if entities:
+                acc.city_map.put_entities(entities)
         else:
-            acc.city_map.put_entities([structure(kwargs['responseData'], CityMapEntity)])
+            entity = [structure(kwargs['responseData'], CityMapEntity)]
+            if entity[0].player_id == acc.city_user_data.player_id:
+                acc.city_map.put_entities(entity)
 
     elif ('FriendsTavernService' == kwargs['requestClass']
           and kwargs['requestMethod'] == 'getConfig'):
