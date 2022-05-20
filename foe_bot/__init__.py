@@ -40,6 +40,12 @@ parser.add_argument('-w', '--world', type=str, nargs='?', required=True, env_var
 parser.add_argument('-d', '--deepl-api-key', type=str, nargs='?', required=True, env_var='FOE_BOT_DEEPL_API_KEY',
                     help="""register on 'https://www.deepl.com/pro-api' and get the api key""")
 
+telegram_bot = parser.add_argument_group('telegram bot (optional)', description='sends notifications via telegram bot')
+telegram_bot.add_argument('--telegram-token', type=str, nargs='?', required=False, env_var='FOE_BOT_TELEGRAM_TOKEN',
+                          default="", help="""token for telegram bot""")
+telegram_bot.add_argument('--telegram-chat-id', type=str, nargs='?', required=False, env_var='FOE_BOT_TELEGRAM_CHAT_ID',
+                          default="", help="""chat id for telegram bot to send messages into""")
+
 general = parser.add_argument_group('general arguments (optional)', description='')
 general.add_argument('--relog-waiting-time', type=int, nargs='?', required=False, env_var='FOE_BOT_RELOG_WAITING_TIME',
                      default=120, help="""wait time in seconds the bot will wait after you kick him out with
