@@ -141,8 +141,6 @@ class OtherPlayerService(AbstractService):
 
         three_hour_ago = now - (60 * 60 * 3)
         if three_hour_ago > self.__last_events_refresh:
-            self.__logger.info("updating events")
-
             raw_body = json.loads("""
             {
                  "__class__": "EventHistoryRequest",
