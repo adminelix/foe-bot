@@ -1,5 +1,6 @@
 import json
 import logging
+from concurrent.futures import ThreadPoolExecutor, wait
 
 from foe_bot.domain import structure
 from foe_bot.domain.account import Account
@@ -131,8 +132,14 @@ def __map(acc: Account, **kwargs) -> None:
           and kwargs['requestMethod'] == 'getEventsPaginated'):
         # TODO consider towerRankings ?
         event_ids = acc.events.keys()
-        events = [event for event in kwargs['responseData']['events'] if event['id'] not in event_ids]
-        acc.put_social_interaction_events(structure(events, list[SocialInteractionEvent]))
+        filtered = [event for event in kwargs['responseData']['events'] if event['id'] not in event_ids]
+
+        with ThreadPoolExecutor(20) as executor:
+            futures = [executor.submit(structure, event, SocialInteractionEvent) for event in filtered]
+            wait(futures)
+            events = [future.result() for future in futures]
+
+        acc.put_social_interaction_events(events)
 
     elif ('OtherPlayerService' == kwargs['requestClass']
           and 'newEvent' in kwargs['requestMethod']
