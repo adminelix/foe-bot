@@ -16,7 +16,6 @@ from foe_bot import get_args
 def telegram_send(text):
     token = get_args().telegram_token
     chat_id = get_args().telegram_chat_id
-    token = '***REMOVED***'
-    chat_id = "***REMOVED***"
-    requests.post(url=f"https://api.telegram.org/bot{token}/sendMessage",
-                  data={"chat_id": chat_id, "text": text})
+    if token and chat_id:
+        requests.post(url=f"https://api.telegram.org/bot{token}/sendMessage",
+                      data={"chat_id": chat_id, "text": text})
