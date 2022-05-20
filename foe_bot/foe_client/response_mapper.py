@@ -78,6 +78,7 @@ __ignored = [
     'ConversationService.getConversationUpdate',  # temporary to avoid log spamming
     'BlueprintService.getUpdates',  # temporary to avoid log spamming
     'PremiumService.getActivePackages',  # temporary to avoid log spamming
+    'InventoryService.getItemAmount',  # temporary to avoid log spamming
     'InventoryService.getGreatBuildings'  # temporary to avoid log spamming
 ]
 
