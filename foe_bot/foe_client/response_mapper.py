@@ -66,12 +66,17 @@ __ignored = [
     'ResearchService.getProgress',  # temporary to avoid log spamming
     'OtherPlayerService.updateActions',  # FIXME temporary to avoid log spamming
     'OtherPlayerService.getSocialList',  # FIXME temporary to avoid log spamming
+    'OtherPlayerService.getCityProtections',  # temporary to avoid log spamming
     'TimerService.getTimers',  # temporary to avoid log spamming
     'TutorialService.getProgress',  # temporary to avoid log spamming
     'QuestService.getUpdates',  # temporary to avoid log spamming
     'AnnouncementsService.fetchAllAnnouncements',  # temporary to avoid log spamming
     'CashShopService.getPricingInformation',  # temporary to avoid log spamming
     'ConversationService.getUpdatedMessage',  # temporary to avoid log spamming
+    'ConversationService.getNewMessage',  # temporary to avoid log spamming
+    'ConversationService.getConversationUpdate',  # temporary to avoid log spamming
+    'BlueprintService.getUpdates',  # temporary to avoid log spamming
+    'PremiumService.getActivePackages',  # temporary to avoid log spamming
     'InventoryService.getGreatBuildings'  # temporary to avoid log spamming
 ]
 
