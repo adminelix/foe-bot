@@ -85,6 +85,10 @@ city_production_service = parser.add_argument_group('sniping (optional)', descri
 city_production_service.add_argument('--auto-snipe-neighbours', type=_str2bool, nargs='?', required=False,
                                      env_var='FOE_BOT_AUTO_SNIPE_NEIGHBOURS', default=True,
                                      help="""scan and snipe neighbours automatically (default: true)""")
+city_production_service.add_argument('--players-to-snipe', type=str, nargs='?', required=False,
+                                     env_var='FOE_BOT_PLAYERS_TO_SNIPE', default="",
+                                     help="""scan defined players (case-sensitive) and notify if a great building is
+                                     able to snipe (sample: "foo, bar")""")
 
 
 def parse_args():
