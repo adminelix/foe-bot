@@ -100,7 +100,7 @@ class SnipingService(AbstractService):
             if not rank.get('reward', None):
                 continue
             reward = int(rank['reward']['strategy_point_amount'] * ark_factor)
-            invest_to_get = int(math.ceil((max_progress - current_progress) / 2)) + rank.get('forge_points', 0)
+            invest_to_get = int(math.ceil((max_progress - current_progress + rank.get('forge_points', 0)) / 2))
             profitable = reward > invest_to_get and invest_to_get + current_progress < max_progress
             if profitable:
                 profit = reward - invest_to_get
