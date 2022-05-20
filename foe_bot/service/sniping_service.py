@@ -148,7 +148,6 @@ class SnipingService(AbstractService):
         except IndexError:
             raise ResponseException(f"not found requestMethod '{request_method}' in response")
 
-
     @staticmethod
     def calculate(ark_factor, max_progress, current_progress, construction):
         for rank in construction['rankings']:
