@@ -4,8 +4,6 @@ import time
 from concurrent.futures import ThreadPoolExecutor, wait
 from textwrap import dedent
 
-import requests
-
 from foe_bot import get_args
 from foe_bot.service import telegram_send
 from foe_bot.service.abstract_service import AbstractService
