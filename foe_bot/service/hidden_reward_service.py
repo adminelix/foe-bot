@@ -24,7 +24,7 @@ class HiddenRewardService(AbstractService):
         counter = 0
         if len(filtered_rewards) > 0:
             for reward in filtered_rewards:
-                success = self._client.send('HiddenRewardService', 'collectReward', [reward.hiddenRewardId])
+                success = self._client.send_and_map('HiddenRewardService', 'collectReward', [reward.hiddenRewardId])
                 self._acc.hidden_rewards.pop(reward.hiddenRewardId)
 
                 if success:

@@ -40,6 +40,12 @@ parser.add_argument('-w', '--world', type=str, nargs='?', required=True, env_var
 parser.add_argument('-d', '--deepl-api-key', type=str, nargs='?', required=True, env_var='FOE_BOT_DEEPL_API_KEY',
                     help="""register on 'https://www.deepl.com/pro-api' and get the api key""")
 
+telegram_bot = parser.add_argument_group('telegram bot (optional)', description='sends notifications via telegram bot')
+telegram_bot.add_argument('--telegram-token', type=str, nargs='?', required=False, env_var='FOE_BOT_TELEGRAM_TOKEN',
+                          default="", help="""token for telegram bot""")
+telegram_bot.add_argument('--telegram-chat-id', type=str, nargs='?', required=False, env_var='FOE_BOT_TELEGRAM_CHAT_ID',
+                          default="", help="""chat id for telegram bot to send messages into""")
+
 general = parser.add_argument_group('general arguments (optional)', description='')
 general.add_argument('--relog-waiting-time', type=int, nargs='?', required=False, env_var='FOE_BOT_RELOG_WAITING_TIME',
                      default=120, help="""wait time in seconds the bot will wait after you kick him out with
@@ -80,6 +86,15 @@ city_production_service.add_argument('--start-city-production', type=_str2bool, 
 city_production_service.add_argument('--unlock-unit-slots', type=_str2bool, nargs='?', required=False,
                                      env_var='FOE_BOT_UNLOCK_UNIT_SLOTS', default=True,
                                      help="""unlock unit slots in military buildings (default: true)""")
+
+city_production_service = parser.add_argument_group('sniping (optional)', description='')
+city_production_service.add_argument('--auto-snipe-neighbours', type=_str2bool, nargs='?', required=False,
+                                     env_var='FOE_BOT_AUTO_SNIPE_NEIGHBOURS', default=True,
+                                     help="""scan and snipe neighbours automatically (default: true)""")
+city_production_service.add_argument('--players-to-snipe', type=str, nargs='?', required=False,
+                                     env_var='FOE_BOT_PLAYERS_TO_SNIPE', default="",
+                                     help="""scan defined players (case-sensitive) and notify if a great building is
+                                     able to snipe (sample: "foo, bar")""")
 
 
 def parse_args():

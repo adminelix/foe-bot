@@ -35,7 +35,7 @@ class OtherPlayerService(AbstractService):
                             if not player.next_interaction_in and not player.isInvitedFriend]
 
         for player in player_to_moppel:
-            success = self._client.send('OtherPlayerService', 'polivateRandomBuilding', [player.player_id])
+            success = self._client.send_and_map('OtherPlayerService', 'polivateRandomBuilding', [player.player_id])
 
             if success:
                 count += 1
@@ -53,7 +53,7 @@ class OtherPlayerService(AbstractService):
                                 if player.isInvitedFriend and player.incoming and not player.accepted]
 
             for player in player_to_accept:
-                success = self._client.send('FriendService', 'acceptInvitation', [player.player_id])
+                success = self._client.send_and_map('FriendService', 'acceptInvitation', [player.player_id])
 
                 if success:
                     player_log = self._acc.player_logs.get(player.player_id, PlayerLog(player.player_id))
@@ -78,7 +78,7 @@ class OtherPlayerService(AbstractService):
             player_to_invite = self.__filter_players_to_invite(now, player_logs, player_map)
 
             for player in player_to_invite:
-                successful = self._client.send('FriendService', 'invitePlayerById', [player.player_id])
+                successful = self._client.send_and_map('FriendService', 'invitePlayerById', [player.player_id])
                 log = player_logs.get(player.player_id, PlayerLog(player.player_id))
                 if successful:
                     log.invited_at = int(time.time())
@@ -95,7 +95,7 @@ class OtherPlayerService(AbstractService):
         player_to_revoke = self.__filter_player_with_expired_friends_invite(now)
 
         for player in player_to_revoke:
-            successful = self._client.send('FriendService', 'deleteFriend', [player.player_id])
+            successful = self._client.send_and_map('FriendService', 'deleteFriend', [player.player_id])
 
             if successful:
                 self._acc.players.get(player.player_id).isInvitedFriend = False
@@ -113,7 +113,7 @@ class OtherPlayerService(AbstractService):
         useless_friends = self.__filter_useless_friends(now)
 
         for player in useless_friends:
-            successful = self._client.send('FriendService', 'deleteFriend', [player.player_id])
+            successful = self._client.send_and_map('FriendService', 'deleteFriend', [player.player_id])
 
             if successful:
                 self._acc.players.get(player.player_id).is_friend = False
@@ -141,8 +141,6 @@ class OtherPlayerService(AbstractService):
 
         three_hour_ago = now - (60 * 60 * 3)
         if three_hour_ago > self.__last_events_refresh:
-            self.__logger.info("updating events")
-
             raw_body = json.loads("""
             {
                  "__class__": "EventHistoryRequest",
@@ -154,7 +152,7 @@ class OtherPlayerService(AbstractService):
              }
             """)
 
-            success = self._client.send('OtherPlayerService', 'getEventsPaginated', [raw_body])
+            success = self._client.send_and_map('OtherPlayerService', 'getEventsPaginated', [raw_body])
 
             if success:
                 self.__cleanup_events()
@@ -216,11 +214,11 @@ class OtherPlayerService(AbstractService):
         return useless_friends
 
     def __refresh_neighbor_list(self):
-        self._client.send('OtherPlayerService', 'getNeighborList', [])
+        self._client.send_and_map('OtherPlayerService', 'getNeighborList', [])
 
     def __refresh_friend_list(self):
-        self._client.send('OtherPlayerService', 'getFriendsList', [])
+        self._client.send_and_map('OtherPlayerService', 'getFriendsList', [])
 
     def __refresh_clan_member_list(self):
         if len(self._acc.city_user_data.clan_name) > 0:
-            self._client.send('OtherPlayerService', 'getClanMemberList', [])
+            self._client.send_and_map('OtherPlayerService', 'getClanMemberList', [])
