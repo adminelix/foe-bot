@@ -2,8 +2,12 @@ import logging
 import math
 import time
 from concurrent.futures import ThreadPoolExecutor, wait
+from textwrap import dedent
+
+import requests
 
 from foe_bot import get_args
+from foe_bot.service import telegram_send
 from foe_bot.service.abstract_service import AbstractService
 from foe_bot.service.inventory_service import InventoryService
 
@@ -80,11 +84,13 @@ class SnipingService(AbstractService):
                 stored_gb = self.__calculated_great_buildings.get(stored_gb_id, None)
 
                 if not stored_gb or stored_gb['hash'] != great_building['hash']:
-                    self.__logger.info(f"could snipe {great_building['player']['name']}'s lvl "
-                                       f"{great_building['level']} {great_building['name']} with "
-                                       f"{calculation['invest']}fp invest and {calculation['profit']}fp profit "
-                                       f"for rank {calculation['rank']}")
+                    text = dedent(f"""\
+                    could snipe '{great_building['player']['name']}'s level {great_building['level']}
+                    '{great_building['name']}' with {calculation['invest']}fp invest and {calculation['profit']}fp
+                    profit for rank {calculation['rank']}""").replace('\n', ' ')
 
+                    self.__logger.info(text)
+                    telegram_send(f"{text} on world {get_args().world}")
                     self.__calculated_great_buildings[stored_gb_id] = great_building
 
     def resolve_player_ids(self):
