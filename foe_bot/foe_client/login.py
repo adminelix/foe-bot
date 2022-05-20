@@ -84,7 +84,7 @@ class Login:
             self.retries = 0
             self.__logger.info("got token")
 
-        except WrongCredentialsException | WorldNotFoundException as ex:
+        except (WrongCredentialsException, WorldNotFoundException) as ex:
             driver.save_screenshot(f"{os.path.dirname(os.path.realpath(__file__))}/../../data/error_screenshot.png")
             raise ex
         except Exception as ex:
