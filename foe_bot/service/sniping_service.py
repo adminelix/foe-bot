@@ -45,53 +45,54 @@ class SnipingService(AbstractService):
 
     def _scan(self, player_id):
         min_level = 30
-        _, resp = self._client.send_and_map('GreatBuildingsService', 'getOtherPlayerOverview', [player_id])
+        _, res_overview = self._client.send_and_map('GreatBuildingsService', 'getOtherPlayerOverview', [player_id])
 
-        overview = self.extract_overview(resp)['responseData']  # great buildings list
+        overview = self.extract_overview(res_overview)['responseData']  # great buildings list
         for great_building in overview:
             if great_building['level'] >= min_level:
-                _, resp = self._client.send_and_map('GreatBuildingsService', 'getConstruction',
-                                                    [great_building['entity_id'],
-                                                     great_building['player']['player_id']])
-                construction = self.extract_construction(resp)['responseData']
+                _, res_construction = self._client.send_and_map('GreatBuildingsService', 'getConstruction',
+                                                                [great_building['entity_id'],
+                                                                 great_building['player']['player_id']])
+                construction = self.extract_construction(res_construction)['responseData']
                 if great_building.get('current_progress', None):  # unlocked
-                    res = self.calculate(self.__ark_factor, great_building['max_progress'],
-                                         great_building['current_progress'], construction)
-                    if res and res['invest'] < self.__inventory_service.sum_of_forge_points() * 0.1:
-                        resp, success = self._client.send_and_map('GreatBuildingsService', 'contributeForgePoints',
-                                                                  [great_building['entity_id'],
-                                                                   great_building['player']['player_id'],
-                                                                   great_building['level'], res['invest'], False])
+                    profitable = self.calculate(self.__ark_factor, great_building['max_progress'],
+                                                great_building['current_progress'], construction)
+                    if profitable and profitable['invest'] < self.__inventory_service.sum_of_forge_points() * 0.1:
+                        _, success = self._client.send_and_map('GreatBuildingsService', 'contributeForgePoints',
+                                                               [great_building['entity_id'],
+                                                                great_building['player']['player_id'],
+                                                                great_building['level'], profitable['invest'],
+                                                                False])
                         if success:
                             self.__logger.info(f"sniped {great_building['player']['name']}'s lvl "
                                                f"{great_building['level']} {great_building['name']} with "
-                                               f"{res['invest']}fp invest and {res['profit']}fp profit for "
-                                               f"rank {res['rank']}")
+                                               f"{profitable['invest']}fp invest and {profitable['profit']}fp profit "
+                                               f"for rank {profitable['rank']}")
 
     def __get_ark_bonus(self) -> float:
         own_player_id = self._acc.city_user_data.player_id
-        _, resp = self._client.send_and_map('GreatBuildingsService', 'getOtherPlayerOverview', [own_player_id])
-        overview = self.extract_overview(resp)['responseData']
+        _, res_overview = self._client.send_and_map('GreatBuildingsService', 'getOtherPlayerOverview', [own_player_id])
+        overview = self.extract_overview(res_overview)['responseData']
         filtered = [entity for entity in overview if 'X_FutureEra_Landmark1' in entity['city_entity_id']]
 
         if filtered:
             ark = filtered[0]
-            _, resp2 = self._client.send_and_map(
+            _, res_construction = self._client.send_and_map(
                 'GreatBuildingsService', 'getConstruction', [ark['entity_id'], own_player_id])
-            construction = self.extract_construction(resp2)['responseData']
+            construction = self.extract_construction(res_construction)['responseData']
             return construction['next_passive_bonus']['value']
         else:
             return 0
 
     @staticmethod
-    def extract_overview(resp):
+    def extract_overview(response):
         #  TODO handle if not exact one match
-        return [data for data in resp if data['requestMethod'] in ['getOtherPlayerOverview']][0]
+        return [data for data in response if data['requestMethod'] in ['getOtherPlayerOverview']][0]
 
     @staticmethod
-    def extract_construction(resp):
+    def extract_construction(response):
         #  TODO handle if not exact one match
-        return [data for data in resp if data['requestMethod'] in ['getConstruction']][0]
+        return [data for data in response if data['requestMethod'] in ['getConstruction']][0]
 
     @staticmethod
     def calculate(ark_factor, max_progress, current_progress, construction):
