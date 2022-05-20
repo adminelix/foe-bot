@@ -46,7 +46,7 @@ class SnipingService(AbstractService):
                                                                              player.is_guild_member and not
                                                                              player.isInvitedToClan)]
 
-            with ThreadPoolExecutor(10) as executor:
+            with ThreadPoolExecutor(9) as executor:
                 futures = [executor.submit(self._scan, neighbour.player_id) for neighbour in neighbors]
                 wait(futures)
             great_buildings = [future.result() for future in futures if future.result()]
@@ -71,7 +71,7 @@ class SnipingService(AbstractService):
         if now > self.__player_last_scan + self.__player_interval_seconds:
             self.__player_last_scan = now - 1
 
-            with ThreadPoolExecutor(10) as executor:
+            with ThreadPoolExecutor(9) as executor:
                 futures = [executor.submit(self._scan, player_id) for player_id in self.__player_ids_to_snipe]
                 wait(futures)
             great_buildings = [future.result() for future in futures if future.result()]
