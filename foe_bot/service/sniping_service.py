@@ -5,6 +5,7 @@ from concurrent.futures import ThreadPoolExecutor, wait
 from textwrap import dedent
 
 from foe_bot import get_args
+from foe_bot.exceptions import ResponseException
 from foe_bot.service import telegram_send
 from foe_bot.service.abstract_service import AbstractService
 from foe_bot.service.inventory_service import InventoryService
@@ -142,8 +143,11 @@ class SnipingService(AbstractService):
 
     @staticmethod
     def extract_response(response, request_method):
-        #  TODO handle if not exact one match
-        return [data for data in response if data['requestMethod'] == request_method][0]
+        try:
+            return [data for data in response if data['requestMethod'] == request_method][0]
+        except IndexError:
+            raise ResponseException(f"not found requestMethod '{request_method}' in response")
+
 
     @staticmethod
     def calculate(ark_factor, max_progress, current_progress, construction):
