@@ -1,3 +1,5 @@
+import time
+
 from attr import define, field
 
 
@@ -5,10 +7,10 @@ from attr import define, field
 class HiddenReward:
     hiddenRewardId: int = field()
     type: str = field()
-    startTime: int = field()
     expireTime: int = field()
     position: dict = field()
     rarity: str = field()
+    startTime: int = field(default=int(time.time()))
     animated: bool = field(default=False)
     klass: str = field(default=None)
 
