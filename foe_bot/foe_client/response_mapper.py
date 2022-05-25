@@ -80,6 +80,9 @@ __ignored = [
     'PremiumService.getActivePackages',  # temporary to avoid log spamming
     'InventoryService.getItemAmount',  # temporary to avoid log spamming
     'RankingService.searchRanking',  # temporary to avoid log spamming
+    'OneTimeNotificationService.getPayloadForIds',  # temporary to avoid log spamming
+    'GuildExpeditionNotificationService.getNotification',  # temporary to avoid log spamming
+    'OneTimeNotificationService.getIds',  # temporary to avoid log spamming
     'InventoryService.getGreatBuildings'  # temporary to avoid log spamming
 ]
 
