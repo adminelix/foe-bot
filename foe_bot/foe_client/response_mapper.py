@@ -202,6 +202,6 @@ def map_to_account(acc: Account, *args) -> Account:
     for arg in args:
         try:
             __map(acc, **arg)
-        except Exception as e:
-            logger.exception(f"cannot map '{arg}'", e)
+        except:
+            logger.exception(f"cannot map '{arg}'")
     return acc
