@@ -3,6 +3,7 @@ import pickle
 
 from foe_bot import get_args
 from foe_bot.domain.account import Account
+from foe_bot.domain.hidden_reward import HiddenReward
 
 
 class AccountService:
@@ -13,6 +14,7 @@ class AccountService:
         if not self.__shared_state:
             self.__data_file = f"{os.path.dirname(os.path.realpath(__file__))}/../../data/{get_args().username}_data"
             self.__account = self.__load_account()
+            self.__account.hidden_rewards = dict[int, HiddenReward]()
 
     def __load_account(self) -> Account:
         if os.path.isfile(self.__data_file):
