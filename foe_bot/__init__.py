@@ -6,9 +6,6 @@ import configargparse
 logging.basicConfig(level=logging.INFO,
                     format='[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s',
                     stream=sys.stdout)
-logging.getLogger("seleniumwire.handler").setLevel(logging.WARN)
-logging.getLogger("seleniumwire.server").setLevel(logging.WARN)
-logging.getLogger("urllib3.connectionpool").setLevel(logging.WARN)
 
 _args = lambda: None  # function as generic object() equivalent that can have attributes
 
