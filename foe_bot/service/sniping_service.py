@@ -18,7 +18,7 @@ class SnipingService(AbstractService):
         self.__logger: logging.Logger = logging.getLogger(self.__class__.__name__)
         self.__inventory_service: InventoryService = InventoryService()
         self.__auto_snipe_neighbours: bool = get_args().auto_snipe_neighbours
-        self.__player_ids_to_snipe: list[int] = self.resolve_player_ids()
+        self.__player_ids_to_snipe: list[int] = self._resolve_player_ids()
         self.__calculated_great_buildings: dict[str, dict] = dict[str, dict]()
         self.__neighbor_interval_seconds: int = 60
         self.__neighbor_last_scan: int = 0
@@ -39,12 +39,7 @@ class SnipingService(AbstractService):
 
         if now > self.__neighbor_last_scan + self.__neighbor_interval_seconds:
             self.__neighbor_last_scan = now - 1
-            neighbors = [player for player in self._acc.players.values() if (player.is_neighbor and
-                                                                             player.is_active and not
-                                                                             player.is_friend and not
-                                                                             player.isInvitedFriend and not
-                                                                             player.is_guild_member and not
-                                                                             player.isInvitedToClan)]
+            neighbors = self._filter_neighbors()
 
             with ThreadPoolExecutor(9) as executor:
                 futures = [executor.submit(self._scan, neighbour.player_id) for neighbour in neighbors]
@@ -55,7 +50,7 @@ class SnipingService(AbstractService):
             for great_building in great_buildings:
                 calculation = great_building['calculation']
                 if great_building and calculation['invest'] < self.__inventory_service.sum_of_forge_points() * 0.1:
-                    _, success = self._client.send_and_map('GreatBuildingsService', 'contributeForgePoints',
+                    success, _ = self._client.send_and_map('GreatBuildingsService', 'contributeForgePoints',
                                                            [great_building['entity_id'],
                                                             great_building['player']['player_id'],
                                                             great_building['level'], calculation['invest'],
@@ -92,7 +87,7 @@ class SnipingService(AbstractService):
                     telegram_send(f"{text} on world {get_args().world}")
                     self.__calculated_great_buildings[stored_gb_id] = great_building
 
-    def resolve_player_ids(self):
+    def _resolve_player_ids(self):
         player_ids = [self._get_player_id(player_name.strip(' '))
                       for player_name in get_args().players_to_snipe.split(',')]
         player_ids = [player_id for player_id in player_ids if player_id]
@@ -107,6 +102,25 @@ class SnipingService(AbstractService):
             return player['player_id']
         except Exception:
             self.__logger.warning(f"no player with name '{player_name}' identified")
+
+    def _filter_neighbors(self):
+        neighbors = [player for player in self._acc.players.values() if (player.is_neighbor and
+                                                                         player.is_active and not
+                                                                         player.is_friend and not
+                                                                         player.isInvitedFriend and not
+                                                                         player.is_guild_member and not
+                                                                         player.isInvitedToClan)]
+        with ThreadPoolExecutor(9) as executor:
+            futures = [executor.submit(lambda x: x if not self._is_player_tavern_full(x.player_id) else None, neighbour)
+                       for neighbour in neighbors]
+            wait(futures)
+        neighbors = [future.result() for future in futures if future.result()]
+        return neighbors
+
+    def _is_player_tavern_full(self, player_id):
+        success, res_tavern = self._client.send_and_map('FriendsTavernService', 'getOtherTavern', [player_id])
+        tavern = self.extract_response(res_tavern, 'getOtherTavern')['responseData']
+        return len(tavern['view']['visitors']) == tavern['view']['unlockedChairs']
 
     def _scan(self, player_id):
         min_level = 30
