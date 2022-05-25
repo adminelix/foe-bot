@@ -160,6 +160,7 @@ class SnipingService(AbstractService):
         try:
             return [data for data in response if data['requestMethod'] == request_method][0]
         except IndexError:
+            logging.error(f"requestMethod '{request_method}' not found for extract in response '{response}'")
             raise ResponseException(f"not found requestMethod '{request_method}' in response")
 
     @staticmethod
