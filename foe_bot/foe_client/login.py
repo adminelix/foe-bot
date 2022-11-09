@@ -29,7 +29,7 @@ class Login:
         self.__logger.info(f"logging into world {self.WORLD} with user {username}")
 
         options = Options()
-        options.headless = True
+        options.headless = False
         options.add_argument('--no-sandbox')
         capabilities = DesiredCapabilities.CHROME
         capabilities["goog:loggingPrefs"] = {"performance": "ALL"}
@@ -191,7 +191,7 @@ class Login:
     @staticmethod
     def __extract_signature_key(reqs):
         re_filter = r'.+foede\.innogamescdn\.com\/cache\/Forge.+\.js'
-        re_extract = r'(?<=encode\(this\._hash\+")(.*)(?="\+a\),1,10\)},)'
+        re_extract = r'(?<=encode\(this\._signatureHash\+")(.*)(?="\+)'
 
         url: str = ""
         for req in reqs:
